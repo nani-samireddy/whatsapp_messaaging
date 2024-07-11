@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-09 08:50:42.646160",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "whatsapp_business_id",
+  "whatsapp_app_id",
+  "whatsapp_api_url",
+  "complete_url",
+  "column_break_ghkx",
+  "whatsapp_phone_number_id",
+  "whatsapp_api_version",
+  "whatsapp_token"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "whatsapp_phone_number_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone Number ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "whatsapp_token",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Access Token",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ghkx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "v19.0",
+   "fieldname": "whatsapp_api_version",
+   "fieldtype": "Data",
+   "label": "API Version",
+   "reqd": 1
+  },
+  {
+   "fieldname": "whatsapp_business_id",
+   "fieldtype": "Data",
+   "label": "Business ID"
+  },
+  {
+   "fieldname": "whatsapp_app_id",
+   "fieldtype": "Data",
+   "label": "App ID"
+  },
+  {
+   "default": "https://graph.facebook.com",
+   "fieldname": "whatsapp_api_url",
+   "fieldtype": "Data",
+   "label": "URL"
+  },
+  {
+   "fieldname": "complete_url",
+   "fieldtype": "Data",
+   "is_virtual": 1,
+   "label": "Complete URL",
+   "options": "f\"{doc.whatsapp_api_url}/{doc.whatsapp_api_version}/{doc.whatsapp_phone_number_id}/messages\"",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-07-09 10:46:47.731614",
+ "modified_by": "Administrator",
+ "module": "Whatsapp Messaging",
+ "name": "WhatsApp Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
