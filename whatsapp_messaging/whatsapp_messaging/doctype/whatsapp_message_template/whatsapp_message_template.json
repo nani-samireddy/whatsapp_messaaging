@@ -5,17 +5,78 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_9rif"
+  "basics_section",
+  "template_name",
+  "column_break_ldrj",
+  "template_type",
+  "text_template_section",
+  "text_template_text_message",
+  "test",
+  "text_template_fields",
+  "document_template_section",
+  "document"
  ],
  "fields": [
   {
-   "fieldname": "section_break_9rif",
-   "fieldtype": "Section Break"
+   "fieldname": "basics_section",
+   "fieldtype": "Section Break",
+   "label": "Basics"
+  },
+  {
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ldrj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "template_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "text\ndocument\naudio\nimage\nvideo\nsticker\nlocation\ncontacts\ninteractive\nlist"
+  },
+  {
+   "depends_on": "eval:doc.template_type=='text';",
+   "fieldname": "text_template_section",
+   "fieldtype": "Section Break",
+   "label": "Text Template"
+  },
+  {
+   "depends_on": "eval:doc.template_type=='document';",
+   "fieldname": "document_template_section",
+   "fieldtype": "Section Break",
+   "label": "Document Template"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Attach",
+   "label": "Document"
+  },
+  {
+   "fieldname": "text_template_fields",
+   "fieldtype": "Table",
+   "label": "Fields",
+   "options": "Whatsapp Message Template Field"
+  },
+  {
+   "fieldname": "text_template_text_message",
+   "fieldtype": "Long Text",
+   "label": "Message"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Data",
+   "label": "Test",
+   "options": "One\nTwo\nThree"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-09 11:02:14.291852",
+ "modified": "2024-07-20 11:51:18.941382",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

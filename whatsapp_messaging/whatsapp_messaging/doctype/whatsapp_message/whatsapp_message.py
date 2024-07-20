@@ -13,8 +13,11 @@ class WhatsAppMessage(Document):
         message = self.message
         try:
             # Send the message
-            send_whatsapp_message(to, message)
-            self.status = "Sent"
+            if ( send_whatsapp_message(to, message) ):
+                self.status = "Sent"
+            else:
+                self.status = "Failed"
+
         except Exception as e:
             self.status = "Failed"
             frappe.throw("Failed to send the message.")

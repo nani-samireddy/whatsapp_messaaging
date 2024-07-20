@@ -31,7 +31,7 @@ def send_whatsapp_message(phone, message):
     }
 
     # Make the request
-    response = make_post_request(url, data=json.dumps(payload), headers=headers)
+    response = make_post_request(url, data=json.dumps(payload), headers=headers)response, "WhatsApp Response")
     return response
 
 def format_phone_number(phone):
