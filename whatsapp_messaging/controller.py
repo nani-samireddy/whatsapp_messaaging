@@ -3,13 +3,12 @@ import frappe
 from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 
-
 def send_whatsapp_message_on_create(doc, method=None):
 	# Get all the templates for the doctype
 	doc_type = doc.doctype
 
 	# return if the doctype is Template
-	if doc_type == "WhatsApp Message Template" or doc_type == "WhatsApp Message Template Field":
+	if doc_type == "WhatsApp Message Template" or doc_type == "WhatsApp Message Template Field" or doc_type == "WhatsApp Message":
 		return
 
 	templates = frappe.get_all("WhatsApp Message Template", filters={"template_doctype": doc_type, "template_event": "Create"}, fields=["name"])
@@ -18,6 +17,10 @@ def send_whatsapp_message_on_create(doc, method=None):
 	if not templates:
 		return
 
+	# Parse the templates and send the message
+	parse_templates_and_send_whatsapp_message(doc, templates)
+
+def parse_templates_and_send_whatsapp_message(doc, templates):
 	# Get the message for each template and fill the placeholders.
 	for template in templates:
 		# Get the full doc.
@@ -29,10 +32,36 @@ def send_whatsapp_message_on_create(doc, method=None):
 
 		# Fill the placeholders
 		message = fill_placeholders(message_template, doc, text_template_fields)
-		
 
+		# Get the recipients
+		recipients = get_template_recipients(full_template_doc, doc)
 
+		# Send the message to each recipient
+		for recipient in recipients:
+			send_whatsapp_message(recipient, message)
 
+def get_template_recipients(template, doc):
+	recipients = []
+	# Get recipients from template_doc_type if the recipient type is "Field" or "Field+Group" and phone_number_field_name is set.
+	if template.recipient_type == "Field" or template.recipient_type == "Field+Group":
+		if template.phone_number_field_name:
+			recipients.append(doc.get(template.phone_number_field_name))
+
+	# Get the recipients from the template_static_recipients child table if the recipient type is "Group" or "Field+Group"
+	if template.recipient_type == "Group" or template.recipient_type == "Field+Group":
+		# Check if the template has any static recipients
+		if template.template_static_recipients:
+			group_recipients = template.get("template_static_recipients")
+			for recipient in group_recipients:
+				recipients.append(recipient.phone_number)
+
+	# Format the phone numbers (remove the + sign and - sign)
+	recipients = [format_phone_number(phone) for phone in recipients]
+
+	# remove duplicates
+	recipients = list(set(recipients))
+
+	return recipients
 
 def fill_placeholders(message_template, doc, text_template_fields):
 
@@ -53,7 +82,6 @@ def fill_placeholders(message_template, doc, text_template_fields):
 			case _:
 				pass
 	return message_template
-
 
 def send_whatsapp_message(phone, message):
 	settings = frappe.get_doc("WhatsApp Settings")
@@ -86,8 +114,9 @@ def send_whatsapp_message(phone, message):
 	response = make_post_request(url, data=json.dumps(payload), headers=headers)
 	return response
 
-
 def format_phone_number(phone):
 	if phone.startswith("+"):
 		phone = phone[1:]
+	if "-" in phone:
+		phone = phone.replace("-", "")
 	return phone
