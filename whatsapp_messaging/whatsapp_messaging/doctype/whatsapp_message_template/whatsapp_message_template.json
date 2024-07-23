@@ -1,17 +1,22 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:{template_name}",
  "creation": "2024-07-09 11:02:14.291852",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "basics_section",
   "template_name",
+  "template_doctype",
+  "template_button_label",
+  "recipient_type",
   "column_break_ldrj",
   "template_type",
+  "template_event",
+  "phone_number_field_name",
   "text_template_section",
   "text_template_text_message",
-  "test",
   "text_template_fields",
   "document_template_section",
   "document"
@@ -68,18 +73,46 @@
    "label": "Message"
   },
   {
-   "fieldname": "test",
+   "fieldname": "template_doctype",
+   "fieldtype": "Link",
+   "label": "DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template_event",
+   "fieldtype": "Select",
+   "label": "Event",
+   "options": "Create\nUpdate\nUpdate Field\nDelete\nCustom",
+   "reqd": 1
+  },
+  {
+   "default": "Send Message",
+   "fieldname": "template_button_label",
    "fieldtype": "Data",
-   "label": "Test",
-   "options": "One\nTwo\nThree"
+   "label": "Button Label"
+  },
+  {
+   "default": "Field",
+   "fieldname": "recipient_type",
+   "fieldtype": "Select",
+   "label": "Recipient Type",
+   "options": "Field\nGroup\nDynamic group"
+  },
+  {
+   "depends_on": "eval:doc.recipient_type===\"Field\"||doc.recipient_type===\"Dynamic\"",
+   "fieldname": "phone_number_field_name",
+   "fieldtype": "Select",
+   "label": "Select the field"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-20 11:51:18.941382",
+ "modified": "2024-07-23 10:58:12.024948",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
