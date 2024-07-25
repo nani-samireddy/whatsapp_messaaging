@@ -124,7 +124,10 @@ app_license = "mit"
 
 doc_events = {
 	"*": {
-		"before_insert": "whatsapp_messaging.controller.send_whatsapp_message_on_create",
+		"before_insert": "whatsapp_messaging.controller.whatsapp_messaging_on_create_handler",
+		"on_change": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
+		"on_trash": "whatsapp_messaging.controller.whatsapp_messaging_on_delete_handler",
+		"on_update": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
 	}
 }
 

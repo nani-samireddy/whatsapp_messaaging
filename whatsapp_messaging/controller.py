@@ -3,8 +3,32 @@ import frappe
 from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 
-def send_whatsapp_message_on_create(doc, method=None):
-	# Get all the templates for the doctype
+def whatsapp_messaging_on_custom_trigger_handler(doc, method=None):
+	'''This function is called when the custom trigger is triggered'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_on_delete_handler(doc, method=None):
+	'''This function is called when the document is deleted'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_on_submit_handler(doc, method=None):
+	'''This function is called when the document is submitted'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_on_field_update_handler(doc, method=None):
+	'''This function is called when the field is updated'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_on_update_handler(doc, method=None):
+	'''This function is called when the document is updated'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_on_create_handler(doc, method=None):
+	'''This function is called when the document is created'''
+	whatsapp_messaging_send_message_handler(doc, method)
+
+def whatsapp_messaging_send_message_handler(doc, method=None):
+	 # Get all the templates for the doctype
 	doc_type = doc.doctype
 
 	# return if the doctype is Template

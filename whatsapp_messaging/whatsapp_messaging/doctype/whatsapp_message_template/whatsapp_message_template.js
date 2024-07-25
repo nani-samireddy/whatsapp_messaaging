@@ -76,12 +76,18 @@ frappe.ui.form.on("WhatsApp Message Template", {
 		});
 
 		// Add phone number fields of template_doctype to phone_number_field_name as options
-		update_phone_number_field_options(frm, frm.doc.template_doctype, ["Phone"]);
+		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'phone_number_field_name', ["Phone"]);
+
+		// Update the target field options.
+		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'template_target_field');
 	},
 
 	refresh: function (frm) {
 		// Add phone number fields of template_doctype to phone_number_field_name as options
-		update_phone_number_field_options(frm, frm.doc.template_doctype, ["Phone"]);
+		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'phone_number_field_name', ["Phone"]);
+
+		// Update the target field options.
+		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'template_target_field');
 
 	},
 
@@ -191,11 +197,13 @@ frappe.ui.form.on("Whatsapp Message Template Field", {
  *
  * @param {Object} frm - The form object.
  * @param {String} doctype - The doctype to fetch the fields from.
+ * @param {String} target_field_name - The target field name to update the options.
  * @param {Array} input_fieldtypes - The input field types to filter the fields.
  */
-function update_phone_number_field_options(
+function update_parent_doc_field_options(
 	frm,
 	doctype,
+	target_field_name,
 	input_fieldtypes = [],
 ) {
 	// Add default input field types.
@@ -234,8 +242,8 @@ function update_phone_number_field_options(
 		// Use fieldname as value.
 		options = input_fields.map((field) => field.fieldname);
 
-		frm.fields_dict["phone_number_field_name"].df.options = options;
-		frm.fields_dict["phone_number_field_name"].refresh();
+		frm.fields_dict[target_field_name].df.options = options;
+		frm.fields_dict[target_field_name].refresh();
 	});
 
 	return options;

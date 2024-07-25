@@ -11,10 +11,11 @@
   "template_doctype",
   "template_button_label",
   "recipient_type",
+  "phone_number_field_name",
   "column_break_ldrj",
   "template_type",
   "template_event",
-  "phone_number_field_name",
+  "template_target_field",
   "template_static_recipients",
   "text_template_section",
   "text_template_text_message",
@@ -104,7 +105,7 @@
    "depends_on": "eval:doc.recipient_type===\"Field\"||doc.recipient_type===\"Field+Group\"",
    "fieldname": "phone_number_field_name",
    "fieldtype": "Select",
-   "label": "Select the field"
+   "label": "Phone Number Field"
   },
   {
    "depends_on": "eval:doc.recipient_type==\"Group\"||doc.recipient_type==\"Field+Group\"",
@@ -112,11 +113,17 @@
    "fieldtype": "Table",
    "label": "Static Recipients",
    "options": "WhatsApp Static Recipient"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Update Field'",
+   "fieldname": "template_target_field",
+   "fieldtype": "Select",
+   "label": "Target Field"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-23 21:58:27.186664",
+ "modified": "2024-07-25 23:03:21.130988",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",
