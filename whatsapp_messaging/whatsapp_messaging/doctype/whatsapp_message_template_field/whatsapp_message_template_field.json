@@ -54,7 +54,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "This Doc",
    "fieldname": "field_type",
    "fieldtype": "Select",
    "in_filter": 1,
@@ -62,8 +61,7 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Type",
-   "options": "This Doc\nOther Doc\nStatic",
-   "reqd": 1
+   "options": "This Doc\nOther Doc\nStatic"
   },
   {
    "fieldname": "column_break_vnvd",
@@ -83,7 +81,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-23 10:12:32.377720",
+ "modified": "2024-07-25 21:23:48.279001",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "Whatsapp Message Template Field",
