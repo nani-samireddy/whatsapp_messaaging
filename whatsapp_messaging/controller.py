@@ -9,22 +9,27 @@ def whatsapp_messaging_on_custom_trigger_handler(doc, method=None):
 
 def whatsapp_messaging_on_delete_handler(doc, method=None):
 	'''This function is called when the document is deleted'''
-	whatsapp_messaging_send_message_handler(doc, method)
+	frappe.msgprint("Document Deleted " + doc.name)
+	# whatsapp_messaging_send_message_handler(doc, method)
 
 def whatsapp_messaging_on_submit_handler(doc, method=None):
 	'''This function is called when the document is submitted'''
-	whatsapp_messaging_send_message_handler(doc, method)
+	frappe.msgprint("Document Submitted " + doc.name)
+	# whatsapp_messaging_send_message_handler(doc, method)
 
 def whatsapp_messaging_on_field_update_handler(doc, method=None):
 	'''This function is called when the field is updated'''
-	whatsapp_messaging_send_message_handler(doc, method)
+	frappe.msgprint("Field Updated " + doc.name)
+	# whatsapp_messaging_send_message_handler(doc, method)
 
 def whatsapp_messaging_on_update_handler(doc, method=None):
 	'''This function is called when the document is updated'''
-	whatsapp_messaging_send_message_handler(doc, method)
+	frappe.msgprint("Document Updated " + doc.name)
+	# whatsapp_messaging_send_message_handler(doc, method)
 
 def whatsapp_messaging_on_create_handler(doc, method=None):
 	'''This function is called when the document is created'''
+	# frappe.msgprint("Document Created " + doc.name)
 	whatsapp_messaging_send_message_handler(doc, method)
 
 def whatsapp_messaging_send_message_handler(doc, method=None):
