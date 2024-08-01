@@ -17,9 +17,13 @@
   });
   function addCustomButtons(frm, templates) {
     for (const template in templates) {
-      frm.add_custom_button(templates[template].label, function() {
-        sendWhatsAppMessage(frm, templates[template]);
-      }, __("WhatsApp Messaging"));
+      frm.add_custom_button(
+        templates[template].label,
+        function() {
+          sendWhatsAppMessage(frm, templates[template]);
+        },
+        __("WhatsApp Messaging")
+      );
     }
   }
   function sendWhatsAppMessage(frm, template) {
@@ -32,13 +36,9 @@
       },
       callback: function(response) {
         if (response.message) {
-          var message = response.message;
-          var phone = frm.doc.phone;
-          var url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-          window.open(url, "_blank");
         }
       }
     });
   }
 })();
-//# sourceMappingURL=whatsapp_messaging.bundle.EXKUYMSP.js.map
+//# sourceMappingURL=whatsapp_messaging.bundle.Z6CAJH52.js.map
