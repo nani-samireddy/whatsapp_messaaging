@@ -3,9 +3,18 @@ import frappe
 from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 
-def whatsapp_messaging_on_custom_trigger_handler(doc, method=None):
+@frappe.whitelist()
+def whatsapp_messaging_on_custom_trigger_handler(template_name, doctype, docname):
 	'''This function is called when the custom trigger is triggered'''
-	whatsapp_messaging_send_message_handler(doc, method)
+	# Check if the template, doctype and docname are provided
+	if not template_name or not doctype or not docname:
+	    frappe.throw("Template, Doctype and Docname are required")
+
+	# Get the document
+	doc = frappe.get_doc(doctype, docname)
+
+	# Parse the template and send the message
+	parse_single_template_and_send_whatsapp_message(doc, template_name)
 
 def whatsapp_messaging_on_delete_handler(doc, method=None):
 	'''This function is called when the document is deleted'''
@@ -52,22 +61,25 @@ def whatsapp_messaging_send_message_handler(doc, method=None):
 def parse_templates_and_send_whatsapp_message(doc, templates):
 	# Get the message for each template and fill the placeholders.
 	for template in templates:
-		# Get the full doc.
-		full_template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
-		message_template = full_template_doc.text_template_text_message
+	    # parse the template and send the message
+		parse_single_template_and_send_whatsapp_message(doc, template.name)
 
-		# Get all the fields for the template
-		text_template_fields = full_template_doc.get("text_template_fields")
+def parse_single_template_and_send_whatsapp_message(doc, template_name):
+    full_template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
+    message_template = full_template_doc.text_template_text_message
 
-		# Fill the placeholders
-		message = fill_placeholders(message_template, doc, text_template_fields)
+    # Get all the fields for the template
+    text_template_fields = full_template_doc.get("text_template_fields")
 
-		# Get the recipients
-		recipients = get_template_recipients(full_template_doc, doc)
+    # Fill the placeholders
+    message = fill_placeholders(message_template, doc, text_template_fields)
 
-		# Send the message to each recipient
-		for recipient in recipients:
-			send_whatsapp_message(recipient, message)
+    # Get the recipients
+    recipients = get_template_recipients(full_template_doc, doc)
+
+    # Send the message to each recipient
+    for recipient in recipients:
+        send_whatsapp_message(recipient, message)
 
 def get_template_recipients(template, doc):
 	recipients = []

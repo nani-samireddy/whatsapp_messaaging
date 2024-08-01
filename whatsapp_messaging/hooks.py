@@ -124,7 +124,7 @@ app_include_js = ["whatsapp_messaging.bundle.js"]
 
 doc_events = {
 	"*": {
-		"before_insert": "whatsapp_messaging.controller.whatsapp_messaging_on_create_handler",
+		# "before_insert": "whatsapp_messaging.controller.whatsapp_messaging_on_create_handler",
 		# "on_change": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
 		# "on_trash": "whatsapp_messaging.controller.whatsapp_messaging_on_delete_handler",
 		# "on_update": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
@@ -227,4 +227,3 @@ doc_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
