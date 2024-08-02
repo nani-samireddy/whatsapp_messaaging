@@ -2,7 +2,6 @@ import json
 import frappe
 from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
-
 # Internal imports
 from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
 
@@ -67,7 +66,7 @@ def parse_templates_and_send_whatsapp_message(doc, templates):
 
 	# Get the message for each template and fill the placeholders.
 	for template in templates:
-     
+
 		# Check if the template event is Update Field
 		if template.template_event == "Update Field":
 			# Get the field name from the template
@@ -168,7 +167,7 @@ def send_whatsapp_message(phone, message):
 		"body" : message
 	  }
 	}
-
+	
 	# Make the request
 	response = make_post_request(url, data=json.dumps(payload), headers=headers)
 	return response

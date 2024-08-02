@@ -1,3 +1,5 @@
+import frappe
+
 app_name = "whatsapp_messaging"
 app_title = "Whatsapp Messaging"
 app_publisher = "nani-samireddy"
@@ -128,13 +130,11 @@ doc_events = {
         "after_insert": "whatsapp_messaging.controller.ws_handle_on_create",
         "on_trash": "whatsapp_messaging.controller.ws_handle_on_trash",
         "on_submit": "whatsapp_messaging.controller.ws_handle_on_submit",
-        # "on_change": "your_app.api.patient.on_change"
-		# "before_insert": "whatsapp_messaging.controller.whatsapp_messaging_on_create_handler",
-		# "on_change": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
-		# "on_trash": "whatsapp_messaging.controller.whatsapp_messaging_on_delete_handler",
-		# "on_update": "whatsapp_messaging.controller.whatsapp_messaging_on_update_handler",
+        "on_cancel": "whatsapp_messaging.controller.ws_handle_on_cancel"
+        
 	}
 }
+
 
 # Scheduled Tasks
 # ---------------
