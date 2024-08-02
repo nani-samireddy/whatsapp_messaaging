@@ -3,12 +3,15 @@ import frappe
 from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 
+# Internal imports
+from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
+
 @frappe.whitelist()
 def whatsapp_messaging_on_custom_trigger_handler(template_name, doctype, docname):
 	'''This function is called when the custom trigger is triggered'''
 	# Check if the template, doctype and docname are provided
 	if not template_name or not doctype or not docname:
-	    frappe.throw("Template, Doctype and Docname are required")
+		frappe.throw("Template, Doctype and Docname are required")
 
 	# Get the document
 	doc = frappe.get_doc(doctype, docname)
@@ -16,41 +19,43 @@ def whatsapp_messaging_on_custom_trigger_handler(template_name, doctype, docname
 	# Parse the template and send the message
 	parse_single_template_and_send_whatsapp_message(doc, template_name)
 
-def whatsapp_messaging_on_delete_handler(doc, method=None):
+def ws_handle_on_cancel(doc, method=None):
 	'''This function is called when the document is deleted'''
-	frappe.msgprint("Document Deleted " + doc.name)
-	# whatsapp_messaging_send_message_handler(doc, method)
+	whatsapp_messaging_send_message_handler(doc, ["Cancel"])
 
-def whatsapp_messaging_on_submit_handler(doc, method=None):
+def ws_handle_on_trash(doc, method=None):
+	'''This function is called when the document is deleted'''
+	whatsapp_messaging_send_message_handler(doc, ["Delete"])
+
+def ws_handle_on_submit(doc, method=None):
 	'''This function is called when the document is submitted'''
-	frappe.msgprint("Document Submitted " + doc.name)
-	# whatsapp_messaging_send_message_handler(doc, method)
+	whatsapp_messaging_send_message_handler(doc, ["Submit"])
 
-def whatsapp_messaging_on_field_update_handler(doc, method=None):
-	'''This function is called when the field is updated'''
-	frappe.msgprint("Field Updated " + doc.name)
-	# whatsapp_messaging_send_message_handler(doc, method)
-
-def whatsapp_messaging_on_update_handler(doc, method=None):
+def ws_handle_on_update(doc, method=None):
 	'''This function is called when the document is updated'''
-	frappe.msgprint("Document Updated " + doc.name)
-	# whatsapp_messaging_send_message_handler(doc, method)
+	whatsapp_messaging_send_message_handler(doc, ["Update", "Update Field"])
 
-def whatsapp_messaging_on_create_handler(doc, method=None):
+def ws_handle_on_create(doc, method=None):
 	'''This function is called when the document is created'''
-	# frappe.msgprint("Document Created " + doc.name)
-	whatsapp_messaging_send_message_handler(doc, method)
+	whatsapp_messaging_send_message_handler(doc, ["Create"])
 
-def whatsapp_messaging_send_message_handler(doc, method=None):
-	 # Get all the templates for the doctype
-	doc_type = doc.doctype
+def whatsapp_messaging_send_message_handler(doc, event=[]):
 
-	# return if the doctype is Template
-	if doc_type == "WhatsApp Message Template" or doc_type == "WhatsApp Message Template Field" or doc_type == "WhatsApp Message":
+	# Check if the doc exists and event is provided
+	if not doc or not event:
 		return
 
-	templates = frappe.get_all("WhatsApp Message Template", filters={"template_doctype": doc_type, "template_event": "Create"}, fields=["name"])
+	# Get all the doctypes for which the templates are created
+	template_doctypes = get_template_doctypes()
 
+	# Check if the doctype is in the template_doctypes
+	if doc.doctype not in list(template_doctypes.keys()):
+		return
+
+	# Get all the templates for the doctype
+	doc_type = doc.doctype
+
+	templates = frappe.get_all("WhatsApp Message Template", filters={"template_doctype": doc_type, "template_event": ['in',event]}, fields=["name","template_event", "template_target_field"])
 	# If there are no templates, return
 	if not templates:
 		return
@@ -59,27 +64,40 @@ def whatsapp_messaging_send_message_handler(doc, method=None):
 	parse_templates_and_send_whatsapp_message(doc, templates)
 
 def parse_templates_and_send_whatsapp_message(doc, templates):
+
 	# Get the message for each template and fill the placeholders.
 	for template in templates:
-	    # parse the template and send the message
+     
+		# Check if the template event is Update Field
+		if template.template_event == "Update Field":
+			# Get the field name from the template
+			field_name = template.template_target_field
+			# Get the field value from the doc
+			field_value = doc.get(field_name)
+			# Get the previous value of the field
+			previous_value = doc.get_doc_before_save().get(field_name)
+			# If the field value is not changed, return
+			if field_value == previous_value:
+				continue
+		# parse the template and send the message
 		parse_single_template_and_send_whatsapp_message(doc, template.name)
 
 def parse_single_template_and_send_whatsapp_message(doc, template_name):
-    full_template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
-    message_template = full_template_doc.text_template_text_message
+	full_template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
+	message_template = full_template_doc.text_template_text_message
 
-    # Get all the fields for the template
-    text_template_fields = full_template_doc.get("text_template_fields")
+	# Get all the fields for the template
+	text_template_fields = full_template_doc.get("text_template_fields")
 
-    # Fill the placeholders
-    message = fill_placeholders(message_template, doc, text_template_fields)
+	# Fill the placeholders
+	message = fill_placeholders(message_template, doc, text_template_fields)
 
-    # Get the recipients
-    recipients = get_template_recipients(full_template_doc, doc)
+	# Get the recipients
+	recipients = get_template_recipients(full_template_doc, doc)
 
-    # Send the message to each recipient
-    for recipient in recipients:
-        send_whatsapp_message(recipient, message)
+	# Send the message to each recipient
+	for recipient in recipients:
+		send_whatsapp_message(recipient, message)
 
 def get_template_recipients(template, doc):
 	recipients = []

@@ -1,35 +1,60 @@
+$(document).on("app_ready", function () {
+	frappe.call({
+	  method:
+		"whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template.get_template_doctypes",
+	  callback: function (response) {
+		if (response.message) {
+		  var templates_details = response.message;
+		  $.each(Object.keys(templates_details), function (i, doctype) {
+			frappe.ui.form.on(doctype, "refresh", function (frm) {
+			  addCustomButtons(frm, templates_details[doctype]);
+			});
+		  });
+		}
+	  },
+	});
+  });
 
-// frappe.ui.form.on('*', {
-// 	setup: function (frm) {
-// 		console.log("Form setup");
-// 	},
-// 	refresh: function (frm) {
-// 		console.log("Form refresh");
-// 		// Skip if it's the Template doctype itself to prevent circular reference
-// 		if (frm.doc.doctype === 'WhatsApp Message Template') return;
+  function addCustomButtons(frm, templates) {
+	for (const template in templates) {
+	  frm.add_custom_button(
+		templates[template].label,
+		function () {
+		  sendWhatsAppMessage(frm, templates[template]);
+		},
+		__("WhatsApp Messaging"),
+	  );
+	}
+  }
 
-// 		// Fetch Template document where template_doctype equals the current Doctype
-// 		frappe.call({
-// 			method: 'frappe.client.get_list',
-// 			args: {
-// 				doctype: 'WhatsApp Message Template',
-// 				filters: {
-// 					'template_doctype': frm.doc.doctype
-// 				},
-// 				fields: ['name']
-// 			},
-// 			callback: function (response) {
-// 				console.log(response);
-// 				if (response.message && response.message.length > 0) {
-// 					// If a Template document exists, add a button
-// 					frm.add_custom_button(__('Apply Template'), function () {
-// 						// Define your button action here
-// 						frappe.msgprint(__('Button clicked!'));
-// 					}, __('Actions'));
-
-// 				}
-// 			}
-// 		});
-// 	}
-// });
-
+  function sendWhatsAppMessage(frm, template) {
+	frappe.call({
+	  method:
+		"whatsapp_messaging.controller.whatsapp_messaging_on_custom_trigger_handler",
+	  args: {
+		template_name: template.name,
+		doctype: frm.doctype,
+		docname: frm.doc.name,
+	  },
+	  success: function (response) {
+		if (response.message) {
+		  // Show success message
+		  frappe.msgprint({
+			title: __("Success"),
+			message: __("Message sent successfully"),
+			indicator: "green",
+		  });
+		}
+	  },
+	  error: function (response) {
+		  // Show error message
+		  frappe.msgprint({
+			title: __("Error"),
+			message: __("Failed to send message"),
+			indicator: "red",
+		  });
+	  },
+	  freeze: true,
+	  freeze_message: __("Sending Message..."),
+	});
+  }

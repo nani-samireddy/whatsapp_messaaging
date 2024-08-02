@@ -85,7 +85,7 @@
    "fieldname": "template_event",
    "fieldtype": "Select",
    "label": "Event",
-   "options": "Create\nUpdate\nUpdate Field\nDelete\nCustom",
+   "options": "Create\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nCancel",
    "reqd": 1
   },
   {
@@ -123,7 +123,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-25 23:03:21.130988",
+ "modified": "2024-08-02 16:16:49.869058",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

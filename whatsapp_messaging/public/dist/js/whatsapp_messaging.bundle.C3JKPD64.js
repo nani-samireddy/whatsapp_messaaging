@@ -1,5 +1,5 @@
 (() => {
-  // ../whatsapp_messaging/whatsapp_messaging/public/js/whatsapp_messaging.bundle.js
+  // ../whatsapp_messaging/whatsapp_messaging/public/js/custom_buttons.js
   $(document).on("app_ready", function() {
     frappe.call({
       method: "whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template.get_template_doctypes",
@@ -34,11 +34,25 @@
         doctype: frm.doctype,
         docname: frm.doc.name
       },
-      callback: function(response) {
+      success: function(response) {
         if (response.message) {
+          frappe.msgprint({
+            title: __("Success"),
+            message: __("Message sent successfully"),
+            indicator: "green"
+          });
         }
-      }
+      },
+      error: function(response) {
+        frappe.msgprint({
+          title: __("Error"),
+          message: __("Failed to send message"),
+          indicator: "red"
+        });
+      },
+      freeze: true,
+      freeze_message: __("Sending Message...")
     });
   }
 })();
-//# sourceMappingURL=whatsapp_messaging.bundle.Z6CAJH52.js.map
+//# sourceMappingURL=whatsapp_messaging.bundle.C3JKPD64.js.map
