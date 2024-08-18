@@ -82,53 +82,65 @@ frappe.ui.form.on("WhatsApp Message Template", {
 		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'template_target_field');
 	},
 
-	refresh: function (frm) {
+	is_single: function (frm) {
+		// Add a custom button called Send Message if the is_single is checked.
+		if (frm.doc.is_single) {
+			frm.add_custom_button("Send Message", () => {
+				frappe.call({
+					method: "whatsapp_messaging.controller.ws_handle_on_single_template_trigger",
+
+					args: {
+						template_name: frm.doc.name,
+						doctype: frm.doc.template_doctype,
+					},
+					callback: (r) => {
+						if (r.message) {
+							frappe.msgprint(r.message);
+						}
+					},
+				});
+			});
+		}
+	},
+
+	// Trigger when the form is loaded or the child table is refreshed.
+	onload_post_render: function (frm) {
 		// Add phone number fields of template_doctype to phone_number_field_name as options
 		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'phone_number_field_name', ["Phone"]);
 
 		// Update the target field options.
 		update_parent_doc_field_options(frm, frm.doc.template_doctype, 'template_target_field');
 
-	},
-
-	// Trigger when the form is loaded or the child table is refreshed.
-	onload_post_render: function (frm) {
 		// Iterate over the child table rows and update the field options.
 		frm.doc.text_template_fields.forEach((row, index) => {
-			if (row.field_doc_type) {
+			// Check if the field doc type is set.
+			if ("field_doc_type" in row) {
+				// Update the field options for the child table.
 				update_child_table_field_options({ frm, cdn: row.name, fetch_from_doctype: row.field_doc_type, table_field_name: "text_template_fields", select_field_name: "field_name" });
-
-				switch (row.field_type) {
-					case "This Doc":
-						// Make the field_static_value read_only.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_static_value").df.read_only = 1;
-
-						// Make the field_doc_type read_only.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_doc_type").df.read_only = 1;
-						break;
-
-					case "Other Doc":
-						// Enable the field_doc_type.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_doc_type").df.read_only = 0;
-
-						// Disable the static value.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_static_value").df.read_only = 1;
-						break;
-
-					case "Static":
-						// Disable the field_doc_type.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_doc_type").df.read_only = 1;
-
-						// Disable the field_name.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_name").df.read_only = 1;
-
-						// Enable the field_static_value.
-						frm.fields_dict.text_template_fields.grid.grid_rows_by_docname[row.name].get_field("field_static_value").df.read_only = 0;
-						break;
-				}
 			}
-
 		});
+	},
+
+	// Trigger when the form is refreshed.
+	refresh: function (frm) {
+		// Add a custom button called Send Message if the is_single is checked.
+		if (frm.doc.is_single) {
+			frm.add_custom_button("Send Message", () => {
+				frappe.call({
+					method: "whatsapp_messaging.controller.ws_handle_on_single_template_trigger",
+
+					args: {
+						template_name: frm.doc.name,
+						doctype: frm.doc.template_doctype,
+					},
+					callback: (r) => {
+						if (r.message) {
+							frappe.msgprint(r.message);
+						}
+					},
+				});
+			});
+		}
 	},
 });
 
@@ -206,47 +218,23 @@ function update_parent_doc_field_options(
 	target_field_name,
 	input_fieldtypes = [],
 ) {
-	// Add default input field types.
-	if (input_fieldtypes.length === 0) {
-		input_fieldtypes = [
-			"Data",
-			"Select",
-			"Date",
-			"Datetime",
-			"Time",
-			"Currency",
-			"Int",
-			"Float",
-			"Check",
-			"Text",
-			"Small Text",
-			"Long Text",
-			"Link",
-			"Dynamic Link",
-			"Password",
-			"Phone",
-			"Read Only",
-			"Attach",
-			"Attach Image",
-		];
+	if (!doctype || !target_field_name) {
+		return;
 	}
-	let options = [];
-	frappe.model.with_doctype(doctype, () => {
-		let fields = frappe.get_meta(doctype).fields;
 
-		// Filter only input fields.
-		let input_fields = fields.filter((field) =>
-			input_fieldtypes.includes(field.fieldtype),
-		);
-
-		// Use fieldname as value.
-		options = input_fields.map((field) => field.fieldname);
-
-		frm.fields_dict[target_field_name].df.options = options;
-		frm.fields_dict[target_field_name].refresh();
+	// Get the field options from backend.
+	frappe.call(
+		"whatsapp_messaging.utils.get_input_fields",
+		{
+			doctype: doctype,
+			input_fieldtypes: input_fieldtypes,
+		},
+	).then((r) => {
+		if (r.message) {
+			frm.fields_dict[target_field_name].df.options = r.message;
+			frm.fields_dict[target_field_name].refresh();
+		}
 	});
-
-	return options;
 }
 
 /**
@@ -261,49 +249,26 @@ function update_parent_doc_field_options(
  * @param {Array} args.input_types - The input types to filter the fields.
  */
 function update_child_table_field_options({ frm, cdn, fetch_from_doctype, table_field_name, select_field_name, input_types = [] }) {
-	// Check if input_types is empty.
-	if (input_types.length === 0) {
-		input_types = [
-			"Data",
-			"Select",
-			"Date",
-			"Datetime",
-			"Time",
-			"Currency",
-			"Int",
-			"Float",
-			"Check",
-			"Text",
-			"Small Text",
-			"Long Text",
-			"Link",
-			"Dynamic Link",
-			"Password",
-			"Phone",
-			"Read Only",
-			"Attach",
-			"Attach Image",
-		];
+	if (!fetch_from_doctype || !table_field_name || !select_field_name) {
+		return;
 	}
 
-	// Check if the field_doc_type is set.
-	if (fetch_from_doctype) {
-		frappe.model.with_doctype(fetch_from_doctype, () => {
-			let fields = frappe.get_meta(fetch_from_doctype).fields;
-
-			// Filter only input fields.
-			let input_fields = fields.filter((field) =>
-				input_types.includes(field.fieldtype),
-			);
-
-			// Use fieldname as value.
-			let options = input_fields.map((field) => field.fieldname);
+	// Get the field options from the backend.
+	frappe.call(
+		"whatsapp_messaging.utils.get_input_fields",
+		{
+			doctype: fetch_from_doctype,
+			input_fieldtypes: input_types,
+		},
+	).then((r) => {
+		if (r.message) {
+			let options = r.message;
 
 			// Update field options for the child table.
 			frappe.utils.filter_dict(frm.fields_dict[table_field_name].grid.grid_rows_by_docname[cdn].docfields, { 'fieldname': select_field_name })[0].options = options;
 			frm.refresh();
-		});
-	}
+		}
+	});
 }
 
 /**

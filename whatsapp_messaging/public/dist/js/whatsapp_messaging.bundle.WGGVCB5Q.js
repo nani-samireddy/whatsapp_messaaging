@@ -28,7 +28,7 @@
   }
   function sendWhatsAppMessage(frm, template) {
     frappe.call({
-      method: "whatsapp_messaging.controller.whatsapp_messaging_on_custom_trigger_handler",
+      method: "whatsapp_messaging.controller.ws_handle_on_custom_trigger",
       args: {
         template_name: template.name,
         doctype: frm.doctype,
@@ -55,4 +55,4 @@
     });
   }
 })();
-//# sourceMappingURL=whatsapp_messaging.bundle.C3JKPD64.js.map
+//# sourceMappingURL=whatsapp_messaging.bundle.WGGVCB5Q.js.map

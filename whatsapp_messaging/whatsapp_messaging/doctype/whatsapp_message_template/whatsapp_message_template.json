@@ -12,6 +12,7 @@
   "template_button_label",
   "recipient_type",
   "phone_number_field_name",
+  "is_single",
   "column_break_ldrj",
   "template_type",
   "template_event",
@@ -82,11 +83,12 @@
    "reqd": 1
   },
   {
+   "default": "None",
+   "depends_on": "eval:doc.is_single!==1;",
    "fieldname": "template_event",
    "fieldtype": "Select",
    "label": "Event",
-   "options": "Create\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nCancel",
-   "reqd": 1
+   "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nCancel"
   },
   {
    "default": "Send Message",
@@ -119,11 +121,17 @@
    "fieldname": "template_target_field",
    "fieldtype": "Select",
    "label": "Target Field"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_single",
+   "fieldtype": "Check",
+   "label": "Is Single"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-02 16:16:49.869058",
+ "modified": "2024-08-18 21:44:37.796101",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

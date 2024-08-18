@@ -26,14 +26,14 @@
    "label": "Position"
   },
   {
-   "depends_on": "eval:doc.field_type!==\"Static\"",
    "fieldname": "field_name",
    "fieldtype": "Select",
    "in_filter": 1,
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Field Name"
+   "label": "Field Name",
+   "read_only_depends_on": "eval:doc.field_type===\"Static\""
   },
   {
    "fieldname": "column_break_uutx",
@@ -47,7 +47,8 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Doc Type",
-   "options": "DocType"
+   "options": "DocType",
+   "read_only_depends_on": "eval:doc.field_type!=='Other Doc'"
   },
   {
    "fieldname": "column_break_qfel",
@@ -68,20 +69,20 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.field_type===\"Static\"",
    "fieldname": "field_static_value",
    "fieldtype": "Data",
    "in_filter": 1,
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Static Value"
+   "label": "Static Value",
+   "read_only_depends_on": "eval:doc.field_type!=='Static';"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-25 21:23:48.279001",
+ "modified": "2024-08-08 18:25:08.132231",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "Whatsapp Message Template Field",
