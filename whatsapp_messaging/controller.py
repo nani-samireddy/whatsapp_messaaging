@@ -112,11 +112,15 @@ def whatsapp_messaging_send_message_handler(doc, event=[]):
 		if not templates:
 			return
 
+		# Schedule the job to send the message.
+		frappe.enqueue("whatsapp_messaging.controller.parse_templates_and_send_whatsapp_message", doc=doc, templates=templates)
+
 		# Parse the templates and send the message
-		parse_templates_and_send_whatsapp_message(doc, templates)
+		# parse_templates_and_send_whatsapp_message(doc, templates)
 	except Exception as e:
 		frappe.log_error(f"Error in whatsapp_messaging_send_message_handler: {str(e)}")
 
+@frappe.whitelist()
 def parse_templates_and_send_whatsapp_message(doc, templates):
 	'''This function is used to parse the templates and send the message'''
 	try:
