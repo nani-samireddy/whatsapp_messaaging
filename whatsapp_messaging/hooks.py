@@ -8,6 +8,15 @@ app_email = "nanisamireddy05@gmail.com"
 app_license = "mit"
 # required_apps = []
 
+# Fixtures
+# ----------
+fixtures = [
+	{
+		"doctype": "Custom HTML Block",
+  		"filters": [["name", "in", ("HMS Dashboard Profile")]]
+     }
+]
+
 # Includes in <head>
 # ------------------
 
@@ -131,7 +140,7 @@ doc_events = {
         "on_trash": "whatsapp_messaging.controller.ws_handle_on_trash",
         "on_submit": "whatsapp_messaging.controller.ws_handle_on_submit",
         "on_cancel": "whatsapp_messaging.controller.ws_handle_on_cancel"
-        
+
 	}
 }
 

@@ -48,20 +48,19 @@
    "options": "text\ndocument\naudio\nimage\nvideo\nsticker\nlocation\ncontacts\ninteractive\nlist"
   },
   {
-   "depends_on": "eval:doc.template_type=='text';",
    "fieldname": "text_template_section",
    "fieldtype": "Section Break",
-   "label": "Text Template"
+   "label": "Message Details"
   },
   {
-   "depends_on": "eval:doc.template_type=='document';",
+   "depends_on": "eval:doc.template_type!='text';",
    "fieldname": "document_template_section",
    "fieldtype": "Section Break",
-   "label": "Document Template"
+   "label": "Media"
   },
   {
    "fieldname": "document",
-   "fieldtype": "Attach",
+   "fieldtype": "Data",
    "label": "Document"
   },
   {
@@ -131,7 +130,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-18 21:44:37.796101",
+ "modified": "2024-09-28 00:36:18.726418",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

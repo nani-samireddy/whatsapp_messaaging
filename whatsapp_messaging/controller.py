@@ -4,6 +4,8 @@ from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 # Internal imports
 from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
+from whatsapp_messaging.message_controller import send_text_message
+
 
 @frappe.whitelist()
 def ws_handle_on_single_template_trigger(template_name, doctype):
@@ -161,9 +163,21 @@ def parse_single_template_and_send_whatsapp_message(doc, template):
 		# Get the recipients
 		recipients = get_template_recipients(template, doc)
 
+		# Get the template type.
+		template_type = template.template_type
+
 		# Send the message to each recipient
-		for recipient in recipients:
-			send_whatsapp_message(recipient, message)
+		# for recipient in recipients:
+		# 	send_text_message(recipient, message)
+
+		# send message based on the template type.
+		match template_type:
+			case "text":
+				send_text_message(recipients, message)
+			case "Media":
+				pass
+			case _:
+				pass
 	except Exception as e:
 		frappe.log_error(f"Error in parse_single_template_and_send_whatsapp_message: {str(e)}")
 
