@@ -2,22 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
-from whatsapp_messaging.controller import send_whatsapp_message
 from frappe.model.document import Document
 
 
 class WhatsAppMessage(Document):
-    def before_save(self):
-        # Get the to and message
-        to = self.to
-        message = self.message
-        try:
-            # Send the message
-            if ( send_whatsapp_message(to, message) ):
-                self.status = "Sent"
-            else:
-                self.status = "Failed"
-
-        except Exception as e:
-            self.status = "Failed"
-            frappe.throw("Failed to send the message.")
+    pass

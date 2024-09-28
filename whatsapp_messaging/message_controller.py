@@ -101,7 +101,6 @@ def send_bulk_messages(recipients= [], payload = {}):
     for recipient in recipients:
         payload['to'] = format_phone_number(recipient),
 
-        # frappe.msgprint(f"Payload: {payload}")
         # Send the message
         send_message(payload)
 
