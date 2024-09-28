@@ -4,44 +4,6 @@ from frappe.integrations.utils import make_post_request
 import requests
 
 
-supported_media_types = {
-    "audio": [
-        '.aac',
-        '.amr',
-        '.mp3',
-        '.m4a',
-        '.ogg',
-    ],
-    "image": [
-		'.jpg',
-		'.jpeg',
-		'.png',
-		'.gif',
-		'.webp',
-	],
-}
-
-mime_types = {
-    'aac': 'audio/aac',
-    'amr': 'audio/amr',
-    'mp3': 'audio/mpeg',
-    'm4a': 'audio/mp4',
-    'ogg': 'audio/ogg',
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'gif': 'image/gif',
-    'webp': 'image/webp',
-}
-
-@frappe.whitelist()
-def get_absolute_path(file_name):
-	if(file_name.startswith('/files/')):
-		file_path = f'{frappe.utils.get_bench_path()}/sites/{frappe.utils.get_site_base_path()[2:]}/public{file_name}'
-	if(file_name.startswith('/private/')):
-		file_path = f'{frappe.utils.get_bench_path()}/sites/{frappe.utils.get_site_base_path()[2:]}{file_name}'
-	return file_path
-
 def get_headers():
     settings = frappe.get_doc("WhatsApp Settings")
     if not settings.whatsapp_api_url or not settings.whatsapp_token or not settings.whatsapp_app_id or not settings.whatsapp_api_version:
@@ -64,46 +26,6 @@ def get_url(type="messages"):
     url = f"{settings.whatsapp_api_url}/{settings.whatsapp_api_version}/{settings.whatsapp_phone_number_id}/{type}"
 
     return url
-
-@frappe.whitelist()
-def upload_whatsapp_media(file):
-
-    if not file:
-        frappe.throw("Please provide a file to upload")
-
-	# Get the file static path
-    file_path = get_absolute_path(file)
-
-    file_name = file.split("/")[-1]
-
-    media_type = file_name.split(".")[-1]
-
-    if not media_type or not mime_types[media_type]:
-        frappe.throw(f"Media type {media_type} is not supported")
-
-
-    headers = get_headers()
-    url = get_url("media")
-
-    headers['content-type'] = 'multipart/form-data'
-
-    # read the file contents.
-    file_name = frappe.db.get_value("File", {"file_url": file})
-    file_content = frappe.get_doc("File", file_name).get_content()
-
-    payload = {
-        "file": (file_name, open(file_path, 'rb')),
-		"messaging_product": "whatsapp",
-		"type": mime_types[media_type]
-		}
-
-    # files = [
-	# 	('file', (file_name, open(file_path, 'rb'), mime_types[media_type]))
-	# ]
-
-
-    response = requests.post(url, headers=headers, data=payload)
-    frappe.msgprint(response.text)
 
 
 
@@ -158,7 +80,7 @@ def send_message(payload):
         frappe.log_error(f"Error in send_whatsapp_message: {str(e)}")
 
 
-def send_text_message(recipients= [], message = ""):
+def send_bulk_messages(recipients= [], payload = {}):
     """
     Send a text message to a list of recipients via WhatsApp.
 
@@ -173,19 +95,13 @@ def send_text_message(recipients= [], message = ""):
         send_text_message(["+1234567890"], "Hello, this is a test message.")
     """
 
-    if not recipients or not message:
+    if not recipients or not payload:
         frappe.throw("Please provide a recipient and a message")
 
     for recipient in recipients:
-        payload = {
-            "messaging_product": "whatsapp",
-            "to": format_phone_number(recipient),
-            "type": "text",
-            "text": {
-                "body": message
-            }
-        }
+        payload['to'] = format_phone_number(recipient),
 
+        # frappe.msgprint(f"Payload: {payload}")
         # Send the message
         send_message(payload)
 
@@ -215,10 +131,44 @@ def send_audio_message( recipients= [], message = "", media_id = ""):
             "to": format_phone_number(recipient),
             "type": "audio",
             "audio": {
-                "url": media_id,
+                "id": media_id,
                 "caption": message
             }
         }
 
         # Send the message
         send_message(payload)
+
+def send_document_message(recipients= [], message = "", media_id = ""):
+    """
+    Send a document message to a list of recipients via WhatsApp.
+
+    Args:
+        recipients (list): A list of recipient phone numbers.
+        message (str): The message to be sent.
+        document_url (str): The URL of the document to be sent.
+
+    Raises:
+        frappe.exceptions.ValidationError: If no recipients, message, or document_url is provided.
+
+    Example:
+        send_document_message(["+1234567890"], "Hello, this is a document message.", "https://example.com/document.pdf")
+    """
+
+    if not recipients or not message or not media_id:
+        frappe.throw("Please provide a recipient, a message, and a document URL")
+
+    for recipient in recipients:
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": format_phone_number(recipient),
+            "type": "document",
+            "document": {
+                "id": media_id,
+                "caption": message
+            }
+        }
+
+        # Send the message
+        send_message(payload)
+

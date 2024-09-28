@@ -103,6 +103,19 @@ frappe.ui.form.on("WhatsApp Message Template", {
 		}
 	},
 
+	media_attachment: function (frm) {
+		// If the media attachment is set, set the media type to "Media".
+		if (frm.doc.media_attachment) {
+			uploadMediaFileToWhatsApp(frm, frm.doc.media_attachment);
+		} else {
+			// Clear the media_id field.
+			frappe.model.set_value(frm.doctype, frm.docname, "media_id", "");
+
+			// Save the form.
+			frm.save('Save');
+		}
+	},
+
 	// Trigger when the form is loaded or the child table is refreshed.
 	onload_post_render: function (frm) {
 		// Add phone number fields of template_doctype to phone_number_field_name as options
@@ -299,4 +312,82 @@ function set_field_properties(frm, row) {
 	}
 
 	frm.fields_dict.text_template_fields.grid.refresh();
+}
+
+
+
+/**
+ * Uploads a media file to WhatsApp using the provided file name.
+ *
+ * This function first retrieves the file upload information from the server,
+ * then creates a Blob and File object from the response, and finally uploads
+ * the file to WhatsApp using the WhatsApp API.
+ *
+ * @param {Object} frm - The form object from which the function is called.
+ * @param {string} fileName - The name of the file to be uploaded.
+ * @returns {Promise<void>} - A promise that resolves when the file upload is complete.
+ */
+async function uploadMediaFileToWhatsApp(frm, fileName) {
+	await frappe.call({
+		method: "whatsapp_messaging.utils.wa_get_file_upload_info",
+		args: {
+			file_name: fileName
+		},
+		callback: async function (response) {
+			console.log(response.message);
+			if (!response.message) {
+				console.error("File not found");
+				return;
+			}
+
+			console.log("File upload info", response.message);
+
+			const fileBlob = new Blob([response.message['file']], { type: response.message['content_type'] });
+			const file = new File([fileBlob], fileName, { type: fileBlob.type });
+
+			// Create formData to upload the file to WhatsApp.
+			const formdata = new FormData();
+			formdata.append("messaging_product", "whatsapp");
+			formdata.append("file", file);
+
+			// Request options for WhatsApp API
+			const requestOptions = {
+				method: "POST",
+				body: formdata,
+				headers: {
+					"Authorization": `Bearer ${response.message['token']}`,
+				}
+			}
+
+			console.log("Request options", requestOptions);
+
+			for (var pair of formdata.entries()) {
+				console.log(pair[0] + ', ' + pair[1]);
+			}
+
+			try {
+
+				// Send the file to WhatsApp
+				await fetch(response.message['url'], requestOptions).then((response) => {
+					if (response.ok) {
+						// Update the media_id in the form
+						response.json().then((response) => {
+							frappe.model.set_value(frm.doctype, frm.docname, "media_id", response.id);
+							// Save the form
+							frm.save('Save');
+						});
+					} else {
+
+						// Clear the media_id in the form.
+						frappe.model.set_value(frm.doctype, frm.docname, "media_id", "");
+						// Save the form
+						frm.save('Save');
+					}
+				});
+			} catch (error) {
+				console.error("Error uploading file to WhatsApp", error);
+
+			}
+		}
+	});
 }

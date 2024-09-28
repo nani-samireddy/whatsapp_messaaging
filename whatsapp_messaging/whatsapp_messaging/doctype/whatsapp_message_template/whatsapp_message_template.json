@@ -22,7 +22,11 @@
   "text_template_text_message",
   "text_template_fields",
   "document_template_section",
-  "document"
+  "attachment_type",
+  "media_attachment",
+  "media_url",
+  "column_break_jwtt",
+  "media_id"
  ],
  "fields": [
   {
@@ -57,11 +61,6 @@
    "fieldname": "document_template_section",
    "fieldtype": "Section Break",
    "label": "Media"
-  },
-  {
-   "fieldname": "document",
-   "fieldtype": "Data",
-   "label": "Document"
   },
   {
    "fieldname": "text_template_fields",
@@ -126,11 +125,41 @@
    "fieldname": "is_single",
    "fieldtype": "Check",
    "label": "Is Single"
+  },
+  {
+   "fieldname": "column_break_jwtt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.attachment_type=='Upload';",
+   "fieldname": "media_id",
+   "fieldtype": "Data",
+   "label": "Media ID"
+  },
+  {
+   "depends_on": "eval:doc.attachment_type=='Upload';",
+   "fieldname": "media_attachment",
+   "fieldtype": "Attach",
+   "label": "File"
+  },
+  {
+   "default": "Upload",
+   "fieldname": "attachment_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "URL\nUpload"
+  },
+  {
+   "depends_on": "eval:doc.attachment_type=='URL';",
+   "fieldname": "media_url",
+   "fieldtype": "Data",
+   "label": "File URL",
+   "length": 500
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-28 00:36:18.726418",
+ "modified": "2024-09-28 17:08:46.040960",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

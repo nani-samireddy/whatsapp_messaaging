@@ -25,13 +25,12 @@
   {
    "fieldname": "wa_media_id",
    "fieldtype": "Data",
-   "label": "Media ID",
-   "read_only": 1
+   "label": "Media ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-27 11:55:18.862700",
+ "modified": "2024-09-28 11:55:38.792684",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Media",

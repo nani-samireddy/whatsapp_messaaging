@@ -4,7 +4,7 @@ from frappe.model.document import Document
 from frappe.integrations.utils import make_post_request
 # Internal imports
 from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
-from whatsapp_messaging.message_controller import send_text_message
+from whatsapp_messaging.message_controller import send_bulk_messages, send_audio_message, send_document_message
 
 
 @frappe.whitelist()
@@ -166,18 +166,45 @@ def parse_single_template_and_send_whatsapp_message(doc, template):
 		# Get the template type.
 		template_type = template.template_type
 
-		# Send the message to each recipient
-		# for recipient in recipients:
-		# 	send_text_message(recipient, message)
+		# Prepare the payload
+		payload = {}
+		payload['messaging_product'] = "whatsapp"
+
+		media = {}
+
+		if template_type != "text":
+			# Get the attchment_type
+			attachment_type = template.attachment_type
+
+			# If the attachment_type is URL, get the media_url
+			if attachment_type == "URL":
+				media["link"] = template.media_url
+			elif attachment_type == "Upload":
+				media["id"] = template.media_id
+			media["caption"] = message
 
 		# send message based on the template type.
 		match template_type:
 			case "text":
-				send_text_message(recipients, message)
-			case "Media":
-				pass
+				payload['type'] = "text"
+				payload['text'] = {
+					"body": message
+				}
+			case "audio":
+				payload['type'] = "audio"
+				payload['audio'] = media
+			case "image":
+				payload['type'] = "image"
+				payload['image'] = media
+			case "document":
+				payload['type'] = "document"
+				payload['document'] = media
 			case _:
 				pass
+
+		# Send the message
+		send_bulk_messages(recipients, payload)
+
 	except Exception as e:
 		frappe.log_error(f"Error in parse_single_template_and_send_whatsapp_message: {str(e)}")
 
