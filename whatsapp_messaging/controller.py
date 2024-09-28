@@ -1,10 +1,8 @@
-import json
 import frappe
-from frappe.model.document import Document
-from frappe.integrations.utils import make_post_request
 # Internal imports
 from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
-from whatsapp_messaging.message_controller import send_bulk_messages, send_audio_message, send_document_message
+from whatsapp_messaging.message_controller import send_bulk_messages
+from whatsapp_messaging.message_controller import format_phone_number
 
 
 @frappe.whitelist()
@@ -255,13 +253,3 @@ def fill_placeholders(message_template, doc, text_template_fields):
 		return message_template
 	except Exception as e:
 		frappe.log_error(f"Error in fill_placeholders: {str(e)}")
-
-def format_phone_number(phone):
-	try:
-		if phone.startswith("+"):
-			phone = phone[1:]
-		if "-" in phone:
-			phone = phone.replace("-", "")
-		return phone
-	except Exception as e:
-		frappe.log_error(f"Error in format_phone_number: {str(e)}")
