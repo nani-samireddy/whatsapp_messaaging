@@ -1,6 +1,7 @@
 import json
 import frappe
 from frappe.integrations.utils import make_post_request
+import frappe.utils
 import requests
 
 
@@ -75,9 +76,17 @@ def send_message(payload):
 
         # Make the request
         response = make_post_request(url, data=json.dumps(payload), headers=headers)
+
+        # Log the message if the response is 200
+        if response.get('messages'):
+            log_wa_message(payload, "Sent")
+        else:
+            log_wa_message(payload, "Failed")
         return response
     except Exception as e:
         frappe.log_error(f"Error in send_whatsapp_message: {str(e)}")
+        log_wa_message(payload, "Failed")
+
 
 
 def send_bulk_messages(recipients= [], payload = {}):
@@ -104,70 +113,29 @@ def send_bulk_messages(recipients= [], payload = {}):
         # Send the message
         send_message(payload)
 
+def log_wa_message( payload, status):
+    message = ""
+    media_link = ""
+    # Check if the payload is a text message.
+    if payload.get("type") == "text":
+        message = payload.get("text").get("body")
+    else:
+        message = payload.get(payload.get("type")).get("caption")
+        media_link = payload.get(payload.get("type")).get("link")
 
-def send_audio_message( recipients= [], message = "", media_id = ""):
-    """
-    Send an audio message to a list of recipients via WhatsApp.
+    # Get the recipient phone number and convert it to string
+    recipient = payload.get("to")[0]
 
-    Args:
-        recipients (list): A list of recipient phone numbers.
-        message (str): The message to be sent.
-        audio_url (str): The URL of the audio file to be sent.
+    # Create the WhatsApp Message Log document
+    log = frappe.get_doc({
+        "doctype": "WhatsApp Message Log",
+        "recipient": "+" + recipient,
+        "timestamp": frappe.utils.now(),
+        "message": message,
+        "type": payload.get("type"),
+        "media_link": media_link,
+        "status": status
+    })
 
-    Raises:
-        frappe.exceptions.ValidationError: If no recipients, message, or audio_url is provided.
-
-    Example:
-        send_audio_message(["+1234567890"], "Hello, this is an audio message.", "https://example.com/audio.mp3")
-    """
-
-    if not recipients or not message or not media_id:
-        frappe.throw("Please provide a recipient, a message, and an audio URL")
-
-    for recipient in recipients:
-        payload = {
-            "messaging_product": "whatsapp",
-            "to": format_phone_number(recipient),
-            "type": "audio",
-            "audio": {
-                "id": media_id,
-                "caption": message
-            }
-        }
-
-        # Send the message
-        send_message(payload)
-
-def send_document_message(recipients= [], message = "", media_id = ""):
-    """
-    Send a document message to a list of recipients via WhatsApp.
-
-    Args:
-        recipients (list): A list of recipient phone numbers.
-        message (str): The message to be sent.
-        document_url (str): The URL of the document to be sent.
-
-    Raises:
-        frappe.exceptions.ValidationError: If no recipients, message, or document_url is provided.
-
-    Example:
-        send_document_message(["+1234567890"], "Hello, this is a document message.", "https://example.com/document.pdf")
-    """
-
-    if not recipients or not message or not media_id:
-        frappe.throw("Please provide a recipient, a message, and a document URL")
-
-    for recipient in recipients:
-        payload = {
-            "messaging_product": "whatsapp",
-            "to": format_phone_number(recipient),
-            "type": "document",
-            "document": {
-                "id": media_id,
-                "caption": message
-            }
-        }
-
-        # Send the message
-        send_message(payload)
-
+	# Save the doc
+    log.insert(ignore_permissions=True)

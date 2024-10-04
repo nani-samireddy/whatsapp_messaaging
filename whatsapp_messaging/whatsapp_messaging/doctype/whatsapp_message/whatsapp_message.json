@@ -7,21 +7,16 @@
  "engine": "InnoDB",
  "field_order": [
   "message_details_section",
-  "to",
+  "recipients",
   "status",
-  "message"
+  "message",
+  "message_media"
  ],
  "fields": [
   {
    "fieldname": "message_details_section",
    "fieldtype": "Section Break",
    "label": "Message Details"
-  },
-  {
-   "description": "Mobile number with country code",
-   "fieldname": "to",
-   "fieldtype": "Data",
-   "label": "To"
   },
   {
    "fieldname": "message",
@@ -33,11 +28,22 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Failed\nSent"
+  },
+  {
+   "fieldname": "recipients",
+   "fieldtype": "Table",
+   "label": "Recipients",
+   "options": "WhatsApp Static Recipient"
+  },
+  {
+   "fieldname": "message_media",
+   "fieldtype": "Attach",
+   "label": "Media"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-20 11:18:38.308127",
+ "modified": "2024-10-02 17:20:55.734736",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message",
