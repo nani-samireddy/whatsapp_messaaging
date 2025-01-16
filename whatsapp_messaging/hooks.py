@@ -10,12 +10,7 @@ app_license = "mit"
 
 # Fixtures
 # ----------
-fixtures = [
-	{
-		"doctype": "Custom HTML Block",
-  		"filters": [["name", "in", ("HMS Dashboard Profile")]]
-     }
-]
+fixtures = []
 
 # Includes in <head>
 # ------------------
