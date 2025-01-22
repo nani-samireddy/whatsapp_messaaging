@@ -26,7 +26,8 @@
   "media_attachment",
   "media_url",
   "column_break_jwtt",
-  "media_id"
+  "media_id",
+  "wa_media_content_type"
  ],
  "fields": [
   {
@@ -57,7 +58,6 @@
    "label": "Message Details"
   },
   {
-   "depends_on": "eval:doc.template_type!='text';",
    "fieldname": "document_template_section",
    "fieldtype": "Section Break",
    "label": "Media"
@@ -155,11 +155,16 @@
    "fieldtype": "Data",
    "label": "File URL",
    "length": 500
+  },
+  {
+   "fieldname": "wa_media_content_type",
+   "fieldtype": "Data",
+   "label": "Content Type"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-28 17:08:46.040960",
+ "modified": "2025-01-17 10:59:14.593975",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

@@ -1,9 +1,14 @@
 import frappe
-# Internal imports
-from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import get_template_doctypes
-from whatsapp_messaging.message_controller import send_bulk_messages
-from whatsapp_messaging.message_controller import format_phone_number
+import json
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
+# Internal imports
+from whatsapp_messaging.message_controller import send_bulk_messages, get_headers, format_phone_number, get_url
+from whatsapp_messaging.utils import mime_type_to_message_type
+from frappe.utils.file_manager import get_file_path, get_file
+import mimetypes
+from frappe.integrations.utils import make_post_request
+from frappe.utils import get_request_session
 
 @frappe.whitelist()
 def ws_handle_on_single_template_trigger(template_name, doctype):
@@ -166,22 +171,26 @@ def parse_single_template_and_send_whatsapp_message(doc, template):
 		recipients = get_template_recipients(template, doc)
 
 		# Get the template type.
-		template_type = template.template_type
+		# template_type = template.template_type
+		template_type = "text"
+
+		# If the template has media, get the media type
+		if template.media_id and template.wa_media_content_type and template.media_attachment:
+			template_type = mime_type_to_message_type(template.wa_media_content_type)
 
 		# Prepare the payload
 		payload = {}
 		payload['messaging_product'] = "whatsapp"
+		payload['recipient_type'] = "individual"
 
 		media = {}
 
 		if template_type != "text":
-			# Get the attchment_type
-			attachment_type = template.attachment_type
-
 			# If the attachment_type is URL, get the media_url
-			if attachment_type == "URL":
+			if template.attachment_type == "URL":
 				media["link"] = template.media_url
-			elif attachment_type == "Upload":
+			elif template.attachment_type == "Upload":
+				frappe.log_error(f"Using upload_media_to_whatsapp")
 				media["id"] = template.media_id
 			media["caption"] = message
 
@@ -198,6 +207,9 @@ def parse_single_template_and_send_whatsapp_message(doc, template):
 			case "image":
 				payload['type'] = "image"
 				payload['image'] = media
+			case "video":
+				payload['type'] = "video"
+				payload['video'] = media
 			case "document":
 				payload['type'] = "document"
 				payload['document'] = media
@@ -257,3 +269,67 @@ def fill_placeholders(message_template, doc, text_template_fields):
 		return message_template
 	except Exception as e:
 		frappe.log_error(f"Error in fill_placeholders: {str(e)}")
+
+@frappe.whitelist()
+def get_template_doctypes():
+	cache_key = "template_doctypes_map"
+	doctypes = frappe.cache().get_value(cache_key)
+
+	if not doctypes:
+		# Query to get distinct template_doctype values from Templates
+		doctypes = frappe.db.get_all('WhatsApp Message Template', distinct=True, fields=['name', 'template_doctype', 'template_button_label'])
+
+		# Create a map with the template_doctype values as keys and document names as values
+		doctype_map = {}
+		for d in doctypes:
+			template_details = {'name': d.name, 'label': d.template_button_label}
+			if doctype_map.get(d.template_doctype):
+				doctype_map[d.template_doctype].append(template_details)
+			else:
+				doctype_map[d.template_doctype] = [template_details]
+
+		# Cache the result
+		frappe.cache().set_value(cache_key, doctype_map)
+		return doctype_map
+	return doctypes
+
+def upload_media_to_whatsapp(media_file, doc):
+	'''This function is used to upload media to WhatsApp'''
+	doc.media_id = "Upload media..."
+	doc.save()
+
+	# Get file
+	file_data = get_file(media_file)
+
+ 	# Get the headers and URL
+	headers = get_headers( "multipart/form-data" )
+	url = get_url("media")
+	mime_type = mimetypes.guess_type(media_file)[0]
+	# Set the media content type
+	doc.wa_media_content_type = mime_type
+	doc.save()
+	try:
+		payload = {
+			"file" : (file_data[0], file_data[1], mime_type),
+			"messaging_product": "whatsapp",
+			"type": mime_type
+		}
+		payload = MultipartEncoder(payload)
+		headers["Content-Type"] = payload.content_type
+		response = make_post_request(url, data=payload, headers=headers)
+
+		# If media id is present, save it to the doc
+		if response.get('id'):
+			doc.media_id = response.get('id')
+		else:
+			doc.media_id = "Failed to upload media"
+		doc.save()
+
+	except Exception as e:
+		frappe.log_error(f"Error in upload_media_to_whatsapp: {str(e)}")
+		doc.media_id = "Failed to upload media"
+		doc.save()
+
+
+
+

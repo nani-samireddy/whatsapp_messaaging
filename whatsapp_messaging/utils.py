@@ -36,6 +36,22 @@ def get_absolute_path(file_name):
         file_path = f'{frappe.utils.get_bench_path()}/sites/{frappe.utils.get_site_base_path()[2:]}{file_name}'
     return file_path
 
+@frappe.whitelist()
+def mime_type_to_message_type(mime_type):
+    if mime_type:
+        # Map MIME types to WhatsApp message types
+        if mime_type.startswith("image/"):
+            return "image"
+        elif mime_type.startswith("video/"):
+            return "video"
+        elif mime_type.startswith("audio/"):
+            return "audio"
+        else:
+            return "document"
+    else:
+        # Default to document if MIME type is unknown
+        return "document"
+
 
 @frappe.whitelist()
 def wa_get_file_upload_info(file_name):

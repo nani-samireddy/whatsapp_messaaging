@@ -2,7 +2,7 @@
   // ../whatsapp_messaging/whatsapp_messaging/public/js/custom_buttons.js
   $(document).on("app_ready", function() {
     frappe.call({
-      method: "whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template.get_template_doctypes",
+      method: "whatsapp_messaging.controller.get_template_doctypes",
       callback: function(response) {
         if (response.message) {
           var templates_details = response.message;
@@ -55,4 +55,4 @@
     });
   }
 })();
-//# sourceMappingURL=whatsapp_messaging.bundle.WGGVCB5Q.js.map
+//# sourceMappingURL=whatsapp_messaging.bundle.YQSVF7ZZ.js.map

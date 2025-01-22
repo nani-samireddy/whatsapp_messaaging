@@ -18,17 +18,20 @@ async function fetchFileFromFrappe(fileName, frm) {
 				file_name: fileName
 			},
 			callback: async function (response) {
-				console.log(response.message);
+				console.log("response", response.message);
 				if (!response.message) {
 					console.error("File not found");
 					return;
 				}
 
-
-
 				const fileBlob = new Blob([response.message['file']], { type: response.message['content_type'] });
 				const file = new File([fileBlob], fileName, { type: fileBlob.type });
-				console.log(file);
+
+				// Set the content type in the form
+				frm.set_value("wa_media_content_type", response.message['content_type']);
+				frm.save();
+				frm.reload_doc();
+
 				// Upload the file to WhatsApp
 				 await uploadToWhatsApp(
 					{
