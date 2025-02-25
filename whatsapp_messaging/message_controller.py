@@ -2,7 +2,6 @@ import json
 import frappe
 from frappe.integrations.utils import make_post_request
 import frappe.utils
-import requests
 
 @frappe.whitelist()
 def get_headers(content_type="application/json"):
@@ -52,7 +51,7 @@ def format_phone_number(phone):
 		frappe.log_error(f"Error in format_phone_number: {str(e)}")
 
 
-def send_message(payload):
+def send_message(payload, media_doc_name = ""):
 	"""
 	Sends a WhatsApp message using the provided payload.
 
@@ -63,6 +62,7 @@ def send_message(payload):
 	Args:
 		payload (dict): The message payload to be sent. This should be a dictionary
 						containing the necessary fields as per WhatsApp API requirements.
+		media_doc_name (str): The name of the media document to be attached to the message. Default is "".
 	Returns:
 		dict: The response from the WhatsApp API.
 	Raises:
@@ -79,9 +79,9 @@ def send_message(payload):
 
 		# Log the message if the response is 200
 		if response.get('messages'):
-			log_wa_message(payload, "Sent")
+			log_wa_message(payload, "Sent", media_doc_name)
 		else:
-			log_wa_message(payload, "Failed")
+			log_wa_message(payload, "Failed", media_doc_name)
 		return response
 	except Exception as e:
 		frappe.log_error(f"Error in send_whatsapp_message: {str(e)}")
@@ -89,7 +89,7 @@ def send_message(payload):
 
 
 
-def send_bulk_messages(recipients= [], payload = {}):
+def send_bulk_messages(recipients= [], payload = {}, media_doc_name = ""):
 	"""
 	Send a text message to a list of recipients via WhatsApp.
 
@@ -109,31 +109,31 @@ def send_bulk_messages(recipients= [], payload = {}):
 	for recipient in recipients:
 		payload['to'] = format_phone_number(recipient)
 		# Send the message
-		send_message(payload)
+		send_message(payload=payload, media_doc_name=media_doc_name)
 
-def log_wa_message( payload, status):
-	message = ""
-	media_link = ""
-	# Check if the payload is a text message.
-	if payload.get("type") == "text":
-		message = payload.get("text").get("body")
+def log_wa_message( payload, status, media_doc_name = ""):
+
+	# Get the Whatsapp Conversation doc with the phone number.
+	# If the conversation does not exist, create a new one.
+	conversation_name = frappe.db.exists("Whatsapp Conversation", {"recipient": payload.get("to")})
+	if conversation_name:
+		conversation = frappe.get_doc("Whatsapp Conversation", conversation_name)
 	else:
-		message = payload.get(payload.get("type")).get("caption")
-		media_link = payload.get(payload.get("type")).get("link")
-
-	# Get the recipient phone number and convert it to string
-	recipient = payload.get("to")[0]
-
-	# Create the WhatsApp Message Log document
-	log = frappe.get_doc({
-		"doctype": "WhatsApp Message Log",
-		"recipient": "+" + recipient,
-		"timestamp": frappe.utils.now(),
-		"message": message,
-		"type": payload.get("type"),
-		"media_link": media_link,
-		"status": status
+		conversation = frappe.get_doc({
+			"doctype": "Whatsapp Conversation",
+			"recipient": payload.get("to"),
+			"status": status
+		})
+		conversation.insert(ignore_permissions=True)
+		conversation.save()
+	# Create child doc for the Whatsapp Conversation field
+	new_conversation_row = conversation.append("conversations", {
+		"recipient": payload.get("to"),
+		"status": status,
+		"message_type": payload.get("type"),
+		"message": payload.get("type") == "text" and payload.get("text").get("body") or payload.get(payload.get("type")).get("caption"),
+		"media": media_doc_name
 	})
-
-	# Save the doc
-	log.insert(ignore_permissions=True)
+	new_conversation_row.insert(ignore_permissions=True)
+	new_conversation_row.save()
+	new_conversation_row.submit()

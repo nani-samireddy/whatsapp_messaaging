@@ -1,36 +1,94 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-09-27 11:42:33.440588",
+ "creation": "2025-01-03 16:48:30.152752",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "wa_media_attachment",
-  "column_break_toxh",
-  "wa_media_id"
+  "section_break_mxkr",
+  "column_break_kbch",
+  "media_type",
+  "media_url",
+  "document_type",
+  "media_attachment",
+  "media_id",
+  "content_type",
+  "caption"
  ],
  "fields": [
   {
-   "fieldname": "wa_media_attachment",
-   "fieldtype": "Attach",
-   "in_list_view": 1,
-   "label": "Attachment",
-   "not_nullable": 1,
-   "reqd": 1
+   "allow_in_quick_entry": 1,
+   "fieldname": "section_break_mxkr",
+   "fieldtype": "Section Break",
+   "label": "Media details"
   },
   {
-   "fieldname": "column_break_toxh",
+   "allow_in_quick_entry": 1,
+   "fieldname": "column_break_kbch",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "wa_media_id",
+   "allow_in_quick_entry": 1,
+   "fieldname": "media_id",
    "fieldtype": "Data",
    "label": "Media ID"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "caption",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Caption"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "content_type",
+   "fieldtype": "Data",
+   "label": "Content Type"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "URL\nUpload",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "eval:doc.media_type === 'URL';",
+   "fieldname": "media_url",
+   "fieldtype": "Data",
+   "label": "URL",
+   "mandatory_depends_on": "eval:doc.media_type === 'URL';"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "eval:doc.media_type === 'Upload';",
+   "fieldname": "media_attachment",
+   "fieldtype": "Attach",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "File",
+   "mandatory_depends_on": "eval:doc.media_type === 'Upload';"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "eval:doc.media_type === 'URL';",
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Media Type",
+   "mandatory_depends_on": "eval:doc.media_type === 'URL';",
+   "options": "audio\ndocument\nimage\nsticker\nvideo"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-28 11:55:38.792684",
+ "modified": "2025-02-19 20:41:48.455570",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Media",
@@ -49,7 +107,9 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

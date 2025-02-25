@@ -171,56 +171,66 @@ def parse_single_template_and_send_whatsapp_message(doc, template):
 		recipients = get_template_recipients(template, doc)
 
 		# Get the template type.
-		# template_type = template.template_type
 		template_type = "text"
 
-		# If the template has media, get the media type
-		if template.media_id and template.wa_media_content_type and template.media_attachment:
-			template_type = mime_type_to_message_type(template.wa_media_content_type)
+		# Check if the template has media.
+		if template.media:
+			media_doc = frappe.get_doc("WhatsApp Media", template.media)
+			[template_type, media_data] = process_whatsapp_media(media_doc)
 
 		# Prepare the payload
 		payload = {}
 		payload['messaging_product'] = "whatsapp"
 		payload['recipient_type'] = "individual"
 
-		media = {}
-
-		if template_type != "text":
-			# If the attachment_type is URL, get the media_url
-			if template.attachment_type == "URL":
-				media["link"] = template.media_url
-			elif template.attachment_type == "Upload":
-				frappe.log_error(f"Using upload_media_to_whatsapp")
-				media["id"] = template.media_id
-			media["caption"] = message
-
 		# send message based on the template type.
-		match template_type:
-			case "text":
-				payload['type'] = "text"
-				payload['text'] = {
-					"body": message
-				}
-			case "audio":
-				payload['type'] = "audio"
-				payload['audio'] = media
-			case "image":
-				payload['type'] = "image"
-				payload['image'] = media
-			case "video":
-				payload['type'] = "video"
-				payload['video'] = media
-			case "document":
-				payload['type'] = "document"
-				payload['document'] = media
-			case _:
-				pass
-
+		if template_type == "text":
+			payload["type"] = "text"
+			payload['text'] = {
+				"body": message
+			}
+		else:
+			payload["type"] = template_type
+			payload[template_type] = media_data[template_type]
+			payload[template_type]["caption"] = message
+		frappe.log_error(f"template.media type: {type(template.media)}")
 		# Send the message
-		send_bulk_messages(recipients, payload)
+		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media)
 
 	except Exception as e:
 		frappe.log_error(f"Error in parse_single_template_and_send_whatsapp_message: {str(e)}")
+
+def process_whatsapp_media(doc):
+	'''This function is used to process the WhatsApp media
+	#### Args:
+		doc (doc): The WhatsApp Media document
+
+  	Returns:
+		list: A list containing the document type and media data
+ 	'''
+	media_data = {}
+	try:
+		# Check if media type is URL or Upload
+		if doc.media_type == "URL":
+			# If the media type is URL, set the type and link
+			document_type = doc.document_type
+			media_data[document_type] = {
+				"link": doc.media_url,
+				"caption": doc.caption
+			}
+		elif doc.media_type == "Upload":
+			# If the media type is Upload, get the media_id, content_type.
+			document_type = mime_type_to_message_type(doc.content_type)
+			media_data[document_type] = {
+				"id": doc.media_id,
+				"caption": doc.caption
+			}
+
+		return [document_type, media_data]
+
+	except Exception as e:
+		frappe.log_error(f"Error in process_whatsapp_media: {str(e)}")
+		return ["text", media_data]
 
 def get_template_recipients(template, doc):
 	try:
@@ -305,8 +315,9 @@ def upload_media_to_whatsapp(media_file, doc):
 	headers = get_headers( "multipart/form-data" )
 	url = get_url("media")
 	mime_type = mimetypes.guess_type(media_file)[0]
+
 	# Set the media content type
-	doc.wa_media_content_type = mime_type
+	doc.content_type = mime_type
 	doc.save()
 	try:
 		payload = {
