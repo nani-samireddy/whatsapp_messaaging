@@ -1,0 +1,37 @@
+name: "Concept"
+description: "Propose a new idea or feature to implement"
+labels: ["enhancement", "discussion"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Title"
+      description: "Give a short, clear title for the idea."
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "Provide a detailed explanation of the idea or feature."
+    validations:
+      required: true
+
+  - type: textarea
+    id: key_features
+    attributes:
+      label: "Key Features"
+      description: "List the key features of this concept."
+      value: "- "
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "Define the conditions that must be met for this feature to be considered complete."
+      value: "- "
+    validations:
+      required: true

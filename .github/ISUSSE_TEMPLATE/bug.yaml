@@ -1,0 +1,52 @@
+name: "Bug Report"
+description: "Report a bug or issue in the WhatsApp Messaging integration"
+labels: ["bug"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Title"
+      description: "A brief title describing the bug."
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "Describe the bug and its impact."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Provide a step-by-step guide to reproduce the bug."
+      value: "1. "
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: "Expected Behavior"
+      description: "Describe what you expected to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: "Actual Behavior"
+      description: "Describe what actually happened."
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: "Environment Details"
+      description: "Provide details like Frappe version, OS, and API version."
+    validations:
+      required: false
