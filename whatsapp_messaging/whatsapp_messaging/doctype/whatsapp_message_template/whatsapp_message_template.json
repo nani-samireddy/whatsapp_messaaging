@@ -16,6 +16,12 @@
   "column_break_ldrj",
   "template_type",
   "template_event",
+  "schedule",
+  "status",
+  "interval",
+  "update_query_button",
+  "query_filters",
+  "filtered_records_html",
   "template_target_field",
   "template_static_recipients",
   "text_template_section",
@@ -76,7 +82,8 @@
    "fieldname": "template_event",
    "fieldtype": "Select",
    "label": "Event",
-   "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nCancel"
+   "options": "None\nCreate\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
+   "sort_options": 1
   },
   {
    "default": "Send Message",
@@ -126,11 +133,57 @@
    "fieldtype": "Link",
    "label": "Media",
    "options": "WhatsApp Media"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron'",
+   "fieldname": "interval",
+   "fieldtype": "Select",
+   "label": "Interval",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron'",
+   "options": "all\ndaily\nhourly\nweekly\nmonthly"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
+   "fieldname": "update_query_button",
+   "fieldtype": "Button",
+   "label": "Set Query"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
+   "fieldname": "query_filters",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Query Filters",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron'"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
+   "fieldname": "filtered_records_html",
+   "fieldtype": "HTML",
+   "label": "Records"
+  },
+  {
+   "default": "Pending",
+   "depends_on": "eval:doc.template_event==='Scheduled'",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nCompleted\nFailed",
+   "sort_options": 1
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Scheduled'",
+   "fieldname": "schedule",
+   "fieldtype": "Datetime",
+   "label": "schedule",
+   "mandatory_depends_on": "eval:doc.template_event==='Scheduled'",
+   "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
+   "sort_options": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 09:43:29.630535",
+ "modified": "2025-03-14 17:20:33.578035",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

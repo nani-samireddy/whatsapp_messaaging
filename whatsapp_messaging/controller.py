@@ -10,52 +10,76 @@ import mimetypes
 from frappe.integrations.utils import make_post_request
 from frappe.utils import get_request_session
 
+
+def ws_handle_scheduled_messages():
+	'''
+	This function checks for any scheduled messages with status "Pending" with date and time less than the current date and time.
+	'''
+	# Get all the Whatsapp Message Templates with status "Pending" and date and time less than the current date and time.
+	scheduled_messages_templates = frappe.get_all(
+     "WhatsApp Message Template",
+     filters={
+         "template_event": "Scheduled",
+         "status": ['in', ["Pending", "Failed"]],
+         "schedule": ("<=", frappe.utils.now())
+        },
+     fields=["name", "template_doctype", "query_filters", "template_target_field"]
+     )
+
+	# Iterate over the pending messages and send the messages.
+	for template in scheduled_messages_templates:
+		try:
+
+			# Get the documents based on the query filters
+			documents = frappe.get_all(template.template_doctype, filters=json.loads(template.query_filters).get("filters", []), fields=["name"])
+
+			# Iterate over the documents and send the messages
+			for doc in documents:
+				doc_instance = frappe.get_doc(template.template_doctype, doc.name)
+				parse_single_template_and_send_whatsapp_message(doc_instance, frappe.get_doc("WhatsApp Message Template", template.name))
+
+			# Update the status of the template to "Sent"
+			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
+			template_doc.status = "Completed"
+			template_doc.save()
+		except Exception as e:
+			frappe.log_error(f"Error in ws_handle_scheduled_messages: {str(e)}")
+			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
+			template_doc.status = "Failed"
+			template_doc.save()
+
+
 @frappe.whitelist()
 def ws_handle_on_single_template_trigger(template_name, doctype):
-	'''This function is called when the single template trigger is triggered'''
+	"""Handle single template trigger for all documents in a doctype."""
 	try:
-		# Check if the template and doctype are provided
 		if not template_name or not doctype:
 			frappe.throw("Template and Doctype are required")
 
-		# Get all the documents in that doc type.
 		documents = frappe.get_all(doctype, fields=["name"])
 
-		# If there are no documents, return
 		if not documents:
 			return
 
-		# Get the full template document.
-		full_template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
-
-		if not full_template_doc:
+		template = frappe.get_doc("WhatsApp Message Template", template_name)
+		if not template:
 			return
 
-		# Iterate over the documents and send messages.
 		for doc in documents:
-			# Get the document
-			doc = frappe.get_doc(doctype, doc.name)
-			# Parse the template and send the message
-			parse_single_template_and_send_whatsapp_message(doc, full_template_doc)
-
+			doc_instance = frappe.get_doc(doctype, doc.name)
+			parse_single_template_and_send_whatsapp_message(doc_instance, template)
 	except Exception as e:
 		frappe.log_error(f"Error in ws_handle_on_single_template_trigger: {str(e)}")
 
 @frappe.whitelist()
 def ws_handle_on_custom_trigger(template_name, doctype, docname):
-	'''This function is called when the custom trigger is triggered'''
+	"""Handle custom trigger for a specific document."""
 	try:
-		# Check if the template, doctype and docname are provided
 		if not template_name or not doctype or not docname:
-			frappe.throw("Template, Doctype and Docname are required")
+			frappe.throw("Template, Doctype, and Docname are required")
 
-		# Get the document
 		doc = frappe.get_doc(doctype, docname)
-
-		# Get the template
 		template = frappe.get_doc("WhatsApp Message Template", template_name)
-
-		# Parse the template and send the message
 		parse_single_template_and_send_whatsapp_message(doc, template)
 	except Exception as e:
 		frappe.log_error(f"Error in ws_handle_on_custom_trigger: {str(e)}")
@@ -97,106 +121,70 @@ def ws_handle_on_create(doc, method=None):
 		frappe.log_error(f"Error in ws_handle_on_create: {str(e)}")
 
 def whatsapp_messaging_send_message_handler(doc, event=[]):
+	"""Handles WhatsApp messaging events like Create, Update, Delete, etc."""
 	try:
-		# Check if the doc exists and event is provided
 		if not doc or not event:
 			return
 
-		# Get all the doctypes for which the templates are created
 		template_doctypes = get_template_doctypes()
-
-		# Check if the doctype is in the template_doctypes
-		if doc.doctype not in list(template_doctypes.keys()):
+		if doc.doctype not in template_doctypes:
 			return
 
-		# Get all the templates for the doctype
-		doc_type = doc.doctype
-
-		templates = frappe.get_all("WhatsApp Message Template", filters={"template_doctype": doc_type, "template_event": ['in',event], "is_single": 0}, fields=["name","template_event", "template_target_field"])
-		# If there are no templates, return
+		templates = frappe.get_all("WhatsApp Message Template",
+								   filters={"template_doctype": doc.doctype, "template_event": ['in', event], "is_single": 0},
+								   fields=["name", "template_event", "template_target_field"])
 		if not templates:
 			return
 
-		# Schedule the job to send the message.
 		frappe.enqueue("whatsapp_messaging.controller.parse_templates_and_send_whatsapp_message", doc=doc, templates=templates)
-
-		# Parse the templates and send the message
-		# parse_templates_and_send_whatsapp_message(doc, templates)
 	except Exception as e:
 		frappe.log_error(f"Error in whatsapp_messaging_send_message_handler: {str(e)}")
 
 @frappe.whitelist()
 def parse_templates_and_send_whatsapp_message(doc, templates):
-	'''This function is used to parse the templates and send the message'''
+	"""Parse multiple templates and send WhatsApp messages."""
 	try:
-		# Get the message for each template and fill the placeholders.
 		for template in templates:
-
-			# Check if the template event is Update Field
 			if template.template_event == "Update Field":
-				# Get the field name from the template
 				field_name = template.template_target_field
-
-				# Get the field value from the doc
 				field_value = doc.get(field_name)
-
-				# Get the previous value of the field
 				previous_value = doc.get_doc_before_save().get(field_name)
-
-				# If the field value is not changed, return
 				if field_value == previous_value:
 					continue
 
-			# Get the full template document.
-			full_template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
-
-			# parse the template and send the message
-			parse_single_template_and_send_whatsapp_message(doc, full_template_doc)
+			full_template = frappe.get_doc("WhatsApp Message Template", template.name)
+			parse_single_template_and_send_whatsapp_message(doc, full_template)
 	except Exception as e:
 		frappe.log_error(f"Error in parse_templates_and_send_whatsapp_message: {str(e)}")
 
 def parse_single_template_and_send_whatsapp_message(doc, template):
+	"""Parse a single template and send a WhatsApp message."""
 	try:
 		if not template or not doc:
 			return
-		message_template = template.text_template_text_message
 
-		# Get all the fields for the template
-		text_template_fields = template.get("text_template_fields")
-
-		# Fill the placeholders
-		message = fill_placeholders(message_template, doc, text_template_fields)
-
-		# Get the recipients
+		message = fill_placeholders(template.text_template_text_message, doc, template.get("text_template_fields"))
 		recipients = get_template_recipients(template, doc)
-
-		# Get the template type.
 		template_type = "text"
+		media_data = {}
 
-		# Check if the template has media.
 		if template.media:
 			media_doc = frappe.get_doc("WhatsApp Media", template.media)
-			[template_type, media_data] = process_whatsapp_media(media_doc)
+			template_type, media_data = process_whatsapp_media(media_doc)
 
-		# Prepare the payload
-		payload = {}
-		payload['messaging_product'] = "whatsapp"
-		payload['recipient_type'] = "individual"
+		payload = {
+			"messaging_product": "whatsapp",
+			"recipient_type": "individual",
+			"type": template_type,
+		}
 
-		# send message based on the template type.
 		if template_type == "text":
-			payload["type"] = "text"
-			payload['text'] = {
-				"body": message
-			}
+			payload["text"] = {"body": message}
 		else:
-			payload["type"] = template_type
 			payload[template_type] = media_data[template_type]
 			payload[template_type]["caption"] = message
-		frappe.log_error(f"template.media type: {type(template.media)}")
-		# Send the message
-		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media)
 
+		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media)
 	except Exception as e:
 		frappe.log_error(f"Error in parse_single_template_and_send_whatsapp_message: {str(e)}")
 

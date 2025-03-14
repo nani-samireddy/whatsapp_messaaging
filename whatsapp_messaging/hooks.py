@@ -130,12 +130,11 @@ app_include_js = ["whatsapp_messaging.bundle.js"]
 
 doc_events = {
 	"*": {
-     	"on_update": "whatsapp_messaging.controller.ws_handle_on_update",
-        "after_insert": "whatsapp_messaging.controller.ws_handle_on_create",
-        "on_trash": "whatsapp_messaging.controller.ws_handle_on_trash",
-        "on_submit": "whatsapp_messaging.controller.ws_handle_on_submit",
-        "on_cancel": "whatsapp_messaging.controller.ws_handle_on_cancel"
-
+     	"on_update": "whatsapp_messaging.crud_events.on_update_all",
+		"after_insert": "whatsapp_messaging.crud_events.after_insert_all",
+        "on_trash": "whatsapp_messaging.crud_events.on_trash_all",
+        "on_submit": "whatsapp_messaging.crud_events.on_submit_all",
+		"on_cancel": "whatsapp_messaging.crud_events.on_cancel_all"
 	}
 }
 
@@ -143,23 +142,23 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"whatsapp_messaging.tasks.all"
-# 	],
-# 	"daily": [
-# 		"whatsapp_messaging.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"whatsapp_messaging.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"whatsapp_messaging.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"whatsapp_messaging.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"all": [
+		"whatsapp_messaging.crud_events.scheduled_task_all"
+	],
+	# "daily": [
+	# 	"whatsapp_messaging.tasks.daily"
+	# ],
+	# "hourly": [
+	# 	"whatsapp_messaging.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"whatsapp_messaging.tasks.weekly"
+	# ],
+	# "monthly": [
+	# 	"whatsapp_messaging.tasks.monthly"
+	# ],
+}
 
 # Testing
 # -------

@@ -58,3 +58,6 @@ function sendWhatsAppMessage(frm, template) {
 		freeze_message: __("Sending Message..."),
 	});
 }
+
+
+

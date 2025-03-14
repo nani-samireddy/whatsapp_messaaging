@@ -3,6 +3,7 @@
 
 // Custom script for the main DocType
 frappe.ui.form.on("WhatsApp Message Template", {
+
 	text_template_text_message: function (frm) {
 		let message = frm.doc.text_template_text_message;
 		let regex = /\{\{(\d+)\}\}/g;
@@ -130,6 +131,9 @@ frappe.ui.form.on("WhatsApp Message Template", {
 				update_child_table_field_options({ frm, cdn: row.name, fetch_from_doctype: row.field_doc_type, table_field_name: "text_template_fields", select_field_name: "field_name" });
 			}
 		});
+
+		render_filter_group(frm);
+		refresh_filtered_records(frm);
 	},
 
 	// Trigger when the form is refreshed.
@@ -310,4 +314,67 @@ function set_field_properties(frm, row) {
 	}
 
 	frm.fields_dict.text_template_fields.grid.refresh();
+}
+
+function render_filter_group(frm) {
+    let filter_wrapper = frm.fields_dict.filtered_records_html.$wrapper;
+
+    // Check if a Template Doctype is selected
+    if (!frm.doc.template_doctype) {
+		filter_wrapper.empty();
+        filter_wrapper.append(`<p style="color: red;">Please select a Template Doctype first.</p>`);
+        return;
+    }
+
+    frappe.model.with_doctype(frm.doc.template_doctype, () => {
+
+		frm.filter_group = new frappe.ui.FilterGroup({
+            doctype: frm.doc.template_doctype,
+            // parent: filter_wrapper,
+			filter_button: frm.fields_dict.update_query_button.$input,
+            on_change: function () {
+                save_filters(frm);
+            }
+        });
+
+        // Load stored filters from query_filters
+        let stored_filters = frm.doc.query_filters ? JSON.parse(frm.doc.query_filters).filters : [];
+        if (stored_filters && Array.isArray(stored_filters)) {
+            frm.filter_group.add_filters(stored_filters);
+        }
+    });
+}
+
+function save_filters(frm) {
+    let filters = frm.filter_group ? frm.filter_group.get_filters() : [];
+    let filter_data = JSON.stringify({
+        doctype: frm.doc.template_doctype,
+        filters: filters
+    });
+
+    frm.set_value('query_filters', filter_data);
+    refresh_filtered_records(frm);
+}
+
+async function refresh_filtered_records(frm) {
+    let filter_data = frm.doc.query_filters ? JSON.parse(frm.doc.query_filters) : null;
+    let wrapper = frm.fields_dict.filtered_records_html.$wrapper;
+
+    wrapper.empty();
+
+    if (!frm.doc.template_doctype) {
+        wrapper.append(`<p style="margin-top: 10px; color: red;">Please select a Template Doctype to fetch records.</p>`);
+        return;
+    }
+
+    let filters = filter_data ? filter_data.filters : [];
+
+    // Fetch count of the records and display it
+	await frappe.db.count(frm.doc.template_doctype, { filters: filters }).then((count) => {
+		wrapper.append(
+			`<p style="margin-top: 10px; font-weight: bold;">
+				Number of records: ${count}
+			</p>`
+		);
+	});
 }
