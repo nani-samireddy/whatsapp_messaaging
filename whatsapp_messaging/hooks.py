@@ -143,22 +143,37 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-	"all": [
-		"whatsapp_messaging.crud_events.scheduled_task_all"
-	],
-	# "daily": [
-	# 	"whatsapp_messaging.tasks.daily"
-	# ],
-	# "hourly": [
-	# 	"whatsapp_messaging.tasks.hourly"
-	# ],
-	# "weekly": [
-	# 	"whatsapp_messaging.tasks.weekly"
-	# ],
-	# "monthly": [
-	# 	"whatsapp_messaging.tasks.monthly"
-	# ],
+    "cron": {
+        "*/5 * * * *": [
+            "whatsapp_messaging.crud_events.scheduled_every_five_minutes"
+        ],
+        "0 * * * *": [
+            "whatsapp_messaging.crud_events.scheduled_hourly"
+        ],
+        "0 0 1 1,4,7,10 *": [
+            "whatsapp_messaging.crud_events.scheduled_quarterly"
+        ],
+        "0 0 1 1,7 *": [
+            "whatsapp_messaging.crud_events.scheduled_semiannual"
+        ],
+        "0 0 1 1 *": [
+            "whatsapp_messaging.crud_events.scheduled_yearly"
+        ],
+    },
+    "daily": [
+        "whatsapp_messaging.crud_events.scheduled_daily"
+    ],
+    "hourly": [
+        "whatsapp_messaging.crud_events.scheduled_hourly"
+    ],
+    "weekly": [
+        "whatsapp_messaging.crud_events.scheduled_weekly"
+    ],
+    "monthly": [
+        "whatsapp_messaging.crud_events.scheduled_monthly"
+    ],
 }
+
 
 # Testing
 # -------

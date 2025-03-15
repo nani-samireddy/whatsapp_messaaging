@@ -1,5 +1,5 @@
 import frappe
-from whatsapp_messaging.controller import ws_handle_on_update, ws_handle_on_create, ws_handle_on_trash, ws_handle_on_submit, ws_handle_on_cancel, ws_handle_scheduled_messages
+from whatsapp_messaging.controller import ws_handle_on_update, ws_handle_on_create, ws_handle_on_trash, ws_handle_on_submit, ws_handle_on_cancel, ws_handle_scheduled_messages, ws_handle_cron_messages
 
 def on_update_all(doc, method):
 	'''
@@ -31,10 +31,50 @@ def on_cancel_all(doc, method):
 	'''
 	ws_handle_on_cancel(doc, method)
 
-def scheduled_task_all():
+def scheduled_every_five_minutes():
 	'''
-	This function is called for all scheduled tasks.
+	This function is called every five minutes.
 	'''
-	frappe.log_error('Scheduled task all called')
-	# Check if there are any scheduled messages to be sent.
-	ws_handle_scheduled_messages()
+	ws_handle_cron_messages("Every five minutes")
+
+def scheduled_hourly():
+	'''
+	This function is called every hour.
+	'''
+	ws_handle_cron_messages("Hourly")
+
+def scheduled_daily():
+	'''
+	This function is called every day.
+	'''
+	ws_handle_cron_messages("Daily")
+
+def scheduled_weekly():
+	'''
+	This function is called every week.
+	'''
+	ws_handle_cron_messages("Weekly")
+
+def scheduled_monthly():
+	'''
+	This function is called every month.
+	'''
+	ws_handle_cron_messages("Monthly")
+
+def scheduled_quarterly():
+	'''
+	This function is called every quarter.
+	'''
+	ws_handle_cron_messages("Quarterly")
+
+def scheduled_semiannual():
+	'''
+	This function is called every half year.
+	'''
+	ws_handle_cron_messages("Semiannual")
+
+def scheduled_yearly():
+	'''
+	This function is called every year.
+	'''
+	ws_handle_cron_messages("Yearly")

@@ -10,6 +10,34 @@ import mimetypes
 from frappe.integrations.utils import make_post_request
 from frappe.utils import get_request_session
 
+def ws_handle_cron_messages(interval):
+	'''
+	This function takes the interval as an argument and checks for any scheduled messages to be sent.
+	'''
+	# Check if there are any scheduled messages to be sent.
+	cron_templates = frappe.get_all(
+		"WhatsApp Message Template",
+		filters={
+			"template_event": "Cron",
+			"cron_interval": interval
+		},
+		fields=["name", "template_doctype", "query_filters", "template_target_field"]
+	)
+
+	# Iterate over the pending messages and send the messages.
+	for template in cron_templates:
+		try:
+			# Get the documents based on the query filters
+			documents = frappe.get_all(template.template_doctype, filters=json.loads(template.query_filters).get("filters", []), fields=["name"])
+
+			# Iterate over the documents and send the messages
+			for doc in documents:
+				doc_instance = frappe.get_doc(template.template_doctype, doc.name)
+				parse_single_template_and_send_whatsapp_message(doc_instance, frappe.get_doc("WhatsApp Message Template", template.name))
+		except Exception as e:
+			frappe.log_error(f"Error in ws_handle_cron_messages: {str(e)}")
+			
+
 
 def ws_handle_scheduled_messages():
 	'''

@@ -18,7 +18,7 @@
   "template_event",
   "schedule",
   "status",
-  "interval",
+  "cron_interval",
   "update_query_button",
   "query_filters",
   "filtered_records_html",
@@ -135,14 +135,6 @@
    "options": "WhatsApp Media"
   },
   {
-   "depends_on": "eval:doc.template_event==='Cron'",
-   "fieldname": "interval",
-   "fieldtype": "Select",
-   "label": "Interval",
-   "mandatory_depends_on": "eval:doc.template_event==='Cron'",
-   "options": "all\ndaily\nhourly\nweekly\nmonthly"
-  },
-  {
    "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
    "fieldname": "update_query_button",
    "fieldtype": "Button",
@@ -179,11 +171,20 @@
    "mandatory_depends_on": "eval:doc.template_event==='Scheduled'",
    "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
    "sort_options": 1
+  },
+  {
+   "default": "Weekly",
+   "depends_on": "eval:doc.template_event==='Cron'",
+   "fieldname": "cron_interval",
+   "fieldtype": "Select",
+   "label": "Interval",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron'",
+   "options": "Every five minutes\nHourly\nDaily\nWeekly\nMonthly\nQuarterly\nSemiannual\nYearly"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-14 17:20:33.578035",
+ "modified": "2025-03-15 09:50:24.407877",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",
