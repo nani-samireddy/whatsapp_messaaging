@@ -5,16 +5,43 @@ from frappe.model.document import Document
 import frappe
 from frappe import _
 from whatsapp_messaging.controller import upload_media_to_whatsapp
-
-
+from whatsapp_messaging.utils import datetime_to_cron_format
 
 class WhatsAppMessageTemplate(Document):
-	def before_save(self):
-		self.invalidate_cache()
 
-	def invalidate_cache(self):
-		cache_key = "template_doctypes_map"
-		frappe.cache().delete_value(cache_key)
+    def before_insert(self):
+        self.handle_scheduled_job_creation()
 
-	def after_save(self):
-		self.invalidate_cache()
+    def validate(self):
+        self.invalidate_cache()
+        self.handle_scheduled_job_creation(update_existing=True)
+
+    def handle_scheduled_job_creation(self, update_existing=False):
+        """Handles creation and updating of Scheduled Job Type."""
+        if self.template_event == "Scheduled":
+            if not self.schedule_job_type_link:
+                cron_format = datetime_to_cron_format(self.schedule)
+                scheduled_job_type = frappe.get_doc({
+                    "doctype": "Scheduled Job Type",
+                    "method": "whatsapp_messaging.crud_events.on_scheduled_messages",
+                    "frequency": "Cron",
+                    "cron_format": cron_format,
+                    "reference_document": self.name
+                })
+                scheduled_job_type.insert()
+                self.schedule_job_type_link = scheduled_job_type.name
+                frappe.log_error(f"Created Scheduled Job Type: {self.schedule_job_type_link}")
+            elif update_existing and self.has_value_changed("schedule"):
+                cron_format = datetime_to_cron_format(self.schedule)
+                scheduled_job_type = frappe.get_doc("Scheduled Job Type", self.schedule_job_type_link)
+                scheduled_job_type.cron_format = cron_format
+                scheduled_job_type.stopped = False
+                scheduled_job_type.save()
+                frappe.log_error(f"Updated Scheduled Job Type: {self.schedule_job_type_link}")
+
+    def invalidate_cache(self):
+        cache_key = "template_doctypes_map"
+        frappe.cache().delete_value(cache_key)
+
+    def after_save(self):
+        self.invalidate_cache()

@@ -36,45 +36,71 @@ def ws_handle_cron_messages(interval):
 				parse_single_template_and_send_whatsapp_message(doc_instance, frappe.get_doc("WhatsApp Message Template", template.name))
 		except Exception as e:
 			frappe.log_error(f"Error in ws_handle_cron_messages: {str(e)}")
-			
 
 
-def ws_handle_scheduled_messages():
+def ws_handle_scheduled_messages(template_doc_name):
 	'''
-	This function checks for any scheduled messages with status "Pending" with date and time less than the current date and time.
+	This function executes the scheduled messages.
+
+	:param `template_doc_name`: str - The name of the template document.
 	'''
-	# Get all the Whatsapp Message Templates with status "Pending" and date and time less than the current date and time.
-	scheduled_messages_templates = frappe.get_all(
-     "WhatsApp Message Template",
-     filters={
-         "template_event": "Scheduled",
-         "status": ['in', ["Pending", "Failed"]],
-         "schedule": ("<=", frappe.utils.now())
-        },
-     fields=["name", "template_doctype", "query_filters", "template_target_field"]
-     )
+	# Get the template doc.
+	template_doc = frappe.get_doc("WhatsApp Message Template", template_doc_name)
 
-	# Iterate over the pending messages and send the messages.
-	for template in scheduled_messages_templates:
-		try:
+	# Get the documents based on the query filters.
+	documents = frappe.get_all(template_doc.template_doctype, filters=json.loads(template_doc.query_filters).get("filters", []), fields=["name"])
 
-			# Get the documents based on the query filters
-			documents = frappe.get_all(template.template_doctype, filters=json.loads(template.query_filters).get("filters", []), fields=["name"])
+	# Iterate over the documents and send the messages.
+	for doc in documents:
+		doc_instance = frappe.get_doc(template_doc.template_doctype, doc.name)
+		parse_single_template_and_send_whatsapp_message(doc_instance, template_doc)
 
-			# Iterate over the documents and send the messages
-			for doc in documents:
-				doc_instance = frappe.get_doc(template.template_doctype, doc.name)
-				parse_single_template_and_send_whatsapp_message(doc_instance, frappe.get_doc("WhatsApp Message Template", template.name))
+	# Update the schedule_job_type_link stopped to True to stop the scheduled job running again.
+	scheduled_job_type = frappe.get_doc("Scheduled Job Type", template_doc.schedule_job_type_link)
+	scheduled_job_type.stopped = True
+	scheduled_job_type.save()
 
-			# Update the status of the template to "Sent"
-			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
-			template_doc.status = "Completed"
-			template_doc.save()
-		except Exception as e:
-			frappe.log_error(f"Error in ws_handle_scheduled_messages: {str(e)}")
-			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
-			template_doc.status = "Failed"
-			template_doc.save()
+ 	# Update the schedule_status of the template to "Sent"
+	template_doc.schedule_status = "Completed"
+	template_doc.save()
+
+
+# def ws_handle_scheduled_message():
+# 	'''
+# 	This function checks for any scheduled messages with schedule_status "Pending" with date and time less than the current date and time.
+# 	'''
+# 	# Get all the Whatsapp Message Templates with schedule_status "Pending" and date and time less than the current date and time.
+# 	scheduled_messages_templates = frappe.get_all(
+#      "WhatsApp Message Template",
+#      filters={
+#          "template_event": "Scheduled",
+#          "schedule_status": ['in', ["Pending", "Failed"]],
+#          "schedule": ("<=", frappe.utils.now())
+#         },
+#      fields=["name", "template_doctype", "query_filters", "template_target_field"]
+#      )
+
+# 	# Iterate over the pending messages and send the messages.
+# 	for template in scheduled_messages_templates:
+# 		try:
+
+# 			# Get the documents based on the query filters
+# 			documents = frappe.get_all(template.template_doctype, filters=json.loads(template.query_filters).get("filters", []), fields=["name"])
+
+# 			# Iterate over the documents and send the messages
+# 			for doc in documents:
+# 				doc_instance = frappe.get_doc(template.template_doctype, doc.name)
+# 				parse_single_template_and_send_whatsapp_message(doc_instance, frappe.get_doc("WhatsApp Message Template", template.name))
+
+# 			# Update the schedule_status of the template to "Sent"
+# 			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
+# 			template_doc.schedule_status = "Completed"
+# 			template_doc.save()
+# 		except Exception as e:
+# 			frappe.log_error(f"Error in ws_handle_scheduled_messages: {str(e)}")
+# 			template_doc = frappe.get_doc("WhatsApp Message Template", template.name)
+# 			template_doc.schedule_status = "Failed"
+# 			template_doc.save()
 
 
 @frappe.whitelist()
