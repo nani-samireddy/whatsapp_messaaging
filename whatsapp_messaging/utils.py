@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime
 import frappe
 from frappe import get_meta
@@ -86,3 +87,20 @@ def datetime_to_cron_format(schedule) -> str:
 	# Create a datetime object
 	dt = datetime.strptime(schedule, "%Y-%m-%d %H:%M:%S")
 	return f"{dt.minute} {dt.hour} {dt.day} {dt.month} *"
+
+def encode_to_alphanumeric(text: str) -> str:
+    '''
+	Encodes the given text to an alphanumeric string.
+	'''
+    encoded_bytes = base64.b64encode(text.encode("utf-8"))
+    return encoded_bytes.decode("utf-8").replace("=", "")
+
+def decode_from_alphanumeric(encoded_text: str) -> str:
+    '''
+	Decodes the given alphanumeric string to the original text.
+	'''
+    padding = len(encoded_text) % 4
+    if padding:
+        encoded_text += "=" * (4 - padding)
+    decoded_bytes = base64.b64decode(encoded_text.encode("utf-8"))
+    return decoded_bytes.decode("utf-8")

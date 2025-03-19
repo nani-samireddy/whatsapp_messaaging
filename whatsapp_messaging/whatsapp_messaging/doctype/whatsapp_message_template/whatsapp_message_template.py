@@ -5,7 +5,7 @@ from frappe.model.document import Document
 import frappe
 from frappe import _
 from whatsapp_messaging.controller import upload_media_to_whatsapp
-from whatsapp_messaging.utils import datetime_to_cron_format
+from whatsapp_messaging.utils import datetime_to_cron_format, encode_to_alphanumeric
 
 class WhatsAppMessageTemplate(Document):
 
@@ -17,16 +17,20 @@ class WhatsAppMessageTemplate(Document):
         self.handle_scheduled_job_creation(update_existing=True)
 
     def handle_scheduled_job_creation(self, update_existing=False):
-        """Handles creation and updating of Scheduled Job Type."""
+        '''
+        Handles creation and updating of Scheduled Job Type.
+        '''
         if self.template_event == "Scheduled":
             if not self.schedule_job_type_link:
                 cron_format = datetime_to_cron_format(self.schedule)
+
+                # @NOTE: We are encoding the template name to alphanumeric to avoid any issues with the function name as Template names can have spaces and special characters.
+                encoded_template_name = encode_to_alphanumeric(self.name)
                 scheduled_job_type = frappe.get_doc({
                     "doctype": "Scheduled Job Type",
-                    "method": "whatsapp_messaging.crud_events.on_scheduled_messages",
+                    "method": f"whatsapp_messaging.scheduler.scheduled_message_handler_{encoded_template_name}",
                     "frequency": "Cron",
                     "cron_format": cron_format,
-                    "reference_document": self.name
                 })
                 scheduled_job_type.insert()
                 self.schedule_job_type_link = scheduled_job_type.name

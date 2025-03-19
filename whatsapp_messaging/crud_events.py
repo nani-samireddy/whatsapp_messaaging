@@ -1,19 +1,10 @@
 import frappe
 from whatsapp_messaging.controller import ws_handle_on_update, ws_handle_on_create, ws_handle_on_trash, ws_handle_on_submit, ws_handle_on_cancel, ws_handle_scheduled_messages, ws_handle_cron_messages
 
-def on_scheduled_messages():
+def on_scheduled_messages(template_name):
 	'''
-	This function is called every minute.
+	This function is called when a scheduled message is triggered.
 	'''
-	# Get the Scheduled Job Type that triggered this function
-	job_name = frappe.local.form_dict.get("job_name")
-	if not job_name:
-		frappe.log_error("No job name found in scheduled execution")
-		return
-
-	# Get the related WhatsApp Message Template
-	job = frappe.get_doc("Scheduled Job Type", job_name)
-	template_name = job.reference_docname
 
 	if template_name:
 		ws_handle_scheduled_messages(template_name)

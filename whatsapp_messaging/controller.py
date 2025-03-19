@@ -47,8 +47,14 @@ def ws_handle_scheduled_messages(template_doc_name):
 	# Get the template doc.
 	template_doc = frappe.get_doc("WhatsApp Message Template", template_doc_name)
 
+	# early return if the schedule status is not "Pending"
+	if template_doc.schedule_status != "Pending":
+		return
+
+	query_filters = json.loads(template_doc.query_filters).get("filters", []) if template_doc.query_filters else []
+
 	# Get the documents based on the query filters.
-	documents = frappe.get_all(template_doc.template_doctype, filters=json.loads(template_doc.query_filters).get("filters", []), fields=["name"])
+	documents = frappe.get_all(template_doc.template_doctype, filters=query_filters, fields=["name"])
 
 	# Iterate over the documents and send the messages.
 	for doc in documents:
