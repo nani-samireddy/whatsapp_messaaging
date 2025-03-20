@@ -3,7 +3,6 @@ import frappe
 from frappe.integrations.utils import make_post_request
 import frappe.utils
 
-@frappe.whitelist()
 def get_headers(content_type="application/json"):
 	settings = frappe.get_doc("WhatsApp Settings")
 	if not settings.whatsapp_api_url or not settings.whatsapp_token or not settings.whatsapp_app_id or not settings.whatsapp_api_version:
@@ -17,7 +16,6 @@ def get_headers(content_type="application/json"):
 
 	return headers
 
-@frappe.whitelist()
 def get_url(type="messages"):
 	settings = frappe.get_doc("WhatsApp Settings")
 	if not settings.whatsapp_api_url or not settings.whatsapp_token or not settings.whatsapp_app_id or not settings.whatsapp_api_version:

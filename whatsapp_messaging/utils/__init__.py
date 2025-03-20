@@ -2,8 +2,6 @@ import base64
 from datetime import datetime
 import frappe
 from frappe import get_meta
-from frappe.utils.file_manager import get_file
-import mimetypes
 
 @frappe.whitelist()
 def get_input_fields(doctype, input_types=None):
@@ -29,17 +27,16 @@ def get_input_fields(doctype, input_types=None):
 
 	return input_fields
 
-
-@frappe.whitelist()
-def get_absolute_path(file_name):
-	if(file_name.startswith('/files/')):
-		file_path = f'{frappe.utils.get_bench_path()}/sites/{frappe.utils.get_site_base_path()[2:]}/public{file_name}'
-	if(file_name.startswith('/private/')):
-		file_path = f'{frappe.utils.get_bench_path()}/sites/{frappe.utils.get_site_base_path()[2:]}{file_name}'
-	return file_path
-
-@frappe.whitelist()
 def mime_type_to_message_type(mime_type):
+	'''
+	This function maps the media file MIME types to WhatsApp message types.
+
+	Parameters:
+	- `mime_type` (str): The MIME type of the media file.
+
+ 	Returns:
+	- str: The WhatsApp message type (image, video, audio, document).
+	'''
 	if mime_type:
 		# Map MIME types to WhatsApp message types
 		if mime_type.startswith("image/"):
@@ -54,53 +51,45 @@ def mime_type_to_message_type(mime_type):
 		# Default to document if MIME type is unknown
 		return "document"
 
-
-@frappe.whitelist()
-def wa_get_file_upload_info(file_name):
-	try:
-		file_data = get_file(file_name)
-		# get the whatsapp settings.
-		settings = frappe.get_doc("WhatsApp Settings")
-		if not settings.whatsapp_api_url or not settings.whatsapp_token or not settings.whatsapp_app_id or not settings.whatsapp_api_version:
-			frappe.throw("WhatsApp API settings are not configured")
-
-		mime_type = mimetypes.guess_type(file_name)[0]
-		url = f"{settings.whatsapp_api_url}/{settings.whatsapp_api_version}/{settings.whatsapp_phone_number_id}/media"
-
-		response = {
-			"file": file_data,
-			"messaging_product": "whatsapp",
-			"token": settings.whatsapp_token,
-			"content_type": mime_type,
-			"url": url,
-		}
-
-		return response
-
-	except Exception as e:
-		frappe.throw(f"Error fetching file: {str(e)}")
-
 def datetime_to_cron_format(schedule) -> str:
 	"""
 	Converts a given datetime to a cron expression.
+
+	Parameters:
+	- `schedule` (str): The datetime string in the format "YYYY-MM-DD HH:MM:SS".
+
+	Returns:
+	- str: The cron expression.
 	"""
 	# Create a datetime object
 	dt = datetime.strptime(schedule, "%Y-%m-%d %H:%M:%S")
 	return f"{dt.minute} {dt.hour} {dt.day} {dt.month} *"
 
 def encode_to_alphanumeric(text: str) -> str:
-    '''
-	Encodes the given text to an alphanumeric string.
 	'''
-    encoded_bytes = base64.b64encode(text.encode("utf-8"))
-    return encoded_bytes.decode("utf-8").replace("=", "")
+	Encodes the given text to an alphanumeric string.
+
+	Parameters:
+	- `text` (str): The text to encode.
+
+	Returns:
+ 	- str: The alphanumeric string.
+	'''
+	encoded_bytes = base64.b64encode(text.encode("utf-8"))
+	return encoded_bytes.decode("utf-8").replace("=", "")
 
 def decode_from_alphanumeric(encoded_text: str) -> str:
-    '''
-	Decodes the given alphanumeric string to the original text.
 	'''
-    padding = len(encoded_text) % 4
-    if padding:
-        encoded_text += "=" * (4 - padding)
-    decoded_bytes = base64.b64decode(encoded_text.encode("utf-8"))
-    return decoded_bytes.decode("utf-8")
+	Decodes the given alphanumeric string to the original text.
+
+	Parameters:
+	- `encoded_text` (str): The alphanumeric string to decode.
+
+	Returns:
+	- str: The original text.
+	'''
+	padding = len(encoded_text) % 4
+	if padding:
+		encoded_text += "=" * (4 - padding)
+	decoded_bytes = base64.b64decode(encoded_text.encode("utf-8"))
+	return decoded_bytes.decode("utf-8")

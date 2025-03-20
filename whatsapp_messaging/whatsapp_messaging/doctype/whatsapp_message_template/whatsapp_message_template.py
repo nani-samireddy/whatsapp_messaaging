@@ -28,7 +28,7 @@ class WhatsAppMessageTemplate(Document):
                 encoded_template_name = encode_to_alphanumeric(self.name)
                 scheduled_job_type = frappe.get_doc({
                     "doctype": "Scheduled Job Type",
-                    "method": f"whatsapp_messaging.scheduler.scheduled_message_handler_{encoded_template_name}",
+                    "method": f"whatsapp_messaging.tasks.scheduler.scheduled_message_handler_{encoded_template_name}",
                     "frequency": "Cron",
                     "cron_format": cron_format,
                 })
