@@ -5,7 +5,7 @@ from frappe.model.document import Document
 import frappe
 
 # Internal imports
-from whatsapp_messaging.controller import upload_media_to_whatsapp
+from whatsapp_messaging.utils.media_controller import upload_media_to_whatsapp
 
 
 

@@ -88,7 +88,7 @@ frappe.ui.form.on("WhatsApp Message Template", {
 		if (frm.doc.is_single) {
 			frm.add_custom_button("Send Message", () => {
 				frappe.call({
-					method: "whatsapp_messaging.controller.ws_handle_on_single_template_trigger",
+					method: "whatsapp_messaging.controller.wm_handle_on_single_template_trigger",
 
 					args: {
 						template_name: frm.doc.name,
@@ -142,7 +142,7 @@ frappe.ui.form.on("WhatsApp Message Template", {
 		if (frm.doc.is_single) {
 			frm.add_custom_button("Send Message", () => {
 				frappe.call({
-					method: "whatsapp_messaging.controller.ws_handle_on_single_template_trigger",
+					method: "whatsapp_messaging.controller.wm_handle_on_single_template_trigger",
 
 					args: {
 						template_name: frm.doc.name,

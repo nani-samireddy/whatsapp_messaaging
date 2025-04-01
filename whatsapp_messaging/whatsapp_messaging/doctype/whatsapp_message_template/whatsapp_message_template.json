@@ -13,6 +13,7 @@
   "recipient_type",
   "phone_number_field_name",
   "is_single",
+  "disable",
   "column_break_ldrj",
   "template_type",
   "template_event",
@@ -20,6 +21,7 @@
   "schedule_job_type_link",
   "schedule_status",
   "cron_interval",
+  "custom_cron_format",
   "update_query_button",
   "query_filters",
   "filtered_records_html",
@@ -136,21 +138,17 @@
    "options": "WhatsApp Media"
   },
   {
-   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
    "fieldname": "update_query_button",
    "fieldtype": "Button",
    "label": "Set Query"
   },
   {
-   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
    "fieldname": "query_filters",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Query Filters",
-   "mandatory_depends_on": "eval:doc.template_event==='Cron'"
+   "label": "Query Filters"
   },
   {
-   "depends_on": "eval:doc.template_event==='Cron' || doc.template_event==='Scheduled'",
    "fieldname": "filtered_records_html",
    "fieldtype": "HTML",
    "label": "Records"
@@ -171,7 +169,7 @@
    "fieldtype": "Select",
    "label": "Interval",
    "mandatory_depends_on": "eval:doc.template_event==='Cron'",
-   "options": "Every five minutes\nHourly\nDaily\nWeekly\nMonthly\nQuarterly\nSemiannual\nYearly"
+   "options": "Hourly\nDaily\nWeekly\nMonthly\nYearly\nCustom cron format"
   },
   {
    "default": "Pending",
@@ -191,11 +189,25 @@
    "label": "Schedule Job Type Link",
    "options": "Scheduled Job Type",
    "sort_options": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disable",
+   "fieldtype": "Check",
+   "label": "Disable"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\"",
+   "description": "<pre>*  *  *  *  *\n\u252c  \u252c  \u252c  \u252c  \u252c\n\u2502  \u2502  \u2502  \u2502  \u2502\n\u2502  \u2502  \u2502  \u2502  \u2514 day of week (0 - 6) (0 is Sunday)\n\u2502  \u2502  \u2502  \u2514\u2500\u2500\u2500\u2500\u2500 month (1 - 12)\n\u2502  \u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 day of month (1 - 31)\n\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 hour (0 - 23)\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 minute (0 - 59)\n\n---\n\n* - Any value\n/ - Step values\n\n---\n\nUse tools like <a href=\"https://tool.crontap.com/cronjob-debugger\">tools.crontap/cronjob-debugger</a> and <a href=\"http://crontab.guru/\">crontab.guru</a> to create custom cron expressions\n</pre>",
+   "fieldname": "custom_cron_format",
+   "fieldtype": "Data",
+   "label": "Cron format",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\""
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-18 16:58:22.289622",
+ "modified": "2025-03-27 10:47:33.735855",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

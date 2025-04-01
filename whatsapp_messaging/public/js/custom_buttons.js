@@ -1,7 +1,7 @@
 $(document).on("app_ready", function () {
 	frappe.call({
 		method:
-			"whatsapp_messaging.controller.get_template_doctypes",
+			"whatsapp_messaging.utils.get_template_doctypes",
 		callback: function (response) {
 			if (response.message) {
 				var templates_details = response.message;
@@ -30,7 +30,7 @@ function addCustomButtons(frm, templates) {
 function sendWhatsAppMessage(frm, template) {
 	frappe.call({
 		method:
-			"whatsapp_messaging.controller.ws_handle_on_custom_trigger",
+			"whatsapp_messaging.controller.wm_handle_on_custom_trigger",
 		args: {
 			template_name: template.name,
 			doctype: frm.doctype,

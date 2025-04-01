@@ -130,11 +130,11 @@ app_include_js = ["whatsapp_messaging.bundle.js"]
 
 doc_events = {
 	"*": {
-     	"on_update": "whatsapp_messaging.crud_events.on_update_all",
-		"after_insert": "whatsapp_messaging.crud_events.after_insert_all",
-        "on_trash": "whatsapp_messaging.crud_events.on_trash_all",
-        "on_submit": "whatsapp_messaging.crud_events.on_submit_all",
-		"on_cancel": "whatsapp_messaging.crud_events.on_cancel_all"
+     	"on_update": "whatsapp_messaging.tasks.doc_events.on_update_all",
+		"after_insert": "whatsapp_messaging.tasks.doc_events.after_insert_all",
+        "on_trash": "whatsapp_messaging.tasks.doc_events.on_trash_all",
+        "on_submit": "whatsapp_messaging.tasks.doc_events.on_submit_all",
+		"on_cancel": "whatsapp_messaging.tasks.doc_events.on_cancel_all"
 	}
 }
 
@@ -143,35 +143,21 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-    "cron": {
-        "*/5 * * * *": [
-            "whatsapp_messaging.crud_events.scheduled_every_five_minutes"
-        ],
-        "0 * * * *": [
-            "whatsapp_messaging.crud_events.scheduled_hourly"
-        ],
-        "0 0 1 1,4,7,10 *": [
-            "whatsapp_messaging.crud_events.scheduled_quarterly"
-        ],
-        "0 0 1 1,7 *": [
-            "whatsapp_messaging.crud_events.scheduled_semiannual"
-        ],
-        "0 0 1 1 *": [
-            "whatsapp_messaging.crud_events.scheduled_yearly"
-        ],
-    },
-    "daily": [
-        "whatsapp_messaging.crud_events.scheduled_daily"
-    ],
-    "hourly": [
-        "whatsapp_messaging.crud_events.scheduled_hourly"
-    ],
-    "weekly": [
-        "whatsapp_messaging.crud_events.scheduled_weekly"
-    ],
-    "monthly": [
-        "whatsapp_messaging.crud_events.scheduled_monthly"
-    ],
+   	# "all": [
+	# 	"whatsapp_messaging.tasks.all"
+	# ],
+	# "daily": [
+	# 	"whatsapp_messaging.tasks.daily"
+	# ],
+	# "hourly": [
+	# 	"whatsapp_messaging.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"whatsapp_messaging.tasks.weekly"
+	# ],
+	# "monthly": [
+	# 	"whatsapp_messaging.tasks.monthly"
+	# ],
 }
 
 
