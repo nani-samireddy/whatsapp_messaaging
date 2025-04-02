@@ -1,5 +1,6 @@
 import base64
 from datetime import datetime
+from frappe.utils.data import evaluate_filters
 import frappe
 from frappe import get_meta
 
@@ -51,18 +52,20 @@ def mime_type_to_message_type(mime_type):
 		# Default to document if MIME type is unknown
 		return "document"
 
-def datetime_to_cron_format(schedule) -> str:
+def datetime_to_cron_format(schedule):
 	"""
-	Converts a given datetime to a cron expression.
+	Converts a datetime (string or object) to a cron expression.
 
-	Parameters:
-	- `schedule` (str): The datetime string in the format "YYYY-MM-DD HH:MM:SS".
+	Args:
+		schedule (str | datetime): Either a datetime string ("YYYY-MM-DD HH:MM:SS") or a datetime object.
 
 	Returns:
-	- str: The cron expression.
+		str: Cron expression (e.g., "35 19 1 4 *" for April 1, 19:32:35).
 	"""
-	# Create a datetime object
-	dt = datetime.strptime(schedule, "%Y-%m-%d %H:%M:%S")
+	if isinstance(schedule, str):
+		dt = datetime.strptime(schedule, "%Y-%m-%d %H:%M:%S")
+	else:  # Assume it's a datetime object
+		dt = schedule
 	return f"{dt.minute} {dt.hour} {dt.day} {dt.month} *"
 
 def encode_to_alphanumeric(text: str) -> str:
@@ -182,3 +185,13 @@ def get_template_doctypes():
 		return doctype_map
 	return doctypes
 
+def doc_matches_filters(doc, filters=None):
+	'''
+	Check if a document matches the given filters.
+	:param doc: The document to check.
+	:param filters: A list of filters to apply.
+	:return: True if the document matches all filters, False otherwise.
+	'''
+	if not filters:
+		return True
+	return evaluate_filters(doc, filters)
