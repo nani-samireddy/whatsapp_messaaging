@@ -67,6 +67,7 @@ def handle_doc_events(doc, event=[]):
 		frappe.enqueue("whatsapp_messaging.controller.process_templates_and_send", doc=doc, templates=templates)
 	except Exception as e:
 		frappe.log_error(f"Error in handle_doc_events: {str(e)}")
+
 def process_template_query(template_doc, doctype=None):
 	'''
 	Processes the query filters for a given template document and doctype.
