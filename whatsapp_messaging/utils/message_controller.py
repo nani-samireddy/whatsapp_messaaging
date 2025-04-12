@@ -1,7 +1,8 @@
 import json
 import frappe
 from frappe.integrations.utils import make_post_request
-from whatsapp_messaging.utils import get_cloud_api_url, get_headers, format_phone_number
+from whatsapp_messaging.utils import format_phone_number
+from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 from whatsapp_messaging.utils.log_manager import log_wa_message
 import frappe.utils
 

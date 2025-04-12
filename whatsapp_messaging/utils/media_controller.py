@@ -3,7 +3,8 @@ import frappe
 from frappe.integrations.utils import make_post_request
 from frappe.utils.file_manager import get_file
 from requests_toolbelt import MultipartEncoder
-from whatsapp_messaging.utils import get_cloud_api_url, get_headers, mime_type_to_message_type
+from whatsapp_messaging.utils import mime_type_to_message_type
+from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 
 
 def upload_media_to_whatsapp(media_file, doc):
