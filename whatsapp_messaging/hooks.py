@@ -10,7 +10,12 @@ app_license = "mit"
 
 # Fixtures
 # ----------
-fixtures = []
+fixtures = [
+	{
+		"doctype": "Role",
+		"filters": [["name", "in", ("Whatsapp Admin", "Whatsapp Editor")]]
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -130,10 +135,10 @@ app_include_js = ["whatsapp_messaging.bundle.js"]
 
 doc_events = {
 	"*": {
-     	"on_update": "whatsapp_messaging.tasks.doc_events.on_update_all",
+	 	"on_update": "whatsapp_messaging.tasks.doc_events.on_update_all",
 		"after_insert": "whatsapp_messaging.tasks.doc_events.after_insert_all",
-        "on_trash": "whatsapp_messaging.tasks.doc_events.on_trash_all",
-        "on_submit": "whatsapp_messaging.tasks.doc_events.on_submit_all",
+		"on_trash": "whatsapp_messaging.tasks.doc_events.on_trash_all",
+		"on_submit": "whatsapp_messaging.tasks.doc_events.on_submit_all",
 		"on_cancel": "whatsapp_messaging.tasks.doc_events.on_cancel_all"
 	}
 }
