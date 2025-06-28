@@ -152,3 +152,74 @@ def doc_matches_filters(doc, filters=None):
 	if not filters:
 		return True
 	return evaluate_filters(doc, filters)
+
+
+@frappe.whitelist(allow_guest=True)
+def get_doctype_fields():
+	"""
+	Retrieve specific fields from a doctype document.
+
+	Args:
+		doctype (str): The name of the doctype.
+		docname (str): The name of the document.
+		fields_types (list, optional): A list of field names to retrieve. If None, all fields are retrieved.
+
+	Returns:
+		dict: A dictionary containing the requested fields and their values.
+	"""
+	doctype="WhatsApp Message Template"
+	docname = "Template"
+	current_doc = frappe.get_doc(doctype, docname)
+	if not current_doc:
+		return {"error": "Document not found"}
+
+	FIELDS_TYPES_TO_EXCLUDE = [ "Section Break", "Column Break", "Tab Break", "Image", "Link", "Table"]
+	FIELD_PROPERTIES_TO_INCLUDE = ["fieldname", "label", "fieldtype", "options", "hidden"]
+ 
+	data_to_return = []
+	
+	# Get all the fields of the doctype
+	meta = get_meta(doctype)
+	# Get the fields in the main doctype.
+	filtered_fields = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE, meta.fields)
+	# Include only the specified properties for each field
+	filtered_fields = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, filtered_fields)
+	data_to_return.append( {
+		"label" : doctype,
+		"doctype": doctype,
+		"fieldname": "self",
+		"fields": list(filtered_fields),
+	})
+	
+	# Get fields from the linked doctype
+	linked_fields = [field for field in meta.fields if field.fieldtype in ["Link", "Dynamic Link"]]
+	for field in linked_fields:
+		if field.options != "DocType" and field.options != "Dynamic Link":
+			linked_doctype = field.options
+			linked_meta = get_meta(linked_doctype)
+			linked_fields_data = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE, linked_meta.fields)
+			# Include only the specified properties for each field
+			linked_fields_data = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, linked_fields_data)
+			data_to_return.append({
+				"label": field.label,
+				"doctype": linked_doctype,
+				"fieldname": field.fieldname,
+				"fields": list(linked_fields_data),
+			})
+		elif field.options == "DocType":
+			# Get the selected doctype from the current document.
+			selected_doctype = current_doc.get(field.fieldname)
+			if selected_doctype:
+				linked_meta = get_meta(selected_doctype)
+				linked_fields_data = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE, linked_meta.fields)
+				# Include only the specified properties for each field
+				linked_fields_data = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, linked_fields_data)
+				data_to_return.append({
+					"label": field.label,
+					"fieldname": field.fieldname,
+					"doctype": selected_doctype,
+					"fields": list(linked_fields_data),
+				})
+	return data_to_return
+	
+	

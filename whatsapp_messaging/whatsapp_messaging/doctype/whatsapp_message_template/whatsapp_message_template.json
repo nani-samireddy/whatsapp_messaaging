@@ -10,10 +10,10 @@
   "template_name",
   "template_doctype",
   "template_button_label",
-  "recipient_type",
   "phone_number_field_name",
   "is_single",
   "disable",
+  "other_recipients",
   "column_break_ldrj",
   "template_type",
   "template_event",
@@ -26,10 +26,9 @@
   "query_filters",
   "filtered_records_html",
   "template_target_field",
-  "template_static_recipients",
   "text_template_section",
-  "text_template_text_message",
-  "text_template_fields",
+  "message_preview",
+  "template_edit_trigger",
   "media_section",
   "media"
  ],
@@ -62,17 +61,6 @@
    "label": "Message Details"
   },
   {
-   "fieldname": "text_template_fields",
-   "fieldtype": "Table",
-   "label": "Fields",
-   "options": "Whatsapp Message Template Field"
-  },
-  {
-   "fieldname": "text_template_text_message",
-   "fieldtype": "Long Text",
-   "label": "Message"
-  },
-  {
    "fieldname": "template_doctype",
    "fieldtype": "Link",
    "label": "DocType",
@@ -95,24 +83,10 @@
    "label": "Button Label"
   },
   {
-   "default": "Field",
-   "fieldname": "recipient_type",
-   "fieldtype": "Select",
-   "label": "Recipient Type",
-   "options": "Field\nGroup\nField+Group"
-  },
-  {
    "depends_on": "eval:doc.recipient_type===\"Field\"||doc.recipient_type===\"Field+Group\"",
    "fieldname": "phone_number_field_name",
    "fieldtype": "Select",
    "label": "Phone Number Field"
-  },
-  {
-   "depends_on": "eval:doc.recipient_type==\"Group\"||doc.recipient_type==\"Field+Group\"",
-   "fieldname": "template_static_recipients",
-   "fieldtype": "Table",
-   "label": "Static Recipients",
-   "options": "WhatsApp Static Recipient"
   },
   {
    "depends_on": "eval:doc.template_event==='Update Field'",
@@ -203,11 +177,30 @@
    "fieldtype": "Data",
    "label": "Cron format",
    "mandatory_depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\""
+  },
+  {
+   "fieldname": "other_recipients",
+   "fieldtype": "Table MultiSelect",
+   "label": "Other Recipients",
+   "options": "Static Recipient Link"
+  },
+  {
+   "default": "Your template goes here...",
+   "fieldname": "message_preview",
+   "fieldtype": "Long Text",
+   "label": "Message Preview",
+   "placeholder": "Your template goes here...",
+   "read_only": 1
+  },
+  {
+   "fieldname": "template_edit_trigger",
+   "fieldtype": "HTML",
+   "label": "Template Message"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-04 15:59:19.792424",
+ "modified": "2025-06-28 10:51:34.712414",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

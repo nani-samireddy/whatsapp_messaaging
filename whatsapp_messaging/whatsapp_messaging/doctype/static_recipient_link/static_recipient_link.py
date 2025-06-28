@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class WhatsAppConversation(Document):
+class StaticRecipientLink(Document):
 	pass

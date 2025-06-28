@@ -24,7 +24,7 @@
   {
    "fieldname": "conversations",
    "fieldtype": "Table",
-   "options": "Whatsapp Conversation Field"
+   "options": "WhatsApp Conversation Field"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -32,7 +32,7 @@
  "modified": "2025-06-04 16:00:09.049509",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
- "name": "Whatsapp Conversation",
+ "name": "WhatsApp Conversation",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [

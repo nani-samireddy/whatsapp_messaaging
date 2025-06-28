@@ -1,0 +1,21 @@
+<div style="display: flex; gap: 20px;">
+	<div id="doctype-sidebar" style="width: 200px; border-right: 1px solid #ddd;">
+		{% for dt in  doctypes %}
+			<div class="doctype-item {% if dt._index == active_index %}active{% endif %}"
+				data-index="{{ dt._index }}"
+				style="padding: 8px; cursor: pointer; background: {% if dt._index == active_index %}#f0f0f0{% else %}transparent{% endif %};">
+					{{ dt.label }}
+			</div>
+		{% endfor %}
+	</div>
+	<div style="flex: 1; padding: 10px;">
+		{% for dt in doctypes %}
+			<div class="{{ dt._index == active_index }}">
+				<p><strong>Fields from <em>${dt.label}</em></strong></p>
+				<div id="field-buttons-container">
+					
+				</div>	
+			</div>
+		{% endfor %}
+	</div>
+</div>
