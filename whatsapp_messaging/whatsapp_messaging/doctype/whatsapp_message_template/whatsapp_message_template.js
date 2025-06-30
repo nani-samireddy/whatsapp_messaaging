@@ -84,7 +84,8 @@ frappe.ui.form.on("WhatsApp Message Template", {
 				frappe.call({
 					method: "whatsapp_messaging.utils.get_doctype_fields",
 					args: {
-						doctype: frm.doc.template_doctype,
+						doctype: frm.doc.doctype,
+						docname: frm.doc.name,
 					},
 					callback: (r) => {
 						if (r.message && r.message.length > 0) {

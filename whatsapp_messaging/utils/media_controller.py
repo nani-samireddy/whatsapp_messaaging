@@ -11,13 +11,13 @@ def upload_media_to_whatsapp(media_file, doc):
 	'''This function is used to upload media to WhatsApp'''
 	doc.media_id = "Upload media..."
 	doc.save()
-
+	
 	# Get file
 	file_data = get_file(media_file)
 
  	# Get the headers and URL
-	headers = get_headers( "multipart/form-data" )
-	url = get_cloud_api_url("media")
+	headers = get_headers( phone_number_id=doc.phone_number_id, content_type="multipart/form-data" )
+	url = get_cloud_api_url(phone_number_id=doc.phone_number_id, type="media")
 	mime_type = mimetypes.guess_type(media_file)[0]
 
 	# Set the media content type

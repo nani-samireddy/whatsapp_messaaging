@@ -6,14 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "basic_details_section",
-  "whatsapp_business_id",
-  "whatsapp_app_id",
   "whatsapp_api_url",
-  "complete_url",
-  "column_break_ghkx",
-  "whatsapp_phone_number_id",
   "whatsapp_api_version",
-  "whatsapp_token"
+  "complete_url"
  ],
  "fields": [
   {
@@ -22,49 +17,25 @@
    "label": "Basic Details"
   },
   {
-   "fieldname": "whatsapp_phone_number_id",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Phone Number ID",
-   "reqd": 1
-  },
-  {
-   "fieldname": "whatsapp_token",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Access Token",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_ghkx",
-   "fieldtype": "Column Break"
-  },
-  {
    "default": "v19.0",
    "fieldname": "whatsapp_api_version",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "API Version",
    "reqd": 1
-  },
-  {
-   "fieldname": "whatsapp_business_id",
-   "fieldtype": "Data",
-   "label": "Business ID"
-  },
-  {
-   "fieldname": "whatsapp_app_id",
-   "fieldtype": "Data",
-   "label": "App ID"
   },
   {
    "default": "https://graph.facebook.com",
    "fieldname": "whatsapp_api_url",
    "fieldtype": "Data",
-   "label": "URL"
+   "in_list_view": 1,
+   "label": "URL",
+   "reqd": 1
   },
   {
    "fieldname": "complete_url",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "is_virtual": 1,
    "label": "Complete URL",
    "options": "f\"{doc.whatsapp_api_url}/{doc.whatsapp_api_version}/{doc.whatsapp_phone_number_id}/messages\"",
@@ -75,7 +46,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-04 15:51:07.205949",
+ "modified": "2025-06-28 15:50:07.194103",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Settings",

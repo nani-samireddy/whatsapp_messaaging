@@ -6,6 +6,7 @@ import re
 from whatsapp_messaging.utils.message_controller import send_bulk_messages
 from whatsapp_messaging.utils import format_phone_number, get_template_doctypes, doc_matches_filters
 from whatsapp_messaging.utils.media_controller import process_whatsapp_media
+from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 
 def process_scheduled_messages(template_name):
 	"""
@@ -145,8 +146,13 @@ def process_template_and_send(doc, template):
 		else:
 			payload[template_type] = media_data[template_type]
 			payload[template_type]["caption"] = parsed_message
-
-		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media)
+	
+		url = get_cloud_api_url(phone_number_id=template.phone_number_id)
+		headers = get_headers(phone_number_id=template.phone_number_id)
+		if not url:
+			return
+		
+		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media, headers=headers, url=url)
 
 	except Exception as e:
 		frappe.log_error(f"Error in process_template_and_send: {str(e)}")

@@ -9,11 +9,14 @@
   "section_break_mxkr",
   "column_break_kbch",
   "media_type",
-  "media_url",
+  "phone_number_id",
   "document_type",
   "media_attachment",
-  "media_id",
+  "column_break_vtkz",
   "content_type",
+  "media_id",
+  "media_url",
+  "section_break_dhbx",
   "caption"
  ],
  "fields": [
@@ -84,11 +87,27 @@
    "label": "Media Type",
    "mandatory_depends_on": "eval:doc.media_type === 'URL';",
    "options": "audio\ndocument\nimage\nsticker\nvideo"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "phone_number_id",
+   "fieldtype": "Link",
+   "label": "Phone Number ID",
+   "options": "WhatsApp Phone Number ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_vtkz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dhbx",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-04 15:59:55.718379",
+ "modified": "2025-06-28 15:07:46.339273",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Media",

@@ -5,7 +5,7 @@ from whatsapp_messaging.utils import format_phone_number
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 from whatsapp_messaging.utils.log_manager import log_wa_message
 
-def send_message(payload, media_doc_name = ""):
+def send_message(payload, media_doc_name = "", headers=None, url=None):
 	"""
 	Sends a WhatsApp message using the provided payload.
 
@@ -28,8 +28,6 @@ def send_message(payload, media_doc_name = ""):
 
 	try:
 		# Get the URL and headers
-		url = get_cloud_api_url()
-		headers = get_headers()
 		# Make the request
 		response = make_post_request(url, data=json.dumps(payload), headers=headers)
 
@@ -43,7 +41,7 @@ def send_message(payload, media_doc_name = ""):
 		frappe.log_error(f"Error in send_whatsapp_message: {str(e)}")
 		log_wa_message(payload, "Failed")
 
-def send_bulk_messages(recipients= [], payload = {}, media_doc_name = ""):
+def send_bulk_messages(recipients= [], payload = {}, media_doc_name = "", headers = None, url = None):
 	"""
 	Send a text message to a list of recipients via WhatsApp.
 
@@ -63,5 +61,5 @@ def send_bulk_messages(recipients= [], payload = {}, media_doc_name = ""):
 	for recipient in recipients:
 		payload['to'] = format_phone_number(recipient)
 		# Send the message
-		send_message(payload=payload, media_doc_name=media_doc_name)
+		send_message(payload=payload, media_doc_name=media_doc_name, headers=headers, url=url)
 

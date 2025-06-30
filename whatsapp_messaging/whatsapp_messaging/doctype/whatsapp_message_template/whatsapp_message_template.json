@@ -7,13 +7,14 @@
  "engine": "InnoDB",
  "field_order": [
   "basics_section",
+  "phone_number_id",
   "template_name",
   "template_doctype",
   "template_button_label",
   "phone_number_field_name",
+  "other_recipients",
   "is_single",
   "disable",
-  "other_recipients",
   "column_break_ldrj",
   "template_type",
   "template_event",
@@ -83,7 +84,6 @@
    "label": "Button Label"
   },
   {
-   "depends_on": "eval:doc.recipient_type===\"Field\"||doc.recipient_type===\"Field+Group\"",
    "fieldname": "phone_number_field_name",
    "fieldtype": "Select",
    "label": "Phone Number Field"
@@ -196,11 +196,18 @@
    "fieldname": "template_edit_trigger",
    "fieldtype": "HTML",
    "label": "Template Message"
+  },
+  {
+   "fieldname": "phone_number_id",
+   "fieldtype": "Link",
+   "label": "From",
+   "options": "WhatsApp Phone Number ID",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-28 10:51:34.712414",
+ "modified": "2025-06-30 21:28:02.339394",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",
