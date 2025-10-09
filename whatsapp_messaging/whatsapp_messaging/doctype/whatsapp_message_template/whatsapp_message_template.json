@@ -162,6 +162,7 @@
    "hidden": 1,
    "label": "Schedule Job Type Link",
    "options": "Scheduled Job Type",
+   "print_hide": 1,
    "sort_options": 1
   },
   {
@@ -207,7 +208,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-30 21:28:02.339394",
+ "modified": "2025-10-09 18:57:10.346089",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

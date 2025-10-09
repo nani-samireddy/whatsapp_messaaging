@@ -7,8 +7,7 @@
  "field_order": [
   "basic_details_section",
   "whatsapp_api_url",
-  "whatsapp_api_version",
-  "complete_url"
+  "whatsapp_api_version"
  ],
  "fields": [
   {
@@ -30,16 +29,6 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "URL",
-   "reqd": 1
-  },
-  {
-   "fieldname": "complete_url",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "is_virtual": 1,
-   "label": "Complete URL",
-   "options": "f\"{doc.whatsapp_api_url}/{doc.whatsapp_api_version}/{doc.whatsapp_phone_number_id}/messages\"",
-   "read_only": 1,
    "reqd": 1
   }
  ],
