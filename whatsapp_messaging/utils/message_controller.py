@@ -29,12 +29,12 @@ def send_message(payload, media_doc_name = "", headers=None, url=None):
 		Exception: If there is an error in sending the message, it logs the error
 				   and raises an exception.
 	"""
-
+	logger.error(f"Sending WhatsApp message with payload: {json.dumps(payload)}")
 	try:
 		# Get the URL and headers
 		# Make the request
 		response = make_post_request(url, data=json.dumps(payload), headers=headers)
-
+		logger.error(f"WhatsApp API response: {json.dumps(response)}")
 		# Log the message if the response is 200
 		if response.get('messages'):
 			log_wa_message(payload, "Sent", media_doc_name)
@@ -42,7 +42,7 @@ def send_message(payload, media_doc_name = "", headers=None, url=None):
 			log_wa_message(payload, "Failed", media_doc_name)
 		return response
 	except Exception as e:
-		logger.error("Error in send_whatsapp_message", exc_info=True)
+		logger.error(f"Error in send_whatsapp_message: {str(e)}", exc_info=True)
 		log_wa_message(payload, "Failed")
 
 def send_bulk_messages(recipients= [], payload = {}, media_doc_name = "", headers = None, url = None):

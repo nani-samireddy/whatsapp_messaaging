@@ -224,11 +224,12 @@ def process_template_and_send(doc, template):
 		# Check if template is synced with WhatsApp and approved
 		if (template.get("sync_with_whatsapp") and 
 			template.get("whatsapp_template_id") and 
-			template.get("whatsapp_template_status") == "APPROVED"):
+			template.get("status") == "APPROVED"):
 			
 			# Send as WhatsApp Template Message (works outside 24hr window)
 			send_as_whatsapp_template(doc, template, recipients)
 		else:
+			logger.error("Template not approved or sync disabled, sending as session message: %s", template.name)
 			# Send as regular session message (only within 24hr window)
 			send_as_session_message(doc, template, recipients)
 
@@ -278,28 +279,38 @@ def send_as_whatsapp_template(doc, template, recipients):
 		# Add header component for media if present
 		if template.media:
 			media_doc = frappe.get_doc("WhatsApp Media", template.media)
-			media_type, media_data = process_whatsapp_media(media_doc)
+			
+			# Determine media type from content_type
+			content_type = media_doc.content_type or ""
+			if content_type.startswith('image/'):
+				media_type = "image"
+			elif content_type.startswith('video/'):
+				media_type = "video"
+			elif content_type.startswith('application/'):
+				media_type = "document"
+			else:
+				media_type = "document"  # Default fallback
 			
 			if media_type != "text":
 				header_param = {
 					"type": media_type
 				}
 				
-				# Add media reference
-				if media_type in media_data:
-					if "link" in media_data[media_type]:
-						header_param[media_type] = {
-							"link": media_data[media_type]["link"]
-						}
-					elif "id" in media_data[media_type]:
-						header_param[media_type] = {
-							"id": media_data[media_type]["id"]
-						}
+				# Use media_id for template messages
+				if media_doc.media_id:
+					header_param[media_type] = {
+						"id": media_doc.media_id
+					}
+				else:
+					logger.warning("Media document %s has no media_id", media_doc.name)
+					# Skip adding header component if no valid media reference
+					media_type = None
 				
-				components.insert(0, {
-					"type": "header",
-					"parameters": [header_param]
-				})
+				if media_type:
+					components.insert(0, {
+						"type": "header",
+						"parameters": [header_param]
+					})
 		
 		# Add components to payload
 		if components:
@@ -342,7 +353,7 @@ def send_as_session_message(doc, template, recipients):
 	try:
 		# Show warning if template exists but not approved
 		if template.get("whatsapp_template_id"):
-			status = template.get("whatsapp_template_status", "UNKNOWN")
+			status = template.get("status", "UNKNOWN")
 			if status != "APPROVED":
 				frappe.msgprint(
 					f"Warning: Template status is '{status}'. Sending as session message (only works within 24hr window).",
