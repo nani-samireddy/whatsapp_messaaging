@@ -9,7 +9,6 @@ from whatsapp_messaging.utils.media_controller import process_whatsapp_media
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 
 # Setup logger
-# frappe.utils.logger.set_log_level("DEBUG")
 logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 
@@ -229,7 +228,7 @@ def process_template_and_send(doc, template):
 			# Send as WhatsApp Template Message (works outside 24hr window)
 			send_as_whatsapp_template(doc, template, recipients)
 		else:
-			logger.error("Template not approved or sync disabled, sending as session message: %s", template.name)
+			logger.info("Template not approved or sync disabled, sending as session message: %s", template.name)
 			# Send as regular session message (only within 24hr window)
 			send_as_session_message(doc, template, recipients)
 

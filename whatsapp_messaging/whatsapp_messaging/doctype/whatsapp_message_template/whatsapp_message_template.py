@@ -12,7 +12,6 @@ import json
 import re
 
 # Setup logger
-# frappe.utils.logger.set_log_level("DEBUG")
 logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 class WhatsAppMessageTemplate(Document):

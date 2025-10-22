@@ -9,7 +9,6 @@ from whatsapp_messaging.utils import mime_type_to_message_type
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 
 # Setup logger
-# # frappe.utils.logger.set_log_level("DEBUG")
 logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 
@@ -263,7 +262,6 @@ def process_whatsapp_media(doc):
 				"caption": doc.caption
 			}
 		elif doc.media_type == "Upload":
-			logger.info("processing uploaded media")
 			# If the media type is Upload, get the media_id or file_handle, content_type.
 			document_type = mime_type_to_message_type(doc.content_type)
 			

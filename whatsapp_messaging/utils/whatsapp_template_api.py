@@ -13,7 +13,6 @@ from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.wha
 )
 
 # Setup logger
-# frappe.utils.logger.set_log_level("DEBUG")
 logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 
@@ -180,8 +179,6 @@ def create_whatsapp_template(template_name):
 			"Authorization": f"Bearer {access_token}",
 			"Content-Type": "application/json"
 		}
-		logger.error("Creating WhatsApp template with header: %s", headers)
-		logger.error("Creating WhatsApp template with payload: %s", payload)
 		response = requests.post(url, json=payload, headers=headers)
 		response_data = response.json()
 		frappe.log_error(f"WhatsApp template creation response: {response_data}")

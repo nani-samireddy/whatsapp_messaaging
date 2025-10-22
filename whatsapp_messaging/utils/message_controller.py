@@ -6,7 +6,6 @@ from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 from whatsapp_messaging.utils.log_manager import log_wa_message
 
 # Setup logger
-# frappe.utils.logger.set_log_level("DEBUG")
 logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 def send_message(payload, media_doc_name = "", headers=None, url=None):
@@ -29,12 +28,12 @@ def send_message(payload, media_doc_name = "", headers=None, url=None):
 		Exception: If there is an error in sending the message, it logs the error
 				   and raises an exception.
 	"""
-	logger.error(f"Sending WhatsApp message with payload: {json.dumps(payload)}")
+
 	try:
 		# Get the URL and headers
 		# Make the request
 		response = make_post_request(url, data=json.dumps(payload), headers=headers)
-		logger.error(f"WhatsApp API response: {json.dumps(response)}")
+
 		# Log the message if the response is 200
 		if response.get('messages'):
 			log_wa_message(payload, "Sent", media_doc_name)
