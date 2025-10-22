@@ -16,22 +16,35 @@
   "is_single",
   "disable",
   "column_break_ldrj",
-  "template_type",
   "template_event",
+  "template_target_field",
+  "update_query_button",
+  "query_filters",
+  "filtered_records_html",
+  "whatsapp_template_language",
+  "whatsapp_template_category",
+  "schedule_section",
   "schedule",
   "schedule_job_type_link",
   "schedule_status",
   "cron_interval",
   "custom_cron_format",
-  "update_query_button",
-  "query_filters",
-  "filtered_records_html",
-  "template_target_field",
   "text_template_section",
+  "template_header",
   "message_preview",
+  "template_footer",
   "template_edit_trigger",
+  "column_break_ojdz",
+  "example",
   "media_section",
-  "media"
+  "media",
+  "whatsapp_template_section",
+  "whatsapp_template_id",
+  "status",
+  "sync_with_whatsapp",
+  "last_synced",
+  "column_break_wa",
+  "rejection_reason"
  ],
  "fields": [
   {
@@ -51,10 +64,74 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "template_type",
+   "collapsible": 1,
+   "fieldname": "whatsapp_template_section",
+   "fieldtype": "Section Break",
+   "label": "WhatsApp Cloud API Template"
+  },
+  {
+   "description": "Template ID returned from WhatsApp API",
+   "fieldname": "whatsapp_template_id",
+   "fieldtype": "Data",
+   "label": "Template ID",
+   "read_only": 1
+  },
+  {
+   "default": "DRAFT",
+   "description": "Current approval status from WhatsApp",
+   "fieldname": "status",
    "fieldtype": "Select",
-   "label": "Type",
-   "options": "text\ndocument\naudio\nimage\nvideo\nsticker\nlocation\ncontacts\ninteractive\nlist"
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "DRAFT\nIN_REVIEW\nREJECTED\nAPPROVED\nPAUSED\nDISABLED\nAPPEAL_REQUESTED",
+   "read_only": 1
+  },
+  {
+   "default": "MARKETING",
+   "description": "Template category for WhatsApp approval",
+   "fieldname": "whatsapp_template_category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "UTILITY\nMARKETING\nAUTHENTICATION"
+  },
+  {
+   "default": "1",
+   "description": "Auto-create/update template in WhatsApp Cloud API",
+   "fieldname": "sync_with_whatsapp",
+   "fieldtype": "Check",
+   "label": "Sync with WhatsApp API"
+  },
+  {
+   "fieldname": "last_synced",
+   "fieldtype": "Datetime",
+   "label": "Last Synced",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_wa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "English",
+   "description": "Select the language for your WhatsApp message template",
+   "fieldname": "whatsapp_template_language",
+   "fieldtype": "Select",
+   "label": "Language",
+   "options": "Afrikaans\nAlbanian\nArabic\nArabic (Egypt)\nArabic (UAE)\nArabic (Lebanon)\nArabic (Morocco)\nArabic (Qatar)\nAzerbaijani\nBelarusian\nBengali\nBengali (India)\nBulgarian\nCatalan\nChinese (China)\nChinese (Hong Kong)\nChinese (Taiwan)\nCroatian\nCzech\nDanish\nDari\nDutch\nDutch (Belgium)\nEnglish\nEnglish (UK)\nEnglish (US)\nEnglish (UAE)\nEnglish (Australia)\nEnglish (Canada)\nEnglish (Ghana)\nEnglish (Ireland)\nEnglish (India)\nEnglish (Jamaica)\nEnglish (Malaysia)\nEnglish (New Zealand)\nEnglish (Qatar)\nEnglish (Singapore)\nEnglish (Uganda)\nEnglish (South Africa)\nEstonian\nFilipino\nFinnish\nFrench\nFrench (Belgium)\nFrench (Canada)\nFrench (Switzerland)\nFrench (Ivory Coast)\nFrench (Morocco)\nGeorgian\nGerman\nGerman (Austria)\nGerman (Switzerland)\nGreek\nGujarati\nHausa\nHebrew\nHindi\nHungarian\nIndonesian\nIrish\nItalian\nJapanese\nKannada\nKazakh\nKinyarwanda\nKorean\nKyrgyz (Kyrgyzstan)\nLao\nLatvian\nLithuanian\nMacedonian\nMalay\nMalayalam\nMarathi\nNorwegian\nPashto\nPersian\nPolish\nPortuguese (Brazil)\nPortuguese (Portugal)\nPunjabi\nRomanian\nRussian\nSerbian\nSinhala\nSlovak\nSlovenian\nSpanish\nSpanish (Argentina)\nSpanish (Chile)\nSpanish (Colombia)\nSpanish (Costa Rica)\nSpanish (Dominican Republic)\nSpanish (Ecuador)\nSpanish (Honduras)\nSpanish (Mexico)\nSpanish (Panama)\nSpanish (Peru)\nSpanish (Spain)\nSpanish (Uruguay)\nSwahili\nSwedish\nTamil\nTelugu\nThai\nTurkish\nUkrainian\nUrdu\nUzbek\nVietnamese\nZulu"
+  },
+  {
+   "depends_on": "eval:doc.status=='REJECTED'",
+   "fieldname": "rejection_reason",
+   "fieldtype": "Small Text",
+   "label": "Rejection Reason",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Scheduled' || doc.template_event==='Cron'",
+   "fieldname": "schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Schedule Settings"
   },
   {
    "fieldname": "text_template_section",
@@ -133,7 +210,6 @@
    "fieldtype": "Datetime",
    "label": "Schedule",
    "mandatory_depends_on": "eval:doc.template_event==='Scheduled'",
-   "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
    "sort_options": 1
   },
   {
@@ -186,12 +262,26 @@
    "options": "Static Recipient Link"
   },
   {
+   "description": "Optional header text (max 60 characters)",
+   "fieldname": "template_header",
+   "fieldtype": "Data",
+   "label": "Template Header"
+  },
+  {
    "default": "Your template goes here...",
+   "description": "Template body content (max 1024 characters)",
    "fieldname": "message_preview",
    "fieldtype": "Long Text",
-   "label": "Message Preview",
+   "label": "Message Body",
    "placeholder": "Your template goes here...",
    "read_only": 1
+  },
+  {
+   "description": "Optional footer text (max 60 characters)",
+   "fieldname": "template_footer",
+   "fieldtype": "Data",
+   "label": "Template Footer",
+   "read_only_depends_on": "eval:doc.status==\"IN_REVIEW\";"
   },
   {
    "fieldname": "template_edit_trigger",
@@ -204,11 +294,21 @@
    "label": "From",
    "options": "WhatsApp Phone Number ID",
    "reqd": 1
+  },
+  {
+   "fieldname": "example",
+   "fieldtype": "Long Text",
+   "label": "Example",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ojdz",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-09 18:57:10.346089",
+ "modified": "2025-10-19 23:18:17.549451",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",

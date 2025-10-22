@@ -4,9 +4,94 @@ import re
   
 # Internal imports
 from whatsapp_messaging.utils.message_controller import send_bulk_messages
-from whatsapp_messaging.utils import format_phone_number, get_template_doctypes, doc_matches_filters
+from whatsapp_messaging.utils import format_phone_number, get_template_doctypes, doc_matches_filters, get_language_code
 from whatsapp_messaging.utils.media_controller import process_whatsapp_media
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
+
+# Setup logger
+# frappe.utils.logger.set_log_level("DEBUG")
+logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
+
+
+def extract_template_parameters(template, doc):
+	"""
+	Extract parameter values for WhatsApp template message.
+	Converts {{template_doctype.field}} to ordered parameter values.
+	
+	Args:
+		template: WhatsApp Message Template document
+		doc: The document to extract values from
+		
+	Returns:
+		list: Array of parameter objects for WhatsApp API
+	"""
+	parameters = []
+	
+	try:
+		raw_message = frappe.get_value(
+			"WhatsApp Message Template",
+			template.name,
+			"message_preview"
+		)
+		
+		if not raw_message:
+			return parameters
+		
+		# Find all {{placeholder}} patterns
+		regex_pattern = r'\{\{(.*?)\}\}'
+		placeholders = re.findall(regex_pattern, raw_message)
+		
+		# Build context for evaluation
+		data_context = {
+			"self": template,
+			"template_doctype": doc
+		}
+		
+		# Fetch linked documents
+		link_fields = frappe.get_all(
+			"DocField",
+			filters={"parent": template.doctype, "fieldtype": "Link"},
+			fields=["fieldname", "options"]
+		)
+		
+		link_fields = [f for f in link_fields if f["fieldname"] != "template_doctype"]
+		
+		for link_field in link_fields:
+			linked_value = getattr(template, link_field["fieldname"], None)
+			if linked_value:
+				try:
+					linked_doc = frappe.get_doc(link_field["options"], linked_value)
+					data_context[link_field["fieldname"]] = linked_doc
+				except Exception:
+					pass
+		
+		# Extract parameter values in order
+		for placeholder in placeholders:
+			placeholder = placeholder.strip()
+			if not placeholder:
+				continue
+			
+			# Parse placeholder (e.g., "template_doctype.customer_name")
+			parts = placeholder.split(".", 1)
+			doctype_part = parts[0] if len(parts) > 1 else None
+			field_name = parts[1] if len(parts) > 1 else parts[0]
+			
+			value = ""
+			if doctype_part and doctype_part in data_context:
+				value = str(getattr(data_context[doctype_part], field_name, ""))
+			elif field_name in data_context:
+				value = str(getattr(data_context[field_name], field_name, ""))
+			
+			parameters.append({
+				"type": "text",
+				"text": value
+			})
+		
+		return parameters
+		
+	except Exception as e:
+		logger.error("Error extracting template parameters", exc_info=True)
+		return []
 
 def process_scheduled_messages(template_name):
 	"""
@@ -45,7 +130,7 @@ def wm_handle_on_single_template_trigger(template_name, doctype):
 		process_template_query(template_doc, doctype)
 
 	except Exception as e:
-		frappe.log_error(f"Error in wm_handle_on_single_template_trigger: {str(e)}")
+		logger.error("Error in wm_handle_on_single_template_trigger: template=%s, doctype=%s", template_name, doctype, exc_info=True)
 
 @frappe.whitelist()
 def wm_handle_on_custom_trigger(template_name, doctype, docname):
@@ -65,7 +150,7 @@ def wm_handle_on_custom_trigger(template_name, doctype, docname):
 		process_template_and_send(doc, template_doc)
 
 	except Exception as e:
-		frappe.log_error(f"Error in wm_handle_on_custom_trigger: {str(e)}")
+		logger.error("Error in wm_handle_on_custom_trigger: template=%s, doctype=%s, docname=%s", template_name, doctype, docname, exc_info=True)
 
 def handle_doc_events(doc, event=[]):
 	"""Handles WhatsApp messaging events like Create, Update, Delete, etc."""
@@ -87,7 +172,7 @@ def handle_doc_events(doc, event=[]):
 
 		frappe.enqueue("whatsapp_messaging.controller.process_templates_and_send", doc=doc, templates=templates)
 	except Exception as e:
-		frappe.log_error(f"Error in handle_doc_events: {str(e)}")
+		logger.error("Error in handle_doc_events: doctype=%s", doc.doctype if doc else None, exc_info=True)
 
 def process_template_query(template_doc, doctype=None):
 	'''Processes the query filters for a given template document and doctype.'''
@@ -118,23 +203,161 @@ def process_templates_and_send(doc, templates):
 			process_template_and_send(doc, frappe.get_doc("WhatsApp Message Template", template.name))
 
 	except Exception as e:
-		frappe.log_error(f"Error in process_templates_and_send: {str(e)}")
+		logger.error("Error in process_templates_and_send: doctype=%s", doc.doctype if doc else None, exc_info=True)
 
 
 def process_template_and_send(doc, template):
-	"""Processes a single template and sends a WhatsApp message."""
+	"""
+	Processes a single template and sends a WhatsApp message.
+	Checks if template is approved and sends as template message if available.
+	"""
 	try:
 		if not template or not doc:
 			return
 
-		parsed_message = parse_message(template, doc)
 		recipients = get_template_recipients(template=template, doc=doc)
+		
+		if not recipients:
+			logger.warning("No recipients found for template: %s", template.name)
+			return
+		
+		# Check if template is synced with WhatsApp and approved
+		if (template.get("sync_with_whatsapp") and 
+			template.get("whatsapp_template_id") and 
+			template.get("whatsapp_template_status") == "APPROVED"):
+			
+			# Send as WhatsApp Template Message (works outside 24hr window)
+			send_as_whatsapp_template(doc, template, recipients)
+		else:
+			# Send as regular session message (only within 24hr window)
+			send_as_session_message(doc, template, recipients)
+
+	except Exception as e:
+		logger.error("Error in process_template_and_send: template=%s, doctype=%s", template.name if template else None, doc.doctype if doc else None, exc_info=True)
+
+
+def send_as_whatsapp_template(doc, template, recipients):
+	"""
+	Send message using approved WhatsApp template format.
+	This format works outside the 24-hour customer service window.
+	
+	Args:
+		doc: The document being processed
+		template: WhatsApp Message Template document
+		recipients: List of recipient phone numbers
+	"""
+	try:
+		# Extract parameter values from the document
+		parameters = extract_template_parameters(template, doc)
+		
+		# Build WhatsApp template message payload
+		template_name = template.template_name.lower().replace(" ", "_")
+		
+		payload = {
+			"messaging_product": "whatsapp",
+			"recipient_type": "individual",
+			"type": "template",
+			"template": {
+				"name": template_name,
+				"language": {
+					"code": get_language_code(template.get("whatsapp_template_language", "English"))
+				}
+			}
+		}
+		
+		# Add components array if parameters exist
+		components = []
+		
+		# Add body component with parameters
+		if parameters:
+			components.append({
+				"type": "body",
+				"parameters": parameters
+			})
+		
+		# Add header component for media if present
+		if template.media:
+			media_doc = frappe.get_doc("WhatsApp Media", template.media)
+			media_type, media_data = process_whatsapp_media(media_doc)
+			
+			if media_type != "text":
+				header_param = {
+					"type": media_type
+				}
+				
+				# Add media reference
+				if media_type in media_data:
+					if "link" in media_data[media_type]:
+						header_param[media_type] = {
+							"link": media_data[media_type]["link"]
+						}
+					elif "id" in media_data[media_type]:
+						header_param[media_type] = {
+							"id": media_data[media_type]["id"]
+						}
+				
+				components.insert(0, {
+					"type": "header",
+					"parameters": [header_param]
+				})
+		
+		# Add components to payload
+		if components:
+			payload["template"]["components"] = components
+		
+		# Get API credentials
+		url = get_cloud_api_url(phone_number_id=template.phone_number_id)
+		headers = get_headers(phone_number_id=template.phone_number_id)
+		
+		if not url:
+			frappe.throw("Failed to get WhatsApp API URL")
+			return
+		
+		# Send to all recipients
+		send_bulk_messages(
+			recipients=recipients, 
+			payload=payload, 
+			media_doc_name=template.media, 
+			headers=headers, 
+			url=url
+		)
+		
+		frappe.msgprint(f"Sent as approved template message to {len(recipients)} recipient(s)")
+		
+	except Exception as e:
+		logger.error("Error sending WhatsApp template message: template=%s", template.name if template else None, exc_info=True)
+		frappe.throw(f"Failed to send template message: {str(e)}")
+
+
+def send_as_session_message(doc, template, recipients):
+	"""
+	Send message as regular session message (only works within 24hr window).
+	Falls back to this if template is not approved or sync is disabled.
+	
+	Args:
+		doc: The document being processed
+		template: WhatsApp Message Template document
+		recipients: List of recipient phone numbers
+	"""
+	try:
+		# Show warning if template exists but not approved
+		if template.get("whatsapp_template_id"):
+			status = template.get("whatsapp_template_status", "UNKNOWN")
+			if status != "APPROVED":
+				frappe.msgprint(
+					f"Warning: Template status is '{status}'. Sending as session message (only works within 24hr window).",
+					indicator="orange"
+				)
+		
+		# Parse message with placeholders
+		parsed_message = parse_message(template, doc)
 		template_type, media_data = "text", {}
 
 		if template.media:
 			media_doc = frappe.get_doc("WhatsApp Media", template.media)
 			template_type, media_data = process_whatsapp_media(media_doc)
 
+		# Build regular message payload
 		payload = {
 			"messaging_product": "whatsapp",
 			"recipient_type": "individual",
@@ -149,13 +372,25 @@ def process_template_and_send(doc, template):
 	
 		url = get_cloud_api_url(phone_number_id=template.phone_number_id)
 		headers = get_headers(phone_number_id=template.phone_number_id)
+		
 		if not url:
+			frappe.throw("Failed to get WhatsApp API URL")
 			return
 		
-		send_bulk_messages(recipients=recipients, payload=payload, media_doc_name=template.media, headers=headers, url=url)
+		send_bulk_messages(
+			recipients=recipients, 
+			payload=payload, 
+			media_doc_name=template.media, 
+			headers=headers, 
+			url=url
+		)
+		
+		frappe.msgprint(f"Sent as session message to {len(recipients)} recipient(s)")
 
 	except Exception as e:
-		frappe.log_error(f"Error in process_template_and_send: {str(e)}")
+		logger.error("Error sending session message: template=%s", template.name if template else None, exc_info=True)
+		frappe.throw(f"Failed to send message: {str(e)}")
+
 
 
 def get_template_recipients(template, doc):
@@ -184,11 +419,11 @@ def get_template_recipients(template, doc):
 		
 		# Format and deduplicate phone numbers
 		formatted = [format_phone_number(p) for p in recipients if p]
-		frappe.log_error(f"Formatted recipients: {formatted}")
+		logger.debug("Formatted recipients: %s", formatted)
 		return list(set(formatted))
 
 	except Exception as e:
-		frappe.log_error(f"Error in get_template_recipients: {str(e)}")
+		logger.error("Error in get_template_recipients: template=%s", template.name if template else None, exc_info=True)
 		return []
 
 
@@ -232,9 +467,7 @@ def parse_message(template, target):
                     linked_doc = frappe.get_doc(link_field["options"], linked_value)
                     data_context[link_field["fieldname"]] = linked_doc
                 except Exception as link_error:
-                    frappe.log_error(
-                        f"Error fetching linked doc for field {link_field['fieldname']}: {str(link_error)}"
-                    )
+                    logger.error("Error fetching linked doc for field %s: %s", link_field['fieldname'], str(link_error), exc_info=True)
 
         # Process placeholders using regex
         regex_pattern = r"\{\{(.*?)\}\}"
@@ -247,7 +480,7 @@ def parse_message(template, target):
         return processed_message
 
     except Exception as e:
-        frappe.log_error(f"Error in parse_message: {str(e)}")
+        logger.error("Error in parse_message", exc_info=True)
         return ""
 
 def process_placeholder(match, context):

@@ -7,7 +7,9 @@
  "field_order": [
   "basic_details_section",
   "whatsapp_api_url",
-  "whatsapp_api_version"
+  "whatsapp_api_version",
+  "app_id",
+  "waba_id"
  ],
  "fields": [
   {
@@ -30,12 +32,26 @@
    "in_list_view": 1,
    "label": "URL",
    "reqd": 1
+  },
+  {
+   "description": "Your Meta App ID from Meta Developers Console",
+   "fieldname": "app_id",
+   "fieldtype": "Data",
+   "label": "App ID",
+   "reqd": 1
+  },
+  {
+   "description": "Your WhatsApp Business Account ID from Meta Business Manager",
+   "fieldname": "waba_id",
+   "fieldtype": "Data",
+   "label": "WhatsApp Business Account ID",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-28 15:50:07.194103",
+ "modified": "2025-10-16 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Settings",

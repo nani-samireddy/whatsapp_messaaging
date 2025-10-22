@@ -5,6 +5,10 @@ from whatsapp_messaging.utils import format_phone_number
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 from whatsapp_messaging.utils.log_manager import log_wa_message
 
+# Setup logger
+# frappe.utils.logger.set_log_level("DEBUG")
+logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
+
 def send_message(payload, media_doc_name = "", headers=None, url=None):
 	"""
 	Sends a WhatsApp message using the provided payload.
@@ -38,7 +42,7 @@ def send_message(payload, media_doc_name = "", headers=None, url=None):
 			log_wa_message(payload, "Failed", media_doc_name)
 		return response
 	except Exception as e:
-		frappe.log_error(f"Error in send_whatsapp_message: {str(e)}")
+		logger.error("Error in send_whatsapp_message", exc_info=True)
 		log_wa_message(payload, "Failed")
 
 def send_bulk_messages(recipients= [], payload = {}, media_doc_name = "", headers = None, url = None):
