@@ -52,7 +52,7 @@ class WhatsAppMessageTemplate(Document):
 		if self.is_scheduled_event():
 			self.handle_scheduled_job(update_existing=True)
 
-	def before_load(self):
+	def onload(self):
 		"""Check template status before loading form."""
 		if self.whatsapp_template_id:
 			# Check if status needs updating (every 5 minutes)

@@ -27,8 +27,7 @@ class WhatsAppMedia(Document):
 				file_size = len(file_data[1])  # file content length
 				
 				# Use resumable upload for files larger than 5MB (5 * 1024 * 1024 bytes)
-				# or if you want to use resumable upload as default
-				use_resumable_upload = file_size > (5 * 1024 * 1024) or True  # Set to True to always use resumable upload
+				use_resumable_upload = file_size > (5 * 1024 * 1024)
 				
 				if use_resumable_upload:
 					frappe.enqueue(

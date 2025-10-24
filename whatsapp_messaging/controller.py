@@ -122,6 +122,8 @@ def wm_handle_on_single_template_trigger(template_name, doctype):
 	:param doctype: The target doctype to apply the template to.
 	"""
 	try:
+		# Restrict to allowed roles
+		frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 		if not template_name or not doctype:
 			frappe.throw("Template and Doctype are required")
 
@@ -141,6 +143,8 @@ def wm_handle_on_custom_trigger(template_name, doctype, docname):
 	:param docname: The name of the specific document.
 	"""
 	try:
+		# Restrict to allowed roles
+		frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 		if not template_name or not doctype or not docname:
 			frappe.throw("Template, Doctype, and Docname are required")
 
@@ -195,8 +199,12 @@ def process_templates_and_send(doc, templates):
 				continue
 			if template.template_event == "Update Field":
 				field_name = template.template_target_field
-				# Skip if the field value has not changed.
-				if doc.get(field_name) == doc.get_doc_before_save().get(field_name):
+				# Skip if the field value has not changed or before-save doc missing
+				before_fn = getattr(doc, "get_doc_before_save", None)
+				before_doc = before_fn() if callable(before_fn) else None
+				if not before_doc:
+					continue
+				if doc.get(field_name) == before_doc.get(field_name):
 					continue
 
 			process_template_and_send(doc, frappe.get_doc("WhatsApp Message Template", template.name))
@@ -374,11 +382,15 @@ def send_as_session_message(doc, template, recipients):
 			"type": template_type,
 		}
 
-		if template_type == "text":
+		if template_type == "text" or not media_data.get(template_type):
+			# Fallback to text if media unavailable
+			payload["type"] = "text"
 			payload["text"] = {"body": parsed_message}
 		else:
 			payload[template_type] = media_data[template_type]
-			payload[template_type]["caption"] = parsed_message
+			# Only add caption for supported types
+			if template_type in ("image", "video", "document"):
+				payload[template_type]["caption"] = parsed_message
 	
 		url = get_cloud_api_url(phone_number_id=template.phone_number_id)
 		headers = get_headers(phone_number_id=template.phone_number_id)
@@ -421,11 +433,14 @@ def get_template_recipients(template, doc):
 			if primary_number:
 				recipients.append(primary_number)
 
-		# Static recipients from MultiSelect Table (child table rows)
-		for row in template.get("other_recipients", []):
-			phone_number = frappe.get_value( "Static Recipient", row, "phone_number" )
-			if phone_number:
-				recipients.append(phone_number)
+		# Static recipients from Table MultiSelect (child table rows)
+		for row in template.get("other_recipients", []) or []:
+			# Field `static_recipient` links to "Static Recipient"
+			recipient_name = getattr(row, "static_recipient", None)
+			if recipient_name:
+				phone_number = frappe.get_value("Static Recipient", recipient_name, "phone_number")
+				if phone_number:
+					recipients.append(phone_number)
 		
 		# Format and deduplicate phone numbers
 		formatted = [format_phone_number(p) for p in recipients if p]

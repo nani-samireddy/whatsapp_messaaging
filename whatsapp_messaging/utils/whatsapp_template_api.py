@@ -6,8 +6,11 @@ https://developers.facebook.com/docs/whatsapp/business-management-api/message-te
 import frappe
 import json
 import requests
+import mimetypes
 from frappe import _
 from whatsapp_messaging.utils import get_language_code
+from frappe.utils.file_manager import get_file
+from whatsapp_messaging.utils.media_controller import start_upload_session, upload_file_to_session
 from whatsapp_messaging.whatsapp_messaging.doctype.whatsapp_message_template.whatsapp_message_template import (
 	get_placeholder_example_values,
 )
@@ -40,7 +43,53 @@ def get_access_token(phone_number_id):
 	return phone_doc.access_token
 
 
-def build_template_components(template_doc):
+def ensure_fresh_file_handle(template_doc, media_doc, force: bool = False):
+	"""Ensure a fresh, valid file_handle exists for media header template creation.
+
+	- If `media_doc.file_handle` is missing, attempt to (re)upload via resumable upload.
+	- Supports media from File (Upload) and URL (best-effort download).
+	"""
+	try:
+		if getattr(media_doc, "file_handle", None) and not force:
+			return media_doc.file_handle
+
+		# Attempt from uploaded file first
+		if getattr(media_doc, "media_type", None) == "Upload" and getattr(media_doc, "media_attachment", None):
+			file_name, file_content = get_file(media_doc.media_attachment)
+			mime_type = media_doc.content_type or mimetypes.guess_type(file_name)[0] or "application/octet-stream"
+			upload_session_id = start_upload_session(template_doc.phone_number_id, file_name, len(file_content), mime_type)
+			if not upload_session_id:
+				return None
+			file_handle = upload_file_to_session(template_doc.phone_number_id, upload_session_id, file_content, mime_type)
+			if file_handle:
+				media_doc.file_handle = file_handle
+				media_doc.save(ignore_permissions=True)
+				return file_handle
+
+		# Try downloading URL if provided
+		if getattr(media_doc, "media_type", None) == "URL" and getattr(media_doc, "media_url", None):
+			resp = requests.get(media_doc.media_url, timeout=30)
+			resp.raise_for_status()
+			# Derive a filename from URL
+			from urllib.parse import urlparse
+			path = urlparse(media_doc.media_url).path
+			file_name = path.rsplit('/', 1)[-1] or "media"
+			mime_type = media_doc.content_type or resp.headers.get("Content-Type") or mimetypes.guess_type(file_name)[0] or "application/octet-stream"
+			upload_session_id = start_upload_session(template_doc.phone_number_id, file_name, len(resp.content), mime_type)
+			if not upload_session_id:
+				return None
+			file_handle = upload_file_to_session(template_doc.phone_number_id, upload_session_id, resp.content, mime_type)
+			if file_handle:
+				media_doc.file_handle = file_handle
+				media_doc.save(ignore_permissions=True)
+				return file_handle
+		return None
+	except Exception:
+		logger.error("Failed to generate fresh file_handle for media %s", getattr(media_doc, "name", None), exc_info=True)
+		return None
+
+
+def build_template_components(template_doc, force_new_handle: bool = False):
 	"""
 	Build the components array for WhatsApp template API.
 	Supports HEADER (text/media), BODY, and FOOTER components.
@@ -61,8 +110,13 @@ def build_template_components(template_doc):
 	# Check for media header first
 	if template_doc.media:
 		media_doc = frappe.get_doc("WhatsApp Media", template_doc.media)
-		# Use file_handle from resumable upload API for uploaded media
-		if media_doc.file_handle:
+		# Ensure a valid file_handle for header example
+		file_handle = None
+		if force_new_handle:
+			file_handle = ensure_fresh_file_handle(template_doc, media_doc, force=True)
+		else:
+			file_handle = media_doc.file_handle or ensure_fresh_file_handle(template_doc, media_doc)
+		if file_handle:
 			content_type = media_doc.content_type
 			# Map MIME types to WhatsApp header formats
 			if content_type.startswith('image/'):
@@ -78,11 +132,11 @@ def build_template_components(template_doc):
 				"type": "HEADER",
 				"format": format_type,
 				"example": {
-					"header_handle": [media_doc.file_handle]
+					"header_handle": [file_handle]
 				}
 			}
 		else:
-			logger.warning(f"Media document {media_doc.name} has no file_handle available")
+			logger.warning(f"Media document {media_doc.name} has no valid file_handle available for template creation")
 
 	# Store header text for potential merging with body
 	if template_doc.template_header:
@@ -151,6 +205,8 @@ def create_whatsapp_template(template_name):
 		dict: Response from WhatsApp API
 	"""
 	try:
+		# Restrict to allowed roles
+		frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 		template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
 		
 		if not template_doc.sync_with_whatsapp:
@@ -179,7 +235,7 @@ def create_whatsapp_template(template_name):
 			"Authorization": f"Bearer {access_token}",
 			"Content-Type": "application/json"
 		}
-		response = requests.post(url, json=payload, headers=headers)
+		response = requests.post(url, json=payload, headers=headers, timeout=30)
 		response_data = response.json()
 		frappe.log_error(f"WhatsApp template creation response: {response_data}")
 		if response.status_code == 200 and response_data.get("id"):
@@ -199,7 +255,47 @@ def create_whatsapp_template(template_name):
 			
 			return {"success": True, "data": response_data, "normalized_status": normalized_status}
 		else:
-			error_message = response_data.get("error", {}).get("message", "Unknown error")
+			error = response_data.get("error", {}) if isinstance(response_data, dict) else {}
+			error_message = error.get("message", "Unknown error")
+			error_subcode = error.get("error_subcode")
+			user_title = (error.get("error_user_title") or "").lower()
+			user_msg = (error.get("error_user_msg") or "").lower()
+			# Auto-retry once if media handle is invalid: regenerate handle and retry
+			invalid_handle = (
+				(error.get("code") == 131009 and error_subcode == 2494102)
+				or ("handle is invalid" in user_title)
+				or ("handle is invalid" in user_msg)
+			)
+			if invalid_handle and template_doc.media:
+				try:
+					# Rebuild components with a fresh handle
+					components_retry = build_template_components(template_doc, force_new_handle=True)
+					payload_retry = {
+						"name": template_doc.template_name.lower().replace(" ", "_"),
+						"language": language_code,
+						"category": template_doc.whatsapp_template_category or "UTILITY",
+						"components": components_retry,
+					}
+					if getattr(template_doc, "flags", None) and getattr(template_doc.flags, "has_placeholder_parameters", False):
+						payload_retry["parameter_format"] = "positional"
+					response_retry = requests.post(url, json=payload_retry, headers=headers, timeout=30)
+					response_data_retry = response_retry.json()
+					frappe.log_error(f"Retry template creation response: {response_data_retry}")
+					if response_retry.status_code == 200 and response_data_retry.get("id"):
+						# Success on retry
+						raw_status = response_data_retry.get("status", "IN_REVIEW")
+						normalized_status = normalize_template_status(raw_status)
+						template_doc.whatsapp_template_id = response_data_retry.get("id")
+						template_doc.whatsapp_template_category = response_data_retry.get("category") or "UTILITY"
+						template_doc.status = normalized_status
+						template_doc.last_synced = frappe.utils.now()
+						template_doc.save(ignore_permissions=True)
+
+						frappe.msgprint(_("Template created successfully in WhatsApp (after media reupload). Status: {0}").format(normalized_status))
+						return {"success": True, "data": response_data_retry, "normalized_status": normalized_status}
+				except Exception:
+					logger.error("Retry after invalid handle failed", exc_info=True)
+			# Final failure return
 			logger.error("WhatsApp Template Creation Failed full response: %s,", response_data)
 			logger.error("WhatsApp Template Creation Failed: %s, template=%s", error_message, template_name)
 			return {"success": False, "message": error_message, "data": response_data}
@@ -217,6 +313,7 @@ def request_review(template_name: str):
 	- Creates the template on WhatsApp (or updates, if already exists but editable)
 	- Sets local status to IN_REVIEW
 	"""
+	frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 	template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
 
 	# Guard: ensure editable states
@@ -240,6 +337,7 @@ def request_review(template_name: str):
 @frappe.whitelist()
 def sync_template_status(template_name: str):
 	"""Fetch and update status for a template from WhatsApp Cloud API."""
+	frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 	return get_template_status(template_name)
 
 def update_whatsapp_template(template_name):
@@ -277,7 +375,7 @@ def update_whatsapp_template(template_name):
 			"Content-Type": "application/json"
 		}
 		
-		response = requests.post(url, json=payload, headers=headers)
+		response = requests.post(url, json=payload, headers=headers, timeout=30)
 		response_data = response.json()
 		
 		if response.status_code == 200:
@@ -293,7 +391,38 @@ def update_whatsapp_template(template_name):
 			
 			return {"success": True, "data": response_data}
 		else:
-			error_message = response_data.get("error", {}).get("message", "Unknown error")
+			error = response_data.get("error", {}) if isinstance(response_data, dict) else {}
+			error_message = error.get("message", "Unknown error")
+			error_subcode = error.get("error_subcode")
+			user_title = (error.get("error_user_title") or "").lower()
+			user_msg = (error.get("error_user_msg") or "").lower()
+			invalid_handle = (
+				(error.get("code") == 131009 and error_subcode == 2494102)
+				or ("handle is invalid" in user_title)
+				or ("handle is invalid" in user_msg)
+			)
+			if invalid_handle and template_doc.media:
+				try:
+					components_retry = build_template_components(template_doc, force_new_handle=True)
+					payload_retry = {
+						"category": template_doc.whatsapp_template_category or "UTILITY",
+						"components": components_retry
+					}
+					if getattr(template_doc, "flags", None) and getattr(template_doc.flags, "has_placeholder_parameters", False):
+						payload_retry["parameter_format"] = "positional"
+					response_retry = requests.post(url, json=payload_retry, headers=headers, timeout=30)
+					response_data_retry = response_retry.json()
+					frappe.log_error(f"Retry template update response: {response_data_retry}")
+					if response_retry.status_code == 200:
+						if response_data_retry.get("status"):
+							normalized_status = normalize_template_status(response_data_retry["status"])
+							template_doc.status = normalized_status
+						template_doc.last_synced = frappe.utils.now()
+						template_doc.save(ignore_permissions=True)
+						frappe.msgprint(_("Template updated successfully in WhatsApp (after media reupload)."))
+						return {"success": True, "data": response_data_retry}
+				except Exception:
+					logger.error("Retry after invalid handle on update failed", exc_info=True)
 			logger.error("WhatsApp Template Update Failed: %s, template=%s", error_message, template_name)
 			return {"success": False, "message": error_message, "data": response_data}
 		
@@ -314,6 +443,7 @@ def delete_whatsapp_template(template_name):
 		dict: Response from WhatsApp API
 	"""
 	try:
+		frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 		template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
 		
 		if not template_doc.whatsapp_template_id:
@@ -337,7 +467,7 @@ def delete_whatsapp_template(template_name):
 			"name": template_api_name
 		}
 		
-		response = requests.delete(url, params=params, headers=headers)
+		response = requests.delete(url, params=params, headers=headers, timeout=30)
 		
 		if response.status_code == 200:
 			response_data = response.json()
@@ -373,6 +503,7 @@ def get_template_status(template_name):
 		dict: Template status information
 	"""
 	try:
+		frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 		template_doc = frappe.get_doc("WhatsApp Message Template", template_name)
 		if not template_doc.whatsapp_template_id:
 			return {"success": False, "message": "Template not synced with WhatsApp"}
@@ -395,7 +526,7 @@ def get_template_status(template_name):
 			"name": template_doc.template_name.lower().replace(" ", "_")
 		}
 		
-		response = requests.get(url, params=params, headers=headers)
+		response = requests.get(url, params=params, headers=headers, timeout=30)
 		response_data = response.json()
 		
 		if response.status_code == 200 and response_data.get("data"):

@@ -167,7 +167,7 @@ def start_upload_session(phone_number_id, file_name, file_length, file_type):
 			'Authorization': f'Bearer {phone_number_doc.access_token}'
 		}
 		
-		response = requests.post(url, params=params, headers=headers)
+		response = requests.post(url, params=params, headers=headers, timeout=30)
 		response_data = response.json()
 		
 		if response.status_code == 200 and 'id' in response_data:
@@ -198,7 +198,7 @@ def upload_file_to_session(phone_number_id, upload_session_id, file_content, mim
 			'file_offset': '0'
 		}
 		
-		response = requests.post(url, headers=headers, data=file_content)
+		response = requests.post(url, headers=headers, data=file_content, timeout=60)
 		response_data = response.json()
 		
 		if response.status_code == 200 and 'h' in response_data:
@@ -227,7 +227,7 @@ def resume_interrupted_upload(phone_number_id, upload_session_id):
 			'Authorization': f'Bearer {phone_number_doc.access_token}'
 		}
 		
-		response = requests.get(url, headers=headers)
+		response = requests.get(url, headers=headers, timeout=15)
 		response_data = response.json()
 		
 		if response.status_code == 200 and 'file_offset' in response_data:
@@ -262,26 +262,20 @@ def process_whatsapp_media(doc):
 				"caption": doc.caption
 			}
 		elif doc.media_type == "Upload":
-			# If the media type is Upload, get the media_id or file_handle, content_type.
+			# If the media type is Upload, get the media_id (for message send). file_handle is not valid for sending.
 			document_type = mime_type_to_message_type(doc.content_type)
-			
-			# Use file_handle if available (from resumable upload), otherwise use media_id
-			if doc.file_handle:
-				media_data[document_type] = {
-					"h": doc.file_handle,
-					"caption": doc.caption
-				}
-			elif doc.media_id:
+			if doc.media_id:
 				media_data[document_type] = {
 					"id": doc.media_id,
 					"caption": doc.caption
 				}
+			elif doc.file_handle:
+				# file_handle exists from resumable upload but cannot be used for sending session messages
+				logger.warning(f"file_handle present but no media_id for {doc.name}; falling back to text")
+				return ["text", {}]
 			else:
-				# If neither is available, this might be an error case
 				logger.error(f"No file_handle or media_id available for document {doc.name}")
-				media_data[document_type] = {
-					"caption": doc.caption
-				}
+				return ["text", {}]
 
 		return [document_type, media_data]
 

@@ -1,4 +1,5 @@
 import base64
+import re
 from datetime import datetime
 from frappe.utils.data import evaluate_filters
 import frappe
@@ -102,7 +103,7 @@ def decode_from_alphanumeric(encoded_text: str) -> str:
 
 def format_phone_number(phone):
 	"""
-	Formats a phone number by removing the leading '+' and any hyphens.
+	Formats a phone number to a digits-only string suitable for WhatsApp API.
 
 	Args:
 		`phone` (str): The phone number to format.
@@ -114,11 +115,10 @@ def format_phone_number(phone):
 		Exception: If an error occurs during formatting, it logs the error using the logger.
 	"""
 	try:
-		if phone.startswith("+"):
-			phone = phone[1:]
-		if "-" in phone:
-			phone = phone.replace("-", "")
-		return phone
+		if not phone:
+			return ""
+		# Strip all non-digits
+		return re.sub(r"\D", "", str(phone))
 	except Exception as e:
 		logger.error(f"Error in format_phone_number: {str(e)}", exc_info=True)
 
@@ -283,7 +283,7 @@ def doc_matches_filters(doc, filters=None):
 	return evaluate_filters(doc, filters)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_doctype_fields(doctype=None, docname=None, fields_types=None):
 	"""
 	Retrieve specific fields from a doctype document.
@@ -298,6 +298,9 @@ def get_doctype_fields(doctype=None, docname=None, fields_types=None):
 	"""
 	if not doctype or not docname:
 		return {"error": "Doctype and Docname are required"}
+
+	# Restrict to privileged roles
+	frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 
 	current_doc = frappe.get_doc(doctype, docname)
 	if not current_doc:
