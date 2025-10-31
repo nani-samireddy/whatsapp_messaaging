@@ -148,21 +148,9 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-   	# "all": [
-	# 	"whatsapp_messaging.tasks.all"
-	# ],
-	# "daily": [
-	# 	"whatsapp_messaging.tasks.daily"
-	# ],
-	# "hourly": [
-	# 	"whatsapp_messaging.tasks.hourly"
-	# ],
-	# "weekly": [
-	# 	"whatsapp_messaging.tasks.weekly"
-	# ],
-	# "monthly": [
-	# 	"whatsapp_messaging.tasks.monthly"
-	# ],
+	"hourly": [
+		"whatsapp_messaging.tasks.cron.sync_templates.sync_in_review_templates"
+	]
 }
 
 

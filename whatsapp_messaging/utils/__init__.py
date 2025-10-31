@@ -1,8 +1,12 @@
 import base64
+import re
 from datetime import datetime
 from frappe.utils.data import evaluate_filters
 import frappe
 from frappe import get_meta
+
+# Setup logger
+logger = frappe.logger("whatsapp_messaging", allow_site=True, file_count=50)
 
 @frappe.whitelist()
 def get_input_fields(doctype, input_types=None):
@@ -99,7 +103,7 @@ def decode_from_alphanumeric(encoded_text: str) -> str:
 
 def format_phone_number(phone):
 	"""
-	Formats a phone number by removing the leading '+' and any hyphens.
+	Formats a phone number to a digits-only string suitable for WhatsApp API.
 
 	Args:
 		`phone` (str): The phone number to format.
@@ -108,16 +112,141 @@ def format_phone_number(phone):
 		`str`: The formatted phone number without the leading '+' and hyphens.
 
 	Raises:
-		Exception: If an error occurs during formatting, it logs the error using frappe.log_error.
+		Exception: If an error occurs during formatting, it logs the error using the logger.
 	"""
 	try:
-		if phone.startswith("+"):
-			phone = phone[1:]
-		if "-" in phone:
-			phone = phone.replace("-", "")
-		return phone
+		if not phone:
+			return ""
+		# Strip all non-digits
+		return re.sub(r"\D", "", str(phone))
 	except Exception as e:
-		frappe.log_error(f"Error in format_phone_number: {str(e)}")
+		logger.error(f"Error in format_phone_number: {str(e)}", exc_info=True)
+
+def get_language_code(language_name):
+	"""
+	Maps user-friendly language names to WhatsApp API language codes.
+	
+	Args:
+		language_name (str): The display name of the language
+		
+	Returns:
+		str: The corresponding WhatsApp API language code
+	"""
+	language_mapping = {
+		"Afrikaans": "af",
+		"Albanian": "sq",
+		"Arabic": "ar",
+		"Arabic (Egypt)": "ar_EG",
+		"Arabic (UAE)": "ar_AE",
+		"Arabic (Lebanon)": "ar_LB",
+		"Arabic (Morocco)": "ar_MA",
+		"Arabic (Qatar)": "ar_QA",
+		"Azerbaijani": "az",
+		"Belarusian": "be_BY",
+		"Bengali": "bn",
+		"Bengali (India)": "bn_IN",
+		"Bulgarian": "bg",
+		"Catalan": "ca",
+		"Chinese (China)": "zh_CN",
+		"Chinese (Hong Kong)": "zh_HK",
+		"Chinese (Taiwan)": "zh_TW",
+		"Croatian": "hr",
+		"Czech": "cs",
+		"Danish": "da",
+		"Dari": "prs_AF",
+		"Dutch": "nl",
+		"Dutch (Belgium)": "nl_BE",
+		"English": "en",
+		"English (UK)": "en_GB",
+		"English (US)": "en_US",
+		"English (UAE)": "en_AE",
+		"English (Australia)": "en_AU",
+		"English (Canada)": "en_CA",
+		"English (Ghana)": "en_GHA",
+		"English (Ireland)": "en_IE",
+		"English (India)": "en_IN",
+		"English (Jamaica)": "en_JM",
+		"English (Malaysia)": "en_MY",
+		"English (New Zealand)": "en_NZ",
+		"English (Qatar)": "en_QA",
+		"English (Singapore)": "en_SG",
+		"English (Uganda)": "en_UG",
+		"English (South Africa)": "en_ZA",
+		"Estonian": "et",
+		"Filipino": "fil",
+		"Finnish": "fi",
+		"French": "fr",
+		"French (Belgium)": "fr_BE",
+		"French (Canada)": "fr_CA",
+		"French (Switzerland)": "fr_CH",
+		"French (Ivory Coast)": "fr_CI",
+		"French (Morocco)": "fr_MA",
+		"Georgian": "ka",
+		"German": "de",
+		"German (Austria)": "de_AT",
+		"German (Switzerland)": "de_CH",
+		"Greek": "el",
+		"Gujarati": "gu",
+		"Hausa": "ha",
+		"Hebrew": "he",
+		"Hindi": "hi",
+		"Hungarian": "hu",
+		"Indonesian": "id",
+		"Irish": "ga",
+		"Italian": "it",
+		"Japanese": "ja",
+		"Kannada": "kn",
+		"Kazakh": "kk",
+		"Kinyarwanda": "rw_RW",
+		"Korean": "ko",
+		"Kyrgyz (Kyrgyzstan)": "ky_KG",
+		"Lao": "lo",
+		"Latvian": "lv",
+		"Lithuanian": "lt",
+		"Macedonian": "mk",
+		"Malay": "ms",
+		"Malayalam": "ml",
+		"Marathi": "mr",
+		"Norwegian": "nb",
+		"Pashto": "ps_AF",
+		"Persian": "fa",
+		"Polish": "pl",
+		"Portuguese (Brazil)": "pt_BR",
+		"Portuguese (Portugal)": "pt_PT",
+		"Punjabi": "pa",
+		"Romanian": "ro",
+		"Russian": "ru",
+		"Serbian": "sr",
+		"Sinhala": "si_LK",
+		"Slovak": "sk",
+		"Slovenian": "sl",
+		"Spanish": "es",
+		"Spanish (Argentina)": "es_AR",
+		"Spanish (Chile)": "es_CL",
+		"Spanish (Colombia)": "es_CO",
+		"Spanish (Costa Rica)": "es_CR",
+		"Spanish (Dominican Republic)": "es_DO",
+		"Spanish (Ecuador)": "es_EC",
+		"Spanish (Honduras)": "es_HN",
+		"Spanish (Mexico)": "es_MX",
+		"Spanish (Panama)": "es_PA",
+		"Spanish (Peru)": "es_PE",
+		"Spanish (Spain)": "es_ES",
+		"Spanish (Uruguay)": "es_UY",
+		"Swahili": "sw",
+		"Swedish": "sv",
+		"Tamil": "ta",
+		"Telugu": "te",
+		"Thai": "th",
+		"Turkish": "tr",
+		"Ukrainian": "uk",
+		"Urdu": "ur",
+		"Uzbek": "uz",
+		"Vietnamese": "vi",
+		"Zulu": "zu"
+	}
+	
+	return language_mapping.get(language_name, "en")  # Default to English if not found
 
 @frappe.whitelist()
 def get_template_doctypes():
@@ -154,7 +283,7 @@ def doc_matches_filters(doc, filters=None):
 	return evaluate_filters(doc, filters)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_doctype_fields(doctype=None, docname=None, fields_types=None):
 	"""
 	Retrieve specific fields from a doctype document.
@@ -169,6 +298,9 @@ def get_doctype_fields(doctype=None, docname=None, fields_types=None):
 	"""
 	if not doctype or not docname:
 		return {"error": "Doctype and Docname are required"}
+
+	# Restrict to privileged roles
+	frappe.only_for(("System Manager", "Whatsapp Admin", "Whatsapp Editor"))
 
 	current_doc = frappe.get_doc(doctype, docname)
 	if not current_doc:
