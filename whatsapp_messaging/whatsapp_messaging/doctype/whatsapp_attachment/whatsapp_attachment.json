@@ -1,0 +1,122 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Attachment",
+ "module": "Whatsapp Messaging",
+ "autoname": "WA-ATT-.YYYY.-.######",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-18 19:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "message",
+  "account",
+  "file",
+  "provider_media_id",
+  "mime_type",
+  "file_name",
+  "size",
+  "content_hash",
+  "provider_hash",
+  "state",
+  "error_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "message",
+   "label": "Message",
+   "fieldtype": "Link",
+   "options": "WhatsApp Message"
+  },
+  {
+   "fieldname": "account",
+   "label": "Account",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "file",
+   "label": "File",
+   "fieldtype": "Link",
+   "options": "File"
+  },
+  {
+   "fieldname": "provider_media_id",
+   "label": "Provider Media Id",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "mime_type",
+   "label": "Mime Type",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "file_name",
+   "label": "File Name",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "size",
+   "label": "Size",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "content_hash",
+   "label": "Content Hash",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "provider_hash",
+   "label": "Provider Hash",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "state",
+   "label": "State",
+   "fieldtype": "Select",
+   "default": "Pending",
+   "options": "Pending\nReady\nDownloading\nFailed\nBlocked"
+  },
+  {
+   "fieldname": "error_reason",
+   "label": "Error Reason",
+   "fieldtype": "Small Text"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "file_name,message,account"
+}

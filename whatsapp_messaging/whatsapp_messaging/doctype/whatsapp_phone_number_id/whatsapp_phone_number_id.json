@@ -8,7 +8,13 @@
  "field_order": [
   "label",
   "phone_number_id",
-  "access_token"
+  "access_token",
+  "enabled",
+  "waba_id",
+  "portfolio_id",
+  "display_phone",
+  "dispatch_lease_until",
+  "last_dispatch_at"
  ],
  "fields": [
   {
@@ -16,15 +22,19 @@
    "fieldtype": "Data",
    "label": "Phone Number ID",
    "print_hide": 1,
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1,
+   "description": "Meta’s numeric ID for this registered sender, not the phone number itself. Copy the Phone Number ID from your WhatsApp API setup or Meta’s phone-number lookup. <a href=\"https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api?entity=request-13382743-eb9a6721-1056-4db2-b00a-2290e04b5b5d\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: find the Phone Number ID</a>"
   },
   {
    "fieldname": "access_token",
-   "fieldtype": "Data",
+   "fieldtype": "Password",
    "label": "Access Token",
-   "length": 300,
+   "length": 1000,
    "print_hide": 1,
-   "reqd": 1
+   "reqd": 1,
+   "permlevel": 1,
+   "description": "Authorizes API requests for this WhatsApp account. Sending requires whatsapp_business_messaging; template sync requires whatsapp_business_management. Stored encrypted in this app. <a href=\"https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api?entity=request-13382743-199a6c73-b2c5-4472-9444-71aa029e60ed\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: access tokens and permissions</a>"
   },
   {
    "fieldname": "label",
@@ -33,13 +43,55 @@
    "label": "Label",
    "print_hide": 1,
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "description": "A unique name for this sender inside the app. Choose a name your team will recognize. <a href=\"/desk/whatsapp-guide/senders\" target=\"_blank\" rel=\"noopener noreferrer\">App sender setup</a>"
+  },
+  {
+   "fieldname": "enabled",
+   "label": "Enabled",
+   "fieldtype": "Check",
+   "default": "0",
+   "allow_in_quick_entry": 1,
+   "permlevel": 1,
+   "description": "Allows this sender to upload media to WhatsApp Cloud, send messages and process inbound events. The separate outbound, inbound and automation switches in WhatsApp Settings must also allow the operation. Leave off while preparing the account. <a href=\"/desk/whatsapp-guide/senders\" target=\"_blank\" rel=\"noopener noreferrer\">App sender setup</a>"
+  },
+  {
+   "fieldname": "waba_id",
+   "label": "Waba Id",
+   "fieldtype": "Data",
+   "permlevel": 1,
+   "description": "The WhatsApp Business Account ID that owns this phone number. Required in this app for approved-template sync and inbound account matching. <a href=\"https://www.postman.com/meta/whatsapp-business-platform/request/3ku9ru7/get-all-owned-wabas\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: find the WABA ID</a>"
+  },
+  {
+   "fieldname": "portfolio_id",
+   "label": "Portfolio Id",
+   "fieldtype": "Data",
+   "permlevel": 1,
+   "description": "Optional Meta Business Portfolio ID. This app uses it to recognize the same contact across sender accounts in that portfolio. If blank, contacts are grouped by WABA ID, or by the individual sender if WABA ID is also blank. <a href=\"https://www.postman.com/meta/whatsapp-business-platform/request/0qwgiv7/get-business-portfolio-specific-fields\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: business portfolio ID</a>"
+  },
+  {
+   "fieldname": "display_phone",
+   "label": "Display Phone",
+   "fieldtype": "Data",
+   "description": "Optional readable version of this sender’s phone number, including its country code. Used as account information in this app; sending uses Phone Number ID. <a href=\"https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api?entity=request-13382743-eb9a6721-1056-4db2-b00a-2290e04b5b5d\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: phone number details</a>"
+  },
+  {
+   "fieldname": "dispatch_lease_until",
+   "label": "Dispatch Lease Until",
+   "fieldtype": "Datetime",
+   "hidden": 1
+  },
+  {
+   "fieldname": "last_dispatch_at",
+   "label": "Last Dispatch At",
+   "fieldtype": "Datetime",
+   "hidden": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-28 15:49:17.062835",
+ "modified": "2026-10-21 16:30:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Phone Number ID",
@@ -57,10 +109,30 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "select": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "select": 1
   }
  ],
+ "quick_entry": 1,
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "label",
+ "show_title_field_in_link": 1,
+ "search_fields": "label,display_phone,phone_number_id,waba_id"
 }

@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-18",
+  "branch": "secure-send-foundation",
+  "scope": "User documentation in the Mac local WhatsApp app",
+  "workflow_pages": 18,
+  "workflow_screenshots": 22,
+  "additional_overview_screenshot": true,
+  "theme": "Riverbend Hospital: patient services, reception, appointment confirmations, visit instructions, follow-ups and next-day reminders",
+  "example_data": "Fictional hospital and people, reserved training phone numbers, dummy credentials; kept in a disposable test site only",
+  "guide_routes": [
+    "/desk/whatsapp-guide",
+    "/desk/whatsapp-guide/<workflow>"
+  ],
+  "navigation": [
+    "User guide shortcut in all three workspaces",
+    "Module sidebar entry",
+    "Inbox and Automation User guide buttons",
+    "Contextual Help → User guide on relevant forms"
+  ],
+  "content_checks": {
+    "all_workflows_have_screenshots": true,
+    "screenshot_files_and_jpeg_signatures": "pass",
+    "related_links_and_markdown_exports": "pass",
+    "python_javascript_json_syntax": "pass",
+    "git_diff_check": "pass",
+    "screenshot_http_delivery": "22 files served successfully by the Mac HMS site",
+    "plain_language_descriptions": "All 18 purpose descriptions explain actual app behavior without the hospital scenario; app and Markdown exports match"
+  },
+  "browser_checks": {
+    "result": "pass",
+    "local_hms_page": "Guide and hospital-themed workflow visible in the actual local site",
+    "search": "Meera returns five relevant workflows; Unknown search, category filter and empty results also checked",
+    "deep_links": "pass",
+    "contextual_form_help": "pass",
+    "additional_screenshots": "expand and load successfully",
+    "mobile": "390px viewport; no horizontal overflow on index or workflow; four readable workflow steps",
+    "image_enlargement": "Image links point to the versioned local screenshot asset in a separate tab",
+    "workflow_description": "What this workflow does heading and description verified on the actual local HMS guide",
+    "description_typography": "Description and app use the same InterVariable font stack; description resolves to the theme text-base size of 14px"
+  },
+  "regression_tests": {
+    "local": {
+      "count": 22,
+      "result": "pass"
+    },
+    "isolated_frappe": {
+      "count": 88,
+      "result": "pass",
+      "note": "Suite ran before screenshot fixtures were populated; screenshots and guide UI also verified separately"
+    }
+  },
+  "mac_sites": [
+    {
+      "site": "hms.localhost",
+      "guide_page_roles": [
+        "System Manager",
+        "Whatsapp Admin",
+        "Whatsapp Editor"
+      ],
+      "workspace_links": 3,
+      "switches": "outbound, inbound and automation remain off",
+      "operational_record_counts": {
+        "WhatsApp Message": 0,
+        "WhatsApp Conversation": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Phone Number ID": 0
+      }
+    },
+    {
+      "site": "development.localhost",
+      "guide_page_roles": [
+        "System Manager",
+        "Whatsapp Admin",
+        "Whatsapp Editor"
+      ],
+      "workspace_links": 3,
+      "switches": "outbound, inbound and automation remain off",
+      "operational_record_counts": {
+        "WhatsApp Message": 0,
+        "WhatsApp Conversation": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Phone Number ID": 0
+      }
+    }
+  ],
+  "rollout": "Assets built; Page and workspace/sidebar exports migrated on both Mac development sites",
+  "cleanup": "Disposable test stack and loopback screenshot bridge removed; actual development stack retained",
+  "real_messages_sent": false,
+  "home_server_changes": false,
+  "source_status": "Uncommitted local changes; no commit or push"
+}

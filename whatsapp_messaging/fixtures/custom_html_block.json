@@ -1,0 +1,56 @@
+[
+ {
+  "doctype": "Custom HTML Block",
+  "name": "WhatsApp Messaging Summary",
+  "private": 0,
+  "html": "<section aria-label=\"Workspace summary\"><p class=\"wm-state\" role=\"status\">Loading\u2026</p><div class=\"wm-cards\"></div><p class=\"wm-help\"></p></section>",
+  "script": "frappe.xcall(\"whatsapp_messaging.messaging.api.overview\", {section: \"messaging\"}).then(data => {\n const root=root_element;\n root.querySelector(\".wm-state\").textContent=data.outbound_enabled ? \"Outbound enabled\" : \"Outbound messaging is disabled\";\n root.querySelector(\".wm-help\").textContent=data.accounts.length ? \"Choose a card or shortcut to continue.\" : data.manager ? \"Start by configuring a sender account in Administration. Outbound remains disabled until setup and validation are complete.\" : \"No sender accounts are configured. Ask your System Manager to complete setup.\";\n const cards=root.querySelector(\".wm-cards\");cards.replaceChildren();\n for (const card of data.cards) {\n  const button=document.createElement(\"button\");button.type=\"button\";button.className=\"wm-card\";\n  const value=document.createElement(\"strong\");value.textContent=card.value;\n  const label=document.createElement(\"span\");label.textContent=card.label;\n  button.append(value,label);button.onclick=()=>{frappe.route_options=card.route_options;frappe.set_route(card.route);};cards.append(button);\n }\n}).catch(()=>{root_element.querySelector(\".wm-state\").textContent=\"Unable to load this workspace. Refresh or check your access.\";});",
+  "style": ".wm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.wm-card{padding:18px;border:1px solid var(--border-color,#ddd);border-radius:10px;background:var(--card-bg,#fff);color:var(--text-color,#222);text-align:left;cursor:pointer}.wm-card strong{display:block;font-size:28px}.wm-card span{font-size:13px}.wm-state{font-weight:600}.wm-help{color:var(--text-muted,#666);margin:14px 0 0}",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "Whatsapp Admin"
+   },
+   {
+    "role": "Whatsapp Editor"
+   }
+  ]
+ },
+ {
+  "doctype": "Custom HTML Block",
+  "name": "WhatsApp Automation Summary",
+  "private": 0,
+  "html": "<section aria-label=\"Workspace summary\"><p class=\"wm-state\" role=\"status\">Loading\u2026</p><div class=\"wm-cards\"></div><p class=\"wm-help\"></p></section>",
+  "script": "frappe.xcall(\"whatsapp_messaging.messaging.api.overview\", {section: \"automation\"}).then(data => {\n const root=root_element;\n root.querySelector(\".wm-state\").textContent=data.outbound_enabled ? \"Outbound enabled\" : \"Outbound messaging is disabled\";\n root.querySelector(\".wm-help\").textContent=data.accounts.length ? \"Choose a card or shortcut to continue.\" : data.manager ? \"Start by configuring a sender account in Administration. Outbound remains disabled until setup and validation are complete.\" : \"No sender accounts are configured. Ask your System Manager to complete setup.\";\n const cards=root.querySelector(\".wm-cards\");cards.replaceChildren();\n for (const card of data.cards) {\n  const button=document.createElement(\"button\");button.type=\"button\";button.className=\"wm-card\";\n  const value=document.createElement(\"strong\");value.textContent=card.value;\n  const label=document.createElement(\"span\");label.textContent=card.label;\n  button.append(value,label);button.onclick=()=>{frappe.route_options=card.route_options;frappe.set_route(card.route);};cards.append(button);\n }\n}).catch(()=>{root_element.querySelector(\".wm-state\").textContent=\"Unable to load this workspace. Refresh or check your access.\";});",
+  "style": ".wm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.wm-card{padding:18px;border:1px solid var(--border-color,#ddd);border-radius:10px;background:var(--card-bg,#fff);color:var(--text-color,#222);text-align:left;cursor:pointer}.wm-card strong{display:block;font-size:28px}.wm-card span{font-size:13px}.wm-state{font-weight:600}.wm-help{color:var(--text-muted,#666);margin:14px 0 0}",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "Whatsapp Admin"
+   },
+   {
+    "role": "Whatsapp Editor"
+   }
+  ]
+ },
+ {
+  "doctype": "Custom HTML Block",
+  "name": "WhatsApp Administration Summary",
+  "private": 0,
+  "html": "<section aria-label=\"Workspace summary\"><p class=\"wm-state\" role=\"status\">Loading\u2026</p><div class=\"wm-cards\"></div><p class=\"wm-help\"></p></section>",
+  "script": "frappe.xcall(\"whatsapp_messaging.messaging.api.overview\", {section: \"administration\"}).then(data => {\n const root=root_element;\n root.querySelector(\".wm-state\").textContent=data.outbound_enabled ? \"Outbound enabled\" : \"Outbound messaging is disabled\";\n root.querySelector(\".wm-help\").textContent=data.accounts.length ? \"Choose a card or shortcut to continue.\" : data.manager ? \"Start by configuring a sender account in Administration. Outbound remains disabled until setup and validation are complete.\" : \"No sender accounts are configured. Ask your System Manager to complete setup.\";\n const cards=root.querySelector(\".wm-cards\");cards.replaceChildren();\n for (const card of data.cards) {\n  const button=document.createElement(\"button\");button.type=\"button\";button.className=\"wm-card\";\n  const value=document.createElement(\"strong\");value.textContent=card.value;\n  const label=document.createElement(\"span\");label.textContent=card.label;\n  button.append(value,label);button.onclick=()=>{frappe.route_options=card.route_options;frappe.set_route(card.route);};cards.append(button);\n }\n}).catch(()=>{root_element.querySelector(\".wm-state\").textContent=\"Unable to load this workspace. Refresh or check your access.\";});",
+  "style": ".wm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.wm-card{padding:18px;border:1px solid var(--border-color,#ddd);border-radius:10px;background:var(--card-bg,#fff);color:var(--text-color,#222);text-align:left;cursor:pointer}.wm-card strong{display:block;font-size:28px}.wm-card span{font-size:13px}.wm-state{font-weight:600}.wm-help{color:var(--text-muted,#666);margin:14px 0 0}",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "Whatsapp Admin"
+   }
+  ]
+ }
+]

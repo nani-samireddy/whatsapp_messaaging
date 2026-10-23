@@ -135,6 +135,7 @@ app_include_js = ["whatsapp_messaging.bundle.js"]
 
 doc_events = {
 	"*": {
+        "before_validate": "whatsapp_messaging.messaging.naming.set_title",
 	 	"on_update": "whatsapp_messaging.tasks.doc_events.on_update_all",
 		"after_insert": "whatsapp_messaging.tasks.doc_events.after_insert_all",
 		"on_trash": "whatsapp_messaging.tasks.doc_events.on_trash_all",
@@ -143,6 +144,8 @@ doc_events = {
 	}
 }
 
+# A contact display-name correction refreshes existing linked titles.
+doc_events["WhatsApp Peer"] = {"on_update": "whatsapp_messaging.messaging.naming.refresh_peer_titles"}
 
 # Scheduled Tasks
 # ---------------
@@ -241,3 +244,31 @@ scheduler_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+# Canonical inbox and automation services.
+after_install = "whatsapp_messaging.messaging.setup.install"
+after_migrate = "whatsapp_messaging.messaging.setup.install"
+scheduler_events = {"cron": {"* * * * *": ["whatsapp_messaging.messaging.setup.tick"]}}
+permission_query_conditions = {
+    "WhatsApp Automation Run": "whatsapp_messaging.messaging.api.run_query",
+    "WhatsApp Conversation Read": "whatsapp_messaging.messaging.api.read_query",
+}
+has_permission = {
+    "WhatsApp Automation Run": "whatsapp_messaging.messaging.api.run_permission",
+    "WhatsApp Conversation Read": "whatsapp_messaging.messaging.api.read_permission",
+}
+app_include_js = ["whatsapp_messaging.bundle.js"]
+
+fixtures.append({"doctype": "Custom HTML Block", "filters": [["name", "in", ["WhatsApp Messaging Summary", "WhatsApp Automation Summary", "WhatsApp Administration Summary"]]]})
+
+# Register the app in Desk's application chooser, as well as its module sidebar.
+app_home = "/desk/whatsapp-messaging"
+app_icon = "octicon octicon-comment-discussion"
+app_color = "green"
+add_to_apps_screen = [{
+    "name": "whatsapp_messaging",
+    "title": "WhatsApp Messaging",
+    "logo": "/assets/whatsapp_messaging/images/whatsapp.svg",
+    "route": "/desk/whatsapp-messaging",
+    "has_permission": "whatsapp_messaging.messaging.api.has_app_permission",
+}]

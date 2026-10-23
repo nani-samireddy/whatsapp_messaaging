@@ -1,0 +1,21 @@
+{
+ "doctype": "Page",
+ "name": "whatsapp-inbox",
+ "page_name": "whatsapp-inbox",
+ "title": "WhatsApp Inbox",
+ "module": "Whatsapp Messaging",
+ "standard": "Yes",
+ "creation": "2026-10-18 12:08:03.456625",
+ "modified": "2026-10-18 12:08:03.456625",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Whatsapp Admin"
+  },
+  {
+   "role": "Whatsapp Editor"
+  }
+ ]
+}

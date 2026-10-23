@@ -1,100 +1,130 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "allow_rename": 0,
  "creation": "2025-01-03 16:48:30.152752",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "record_title",
   "section_break_mxkr",
-  "column_break_kbch",
-  "media_type",
+  "label",
   "phone_number_id",
-  "document_type",
   "media_attachment",
-  "column_break_vtkz",
+  "file_preview",
+  "file_details_section",
+  "file_name",
+  "document_type",
   "content_type",
+  "column_break_vtkz",
+  "file_size_display",
+  "validation_status",
+  "validated_on",
+  "validation_message",
+  "cloud_section",
+  "cloud_status",
   "media_id",
-  "media_url",
+  "cloud_column_break",
+  "cloud_uploaded_on",
+  "cloud_refresh_after",
+  "cloud_error",
   "section_break_dhbx",
-  "caption"
+  "caption",
+  "legacy_section",
+  "media_url",
+  "media_type",
+  "file_reference",
+  "file_size",
+  "content_hash",
+  "cloud_content_hash",
+  "cloud_sender",
+  "cloud_upload_key",
+  "cloud_requested_by",
+  "cloud_lease_until"
  ],
  "fields": [
   {
-   "allow_in_quick_entry": 1,
-   "fieldname": "section_break_mxkr",
-   "fieldtype": "Section Break",
-   "label": "Media details"
-  },
-  {
-   "allow_in_quick_entry": 1,
-   "fieldname": "column_break_kbch",
-   "fieldtype": "Column Break"
-  },
-  {
-   "allow_in_quick_entry": 1,
-   "fieldname": "media_id",
+   "fieldname": "record_title",
+   "label": "Record Title",
    "fieldtype": "Data",
-   "label": "Media ID"
-  },
-  {
-   "allow_in_quick_entry": 1,
-   "fieldname": "caption",
-   "fieldtype": "Long Text",
+   "read_only": 1,
+   "no_copy": 1,
    "in_list_view": 1,
    "in_preview": 1,
-   "label": "Caption"
+   "hidden": 1
   },
   {
-   "allow_in_quick_entry": 1,
+   "fieldname": "section_break_mxkr",
+   "fieldtype": "Section Break",
+   "label": "Media File"
+  },
+  {
+   "fieldname": "media_id",
+   "fieldtype": "Data",
+   "label": "WhatsApp Media ID",
+   "hidden": 0,
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Returned by Meta after the cloud upload succeeds. The app refreshes expired IDs when needed."
+  },
+  {
+   "fieldname": "caption",
+   "fieldtype": "Long Text",
+   "in_list_view": 0,
+   "in_preview": 1,
+   "label": "Notes",
+   "description": "Internal library notes. Write the outgoing caption in the template or message composer."
+  },
+  {
    "fieldname": "content_type",
    "fieldtype": "Data",
-   "label": "Content Type"
+   "label": "File Format",
+   "read_only": 1,
+   "description": "Detected from the actual file, independently of its extension."
   },
   {
-   "allow_in_quick_entry": 1,
    "fieldname": "media_type",
    "fieldtype": "Select",
    "label": "Type",
    "options": "URL\nUpload",
-   "reqd": 1
+   "default": "Upload",
+   "hidden": 1,
+   "read_only": 1
   },
   {
-   "allow_in_quick_entry": 1,
-   "depends_on": "eval:doc.media_type === 'URL';",
    "fieldname": "media_url",
    "fieldtype": "Data",
-   "label": "URL",
-   "mandatory_depends_on": "eval:doc.media_type === 'URL';"
+   "label": "Legacy URL",
+   "read_only": 1,
+   "depends_on": "eval:doc.media_type==='URL'"
   },
   {
-   "allow_in_quick_entry": 1,
-   "depends_on": "eval:doc.media_type === 'Upload';",
    "fieldname": "media_attachment",
    "fieldtype": "Attach",
-   "in_filter": 1,
-   "in_list_view": 1,
+   "in_filter": 0,
+   "in_list_view": 0,
    "in_preview": 1,
-   "in_standard_filter": 1,
+   "in_standard_filter": 0,
    "label": "File",
-   "mandatory_depends_on": "eval:doc.media_type === 'Upload';"
+   "description": "Choose a private JPEG/PNG image (up to 5 MB) or PDF (up to 20 MB). Selecting a file does not send it.",
+   "allow_in_quick_entry": 1
   },
   {
-   "allow_in_quick_entry": 1,
-   "depends_on": "eval:doc.media_type === 'URL';",
    "fieldname": "document_type",
    "fieldtype": "Select",
-   "label": "Media Type",
-   "mandatory_depends_on": "eval:doc.media_type === 'URL';",
-   "options": "audio\ndocument\nimage\nsticker\nvideo"
+   "label": "Detected Type",
+   "options": "image\ndocument\naudio\nsticker\nvideo",
+   "read_only": 1
   },
   {
-   "allow_in_quick_entry": 1,
    "fieldname": "phone_number_id",
    "fieldtype": "Link",
-   "label": "Phone Number ID",
+   "label": "Sender",
    "options": "WhatsApp Phone Number ID",
-   "reqd": 1
+   "hidden": 0,
+   "read_only": 0,
+   "allow_in_quick_entry": 1,
+   "description": "The WhatsApp account used to upload this file to Meta. No message is sent when you save."
   },
   {
    "fieldname": "column_break_vtkz",
@@ -102,12 +132,185 @@
   },
   {
    "fieldname": "section_break_dhbx",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "label": "Label",
+   "allow_in_quick_entry": 1,
+   "in_standard_filter": 0,
+   "description": "A name to recognize this file, such as Visit instructions. Defaults to the filename."
+  },
+  {
+   "fieldname": "file_preview",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "file_details_section",
+   "fieldtype": "Section Break",
+   "label": "File Details"
+  },
+  {
+   "fieldname": "file_name",
+   "fieldtype": "Data",
+   "label": "File Name",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "file_size_display",
+   "fieldtype": "Data",
+   "label": "File Size",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "file_size",
+   "fieldtype": "Int",
+   "label": "File Size (bytes)",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "file_reference",
+   "fieldtype": "Link",
+   "options": "File",
+   "label": "Stored File",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "content_hash",
+   "fieldtype": "Data",
+   "label": "Content Hash",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "validated_on",
+   "fieldtype": "Datetime",
+   "label": "Last Checked",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Select",
+   "label": "File Status",
+   "options": "Needs File\nReady\nNeeds Attention\nLegacy URL",
+   "default": "Needs File",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "validation_message",
+   "fieldtype": "Small Text",
+   "label": "File Check",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "legacy_section",
+   "fieldtype": "Section Break",
+   "label": "Legacy Source",
+   "collapsible": 1,
+   "depends_on": "eval:doc.media_type==='URL'"
+  },
+  {
+   "fieldname": "cloud_section",
+   "fieldtype": "Section Break",
+   "label": "WhatsApp Cloud"
+  },
+  {
+   "fieldname": "cloud_status",
+   "fieldtype": "Select",
+   "label": "Cloud Upload Status",
+   "options": "Not Uploaded\nNeeds Sender\nPending\nUploading\nUploaded\nFailed\nBlocked",
+   "default": "Not Uploaded",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "cloud_error",
+   "fieldtype": "Small Text",
+   "label": "Upload Details",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_uploaded_on",
+   "fieldtype": "Datetime",
+   "label": "Uploaded On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_refresh_after",
+   "fieldtype": "Datetime",
+   "label": "Refresh After",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_content_hash",
+   "fieldtype": "Data",
+   "label": "Cloud Content Hash",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_sender",
+   "fieldtype": "Link",
+   "label": "Cloud Sender",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "cloud_upload_key",
+   "fieldtype": "Data",
+   "label": "Cloud Upload Key",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_requested_by",
+   "fieldtype": "Link",
+   "label": "Cloud Requested By",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "options": "User"
+  },
+  {
+   "fieldname": "cloud_lease_until",
+   "fieldtype": "Datetime",
+   "label": "Cloud Lease Until",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cloud_column_break",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-28 15:07:46.339273",
+ "modified": "2026-10-21 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Media",
@@ -155,5 +358,11 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "autoname": "WA-MEDIA-.######",
+ "naming_rule": "Expression (old style)",
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "label,file_name,document_type,content_type",
+ "make_attachments_public": 0
 }

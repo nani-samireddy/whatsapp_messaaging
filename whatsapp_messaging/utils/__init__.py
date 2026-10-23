@@ -2,6 +2,7 @@ import base64
 from datetime import datetime
 from frappe.utils.data import evaluate_filters
 import frappe
+import json
 from frappe import get_meta
 
 @frappe.whitelist()
@@ -16,17 +17,34 @@ def get_input_fields(doctype, input_types=None):
 	Returns:
 	- list: A list of input field names.
 	"""
+	from whatsapp_messaging.template_security import is_recipient_phone_field, SENSITIVE_FIELD
+	_check_metadata_permission(doctype)
 	meta = get_meta(doctype)
+	permitted = set(meta.get_permitted_fieldnames(permission_type="read"))
 	input_fields = []
 
+	if isinstance(input_types, str):
+		# Frappe serializes an optional null argument as an empty form value.
+		input_types = json.loads(input_types) if input_types.strip() else None
 	if input_types is None:
-		input_types = ['Data', 'Select', 'Date', 'Datetime', 'Time', 'Currency', 'Int', 'Float', 'Check', 'Text', 'Small Text', 'Long Text', 'Link', 'Dynamic Link', 'Password', 'Phone', 'Read Only', 'Attach', 'Attach Image']
+		input_types = ['Data', 'Select', 'Date', 'Datetime', 'Time', 'Currency', 'Int', 'Float', 'Check', 'Text', 'Small Text', 'Long Text', 'Link', 'Phone']
+	if not isinstance(input_types, (list, tuple)) or any(not isinstance(kind, str) for kind in input_types):
+		frappe.throw("Input field types must be a list")
 
+	phone_only = set(input_types) == {"Phone"}
 	for field in meta.fields:
-		if field.fieldtype in input_types:
+		matches_type = field.fieldtype in input_types or ("Phone" in input_types and is_recipient_phone_field(field))
+		if phone_only and SENSITIVE_FIELD.search(field.fieldname):
+			continue
+		if field.fieldname in permitted and matches_type and field.fieldtype != "Password" and not field.hidden:
 			input_fields.append(field.fieldname)
 
 	return input_fields
+
+
+def _check_metadata_permission(doctype):
+	if frappe.session.user == "Guest" or not frappe.has_permission(doctype, "read"):
+		frappe.throw("You cannot read this DocType", frappe.PermissionError)
 
 def mime_type_to_message_type(mime_type):
 	'''
@@ -121,26 +139,29 @@ def format_phone_number(phone):
 
 @frappe.whitelist()
 def get_template_doctypes():
-	cache_key = "template_doctypes_map"
-	doctypes = frappe.cache().get_value(cache_key)
+	# Permission filtering is user-specific; never return the former site-wide cache.
+	if frappe.session.user == "Guest":
+		frappe.throw("Authentication is required", frappe.PermissionError)
+	doctypes = frappe.get_list(
+		"WhatsApp Message Template",
+		filters={"disable": 0, "is_single": 0, "template_event": ["in", ["None", "Custom"]]},
+		fields=["name", "template_doctype", "template_button_label"],
+		limit_page_length=0,
+	)
+	from whatsapp_messaging.messaging.campaigns import DOCTYPE, rule_type
+	doctypes = [row for row in doctypes if rule_type(row.name) != DOCTYPE]
+	if frappe.db.has_table(DOCTYPE):
+		doctypes += frappe.get_list(DOCTYPE,
+			filters={"disable":0,"is_single":0,"template_event":["in",["None","Custom"]]},
+			fields=["name","template_doctype","template_button_label"],limit_page_length=0)
+	doctype_map = {}
+	for template in doctypes:
+		if frappe.has_permission(template.template_doctype, "read"):
+			doctype_map.setdefault(template.template_doctype, []).append({
+				"name": template.name, "label": template.template_button_label,
+			})
+	return doctype_map
 
-	if not doctypes:
-		# Query to get distinct template_doctype values from Templates
-		doctypes = frappe.db.get_all('WhatsApp Message Template', distinct=True, fields=['name', 'template_doctype', 'template_button_label'])
-
-		# Create a map with the template_doctype values as keys and document names as values
-		doctype_map = {}
-		for d in doctypes:
-			template_details = {'name': d.name, 'label': d.template_button_label}
-			if doctype_map.get(d.template_doctype):
-				doctype_map[d.template_doctype].append(template_details)
-			else:
-				doctype_map[d.template_doctype] = [template_details]
-
-		# Cache the result
-		frappe.cache().set_value(cache_key, doctype_map)
-		return doctype_map
-	return doctypes
 
 def doc_matches_filters(doc, filters=None):
 	'''
@@ -151,83 +172,41 @@ def doc_matches_filters(doc, filters=None):
 	'''
 	if not filters:
 		return True
+	if isinstance(filters, str):
+		filters = json.loads(filters)
+	if isinstance(filters, dict) and "filters" in filters:
+		filters = filters["filters"]
 	return evaluate_filters(doc, filters)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_doctype_fields(doctype=None, docname=None, fields_types=None):
-	"""
-	Retrieve specific fields from a doctype document.
+	"""Return only the approved message-field picker groups, never account metadata."""
+	from whatsapp_messaging.template_security import (
+		SAFE_SOURCE_TYPES, SAFE_TEMPLATE_FIELDS, SENSITIVE_FIELD, parse_allowed_fields,
+	)
+	if doctype != "WhatsApp Message Template" or not docname:
+		frappe.throw("A saved WhatsApp Message Template is required")
+	_check_metadata_permission(doctype)
+	template = frappe.get_doc(doctype, docname)
+	template.check_permission("read")
+	_check_metadata_permission(template.template_doctype)
+	from whatsapp_messaging.messaging.field_policy import get_allowed_source_fields
+	allowed = get_allowed_source_fields(template.template_doctype)
 
-	Args:
-		doctype (str): The name of the doctype.
-		docname (str): The name of the document.
-		fields_types (list, optional): A list of field names to retrieve. If None, all fields are retrieved.
+	def fields_for(meta, allowed_names):
+		permitted = set(meta.get_permitted_fieldnames(permission_type="read"))
+		return [
+			{key: getattr(field, key, None) for key in ("fieldname", "label", "fieldtype", "options", "hidden")}
+			for field in meta.fields
+			if field.fieldname in allowed_names and field.fieldname in permitted
+			and field.fieldtype in SAFE_SOURCE_TYPES and not field.hidden and not field.print_hide
+			and not SENSITIVE_FIELD.search(field.fieldname)
+		]
 
-	Returns:
-		dict: A dictionary containing the requested fields and their values.
-	"""
-	if not doctype or not docname:
-		return {"error": "Doctype and Docname are required"}
-
-	current_doc = frappe.get_doc(doctype, docname)
-	if not current_doc:
-		return {"error": "Document not found"}
-
-	FIELDS_TYPES_TO_EXCLUDE = [ "Section Break", "Column Break", "Tab Break", "Image", "Link", "Table"]
-	FIELD_PROPERTIES_TO_INCLUDE = ["fieldname", "label", "fieldtype", "options", "hidden"]
- 
-	data_to_return = []
-	
-	# Get all the fields of the doctype
-	meta = get_meta(doctype)
-	# Get the fields in the main doctype.
-	filtered_fields = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE and not f.print_hide, meta.fields)
-	# Include only the specified properties for each field
-	filtered_fields = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, filtered_fields)
-	if fields_types:
-		data_to_return.append( {
-			"label" : doctype,
-			"doctype": doctype,
-			"fieldname": "self",
-			"fields": list(filtered_fields),
-		})
-	
-	# Get fields from the linked doctype
-	linked_fields = [field for field in meta.fields if field.fieldtype in ["Link", "Dynamic Link"]]
-	for field in linked_fields:
-		if field.options != "DocType" and field.options != "Dynamic Link":
-			linked_doctype = field.options
-			linked_meta = get_meta(linked_doctype)
-			
-			linked_fields_data = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE and not f.print_hide, linked_meta.fields)
-			# Include only the specified properties for each field
-			linked_fields_data = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, linked_fields_data)
-			
-			if linked_fields_data:
-				data_to_return.append({
-					"label": field.label,
-					"doctype": linked_doctype,
-					"fieldname": field.fieldname,
-					"fields": list(linked_fields_data),
-				})
-		elif field.options == "DocType":
-			# Get the selected doctype from the current document.
-			selected_doctype = current_doc.get(field.fieldname)
-			if selected_doctype:
-				linked_meta = get_meta(selected_doctype)
-				linked_fields_data = filter(lambda f: f.fieldtype not in FIELDS_TYPES_TO_EXCLUDE and not f.print_hide, linked_meta.fields)
-				# Include only the specified properties for each field
-				linked_fields_data = map(lambda f: {prop: getattr(f, prop) for prop in FIELD_PROPERTIES_TO_INCLUDE if hasattr(f, prop)}, linked_fields_data)
-				
-				# If no fields are found, skip this field
-				if linked_fields_data:
-					data_to_return.append({
-						"label": field.label,
-						"fieldname": field.fieldname,
-						"doctype": selected_doctype,
-						"fields": list(linked_fields_data),
-					})
-	return data_to_return
-	
-	
+	return [
+		{"label": "Template labels", "doctype": doctype, "fieldname": "self",
+		 "fields": fields_for(get_meta(doctype), SAFE_TEMPLATE_FIELDS)},
+		{"label": template.template_doctype, "doctype": template.template_doctype, "fieldname": "template_doctype",
+		 "fields": fields_for(get_meta(template.template_doctype), allowed)},
+	]

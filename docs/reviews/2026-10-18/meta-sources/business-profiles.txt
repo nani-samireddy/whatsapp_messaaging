@@ -1,0 +1,92 @@
+# Business profiles
+
+
+
+Your business phone number&#039;s profile displays additional information such as address, website, and description. You can add this information when registering your phone number or update the profile later via WhatsApp Manager or the API.
+
+## View or update your profile in WhatsApp Manager
+
+To view or update your business profile via WhatsApp Manager:
+
+1. Navigate to [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/) &gt; **Account tools** &gt; **Phone numbers**.
+2. Select your business phone number.
+3. Click the **Profile** tab to view your current profile.
+4. Use the form to set new profile values.
+
+## Get your profile via the API
+
+Before you call the API, make sure you have a business phone number ID and a [system user access token](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens) with the [required permissions](https://developers.facebook.com/documentation/business-messaging/whatsapp/permissions).
+
+Use the [WhatsApp Business Profile API](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/whatsapp-business-profile-api#get-version-phone-number-id-whatsapp-business-profile) to get specific business profile fields:
+
+### Example request
+
+```html
+curl &#039;https://graph.facebook.com/v25.0/106540352242922/whatsapp_business_profile?fields=about,address,description,email,profile_picture_url,websites,vertical&#039; \
+-H &#039;Authorization: Bearer EAAJB...&#039;
+```
+
+### Example response
+
+Upon success:
+
+```json
+&#123;
+  &quot;data&quot;: [
+    &#123;
+      &quot;about&quot;: &quot;Succulent specialists!&quot;,
+      &quot;address&quot;: &quot;1 Hacker Way, Menlo Park, CA 94025&quot;,
+      &quot;description&quot;: &quot;At Lucky Shrub, we specialize in providing a...&quot;,
+      &quot;email&quot;: &quot;lucky&#064;luckyshrub.com&quot;,
+      &quot;profile_picture_url&quot;: &quot;https://pps.whatsapp.net/v/t61.24...&quot;,
+      &quot;websites&quot;: [
+        &quot;https://www.luckyshrub.com/&quot;
+      ],
+      &quot;vertical&quot;: &quot;RETAIL&quot;,
+      &quot;messaging_product&quot;: &quot;whatsapp&quot;
+    &#125;
+  ]
+&#125;
+```
+
+## Update your profile via the API
+
+Use the [WhatsApp Business Profile API](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/whatsapp-business-profile-api#post-version-phone-number-id-whatsapp-business-profile) to update specific business profile fields:
+
+### Example request
+
+```html
+curl &#039;https://graph.facebook.com/v25.0/106540352242922/whatsapp_business_profile&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer EAAJB...&#039; \
+--data-raw &#039;
+&#123;
+  &quot;about&quot;: &quot;Succulent specialists!&quot;,
+  &quot;address&quot;: &quot;1 Hacker Way, Menlo Park, CA 94025&quot;,
+  &quot;description&quot;: &quot;At Lucky Shrub, we specialize in providing a diverse range of high-quality succulents to suit your needs. From rare and exotic varieties to timeless classics, our collection has something for everyone.&quot;,
+  &quot;email&quot;: &quot;lucky&#064;luckyshrub.com&quot;,
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;profile_picture_handle&quot;: &quot;4::aW...&quot;,
+  &quot;websites&quot;: &quot;[\n  \&quot;https://www.luckyshrub.com\&quot;\n]&quot;
+&#125;&#039;
+```
+
+### Example response
+
+Upon success:
+
+```json
+&#123;
+  &quot;success&quot;: true
+&#125;
+```
+
+### Field notes
+
+- The `vertical` field can be updated via POST. The `WhatsAppVertical` enum defines the valid values (excluding `UNDEFINED` and `NOT_A_BIZ`). You can also change this value using [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/).
+- The `address` field accepts freeform text (maximum 256 characters) and does not validate against any geographic database.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

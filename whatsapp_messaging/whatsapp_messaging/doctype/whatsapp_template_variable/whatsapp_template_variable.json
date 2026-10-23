@@ -1,0 +1,42 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Template Variable",
+ "module": "Whatsapp Messaging",
+ "istable": 1,
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "creation": "2026-10-21 17:00:00.000000",
+ "modified": "2026-10-21 17:00:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "field_order": [
+  "position",
+  "source_path",
+  "sample_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "position",
+   "fieldtype": "Int",
+   "label": "Variable",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "source_path",
+   "fieldtype": "Select",
+   "label": "Source Field",
+   "in_list_view": 1,
+   "columns": 5
+  },
+  {
+   "fieldname": "sample_value",
+   "fieldtype": "Small Text",
+   "label": "Review Example",
+   "in_list_view": 1,
+   "columns": 4
+  }
+ ],
+ "permissions": []
+}

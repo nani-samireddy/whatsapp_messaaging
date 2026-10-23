@@ -1,0 +1,373 @@
+# WhatsApp Business Cloud API Guides &amp; Documentation
+
+&gt; The WhatsApp Cloud API enables businesses to send messages, manage phone numbers, handle webhooks, and integrate WhatsApp messaging into their applications.
+
+## Guides &amp; Documentation
+
+### Account assets
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/phone-numbers.md): Overview
+- [Register a phone number](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/registration.md): Register a phone number
+- [Two-step verification](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/two-step-verification.md): Two-step verification
+- [AI-enabled phone numbers](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/ai-enabled-numbers.md): AI-enabled phone numbers
+- [Conversational components](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/conversational-components.md): Conversational components
+- [Business-scoped user IDs](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-scoped-user-ids.md): Business-scoped user IDs
+- [Business profiles](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-profiles.md): Business profiles
+- [Display names](https://developers.facebook.com/documentation/business-messaging/whatsapp/display-names.md): Display names
+- [Official Business Accounts](https://developers.facebook.com/documentation/business-messaging/whatsapp/official-business-accounts.md): Official Business Accounts
+- [WhatsApp Business Accounts](https://developers.facebook.com/documentation/business-messaging/whatsapp/whatsapp-business-accounts.md): WhatsApp Business Accounts
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/account-model-evolution.md): Overview
+- [Onboarding](https://developers.facebook.com/documentation/business-messaging/whatsapp/account-model-evolution/onboarding.md): Onboarding
+- [Managing messaging accounts](https://developers.facebook.com/documentation/business-messaging/whatsapp/account-model-evolution/messaging.md): Managing messaging accounts
+- [QR codes and message links](https://developers.facebook.com/documentation/business-messaging/whatsapp/qr-codes.md): QR codes and message links
+- [Timezone IDs](https://developers.facebook.com/documentation/business-messaging/whatsapp/timezone-ids.md): Timezone IDs
+
+### Ads that click to WhatsApp
+
+- [Welcome message sequences](https://developers.facebook.com/documentation/business-messaging/whatsapp/ctwa/welcome-message-sequences.md): Welcome message sequences
+
+### Analytics
+
+- [Analytics](https://developers.facebook.com/documentation/business-messaging/whatsapp/analytics.md): Analytics
+
+### Authentication messages
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/authentication-templates.md): Overview
+- [Authenticating users](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/authentication-best-practices.md): Authenticating users
+- [Error signals](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/error-signals.md): Error signals
+- [One-tap autofill](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/autofill-button-authentication-templates.md): One-tap autofill
+- [Zero-tap](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/zero-tap-authentication-templates.md): Zero-tap
+- [Copy code](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/copy-code-button-authentication-templates.md): Copy code
+- [Keyboard suggestions](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/keyboard-suggestions.md): Keyboard suggestions
+- [Bulk management](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/bulk-management.md): Bulk management
+- [Previews](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/authentication-templates/template-preview.md): Previews
+
+### Calling
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling.md): Overview
+- [Configure call settings](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/call-settings.md): Configure call settings
+- [Business-initiated calls](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/business-initiated-calls.md): Business-initiated calls
+- [User call permissions](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/user-call-permissions.md): User call permissions
+- [Video calling](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/video-calling.md): Video calling
+- [User-initiated calls](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/user-initiated-calls.md): User-initiated calls
+- [Call recording](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/call-recording.md): Call recording
+- [Call transcription](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/call-transcription.md): Call transcription
+- [Session Initiation Protocol](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/sip.md): Session Initiation Protocol
+- [Call button messages and deep links](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/call-button-messages-deep-links.md): Call button messages and deep links
+- [Integration patterns](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/integration-patterns.md): Integration patterns
+- [Integration examples](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/integration-examples.md): Integration examples
+- [Reference](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/reference.md): Reference
+- [Troubleshooting](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/troubleshooting.md): Troubleshooting
+- [Calling sandbox account](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/sandbox.md): Calling sandbox account
+- [App Review guidelines](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/app-review-guidelines.md): App Review guidelines
+- [Pricing](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/pricing.md): Pricing
+- [FAQ](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/faq.md): FAQ
+
+### Catalogs
+
+- [What&#039;s new](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/whats-new-in-shopping.md): What&#039;s new
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalogs-overview.md): Overview
+- [Upload inventory](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/upload-inventory.md): Upload inventory
+- [Set commerce settings](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/set-commerce-settings.md): Set commerce settings
+- [Share products](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/share-products.md): Share products
+- [Receiving responses](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/receive-responses.md): Receiving responses
+- [Catalog link messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalog-link-messages.md): Catalog link messages
+- [Catalog messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalog-messages.md): Catalog messages
+- [Catalog template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalog-template-messages.md): Catalog template messages
+- [Multi-product messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/multi-product-messages.md): Multi-product messages
+- [Multi-product template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/mpm-template-messages.md): Multi-product template messages
+- [Product carousel messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/interactive-product-carousel-messages.md): Product carousel messages
+- [Product carousel template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/product-card-carousel-template-messages.md): Product carousel template messages
+- [Single-product messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/single-product-messages.md): Single-product messages
+- [Single-product template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/spm-template-messages.md): Single-product template messages
+- [Unified catalog messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/unified-catalog-messages.md): Unified catalog messages
+- [Unified catalog template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/unified-catalog-template-messages.md): Unified catalog template messages
+- [Best practices](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/best-practices.md): Best practices
+
+### Data, Privacy, &amp;amp; Policy
+
+- [Policy enforcement](https://developers.facebook.com/documentation/business-messaging/whatsapp/policy-enforcement.md): Policy enforcement
+- [Violations](https://developers.facebook.com/documentation/business-messaging/whatsapp/policy-enforcement-violations.md): Violations
+- [Blocking users](https://developers.facebook.com/documentation/business-messaging/whatsapp/block-users.md): Blocking users
+- [Encryption](https://developers.facebook.com/documentation/business-messaging/whatsapp/encryption.md): Encryption
+- [Data privacy &amp;amp; security](https://developers.facebook.com/documentation/business-messaging/whatsapp/data-privacy-and-security.md): Data privacy &amp;amp; security
+- [Local storage](https://developers.facebook.com/documentation/business-messaging/whatsapp/local-storage.md): Local storage
+- [No storage](https://developers.facebook.com/documentation/business-messaging/whatsapp/no-storage.md): No storage
+- [Obtaining user opt-in](https://developers.facebook.com/documentation/business-messaging/whatsapp/getting-opt-in.md): Obtaining user opt-in
+- [User identity changes](https://developers.facebook.com/documentation/business-messaging/whatsapp/identity-change.md): User identity changes
+
+### Direct Send API
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send.md): Overview
+- [Supported features and limits](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/supported-features-and-limits.md): Supported features and limits
+- [Get started](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/get-started.md): Get started
+- [Send utility and authentication messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/send-utility-and-authentication-messages.md): Send utility and authentication messages
+- [Business-named templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/business-named-templates.md): Business-named templates
+- [Configure message TTL](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/configure-message-ttl.md): Configure message TTL
+- [Supported message types](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/supported-message-types.md): Supported message types
+- [Media message headers](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/media-headers.md): Media message headers
+- [View generated templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/view-generated-templates.md): View generated templates
+- [View insights and analytics](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/view-insights-and-analytics.md): View insights and analytics
+- [Send sample payloads](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/send-sample-payloads.md): Send sample payloads
+- [Integrity and content guidelines](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/integrity-and-content-guidelines.md): Integrity and content guidelines
+- [API reference](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/api-reference.md): API reference
+- [FAQ](https://developers.facebook.com/documentation/business-messaging/whatsapp/direct-send/faq.md): FAQ
+
+### Get started
+
+- [Get started](https://developers.facebook.com/documentation/business-messaging/whatsapp/get-started.md): Get started
+
+### Groups
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups.md): Overview
+- [Get started](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/get-started.md): Get started
+- [Group management](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/reference.md): Group management
+- [Group messaging](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/groups-messaging.md): Group messaging
+- [Webhooks](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/webhooks.md): Webhooks
+- [Error codes](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/error-codes.md): Error codes
+- [Pricing](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/pricing.md): Pricing
+- [FAQ](https://developers.facebook.com/documentation/business-messaging/whatsapp/groups/faq.md): FAQ
+
+### In-App Signup
+
+- [In-App Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/in-app-signup.md): In-App Signup
+
+### Marketing messages
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/overview.md): Overview
+- [Get started](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/get-started.md): Get started
+- [Features](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/features.md): Features
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates.md): Overview
+- [Custom marketing templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/custom-marketing-templates.md): Custom marketing templates
+- [Call permission request message template](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/call-permission-request-message-template.md): Call permission request message template
+- [Coupon code templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/coupon-templates.md): Coupon code templates
+- [Limited-time-offer templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/limited-time-offer-templates.md): Limited-time-offer templates
+- [Location templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/location-templates.md): Location templates
+- [Media card carousel templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/media-card-carousel-templates.md): Media card carousel templates
+- [Onboarding](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/onboarding.md): Onboarding
+- [Measure conversions](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/measure-conversion.md): Measure conversions
+- [Track click events](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/track-click-events.md): Track click events
+- [View metrics](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/view-metrics.md): View metrics
+- [Deep links](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/deep-links.md): Deep links
+- [Send marketing messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/send-marketing-messages.md): Send marketing messages
+- [Onboard business customers](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/onboard-business-customers.md): Onboard business customers
+- [Set a max price](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/pricing.md): Set a max price
+- [Enroll in max price](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/pricing/enroll-max-price.md): Enroll in max price
+- [Changelog](https://developers.facebook.com/documentation/business-messaging/whatsapp/marketing-messages/changelog.md): Changelog
+
+### Messaging features
+
+- [Media](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/media.md): Media
+- [Read receipts](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/mark-message-as-read.md): Read receipts
+- [Contextual replies](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/contextual-replies.md): Contextual replies
+- [Typing indicators](https://developers.facebook.com/documentation/business-messaging/whatsapp/typing-indicators.md): Typing indicators
+- [Link previews](https://developers.facebook.com/documentation/business-messaging/whatsapp/link-previews.md): Link previews
+- [Payload encryption](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/payload-encryption.md): Payload encryption
+- [Throughput](https://developers.facebook.com/documentation/business-messaging/whatsapp/throughput.md): Throughput
+
+### Overview
+
+- [About the platform](https://developers.facebook.com/documentation/business-messaging/whatsapp/about-the-platform.md): About the platform
+- [Access tokens](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens.md): Access tokens
+- [Permissions](https://developers.facebook.com/documentation/business-messaging/whatsapp/permissions.md): Permissions
+- [Pricing](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing.md): Pricing
+- [Non-template messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/non-template-messages.md): Non-template messages
+- [Authentication-international rates](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/authentication-international-rates.md): Authentication-international rates
+- [AI Providers](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/ai-providers.md): AI Providers
+- [Change billing currency via API](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/change-billing-currency.md): Change billing currency via API
+- [Conversation-based pricing (Deprecated)](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/conversation-based-pricing.md): Conversation-based pricing (Deprecated)
+
+### Partners
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/overview.md): Overview
+- [Become a Tech Provider](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/get-started-for-tech-providers.md): Become a Tech Provider
+- [Become a Solution Partner](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/get-started-for-solution-partners.md): Become a Solution Partner
+- [Become a Measurement Partner](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/measurement-partners.md): Become a Measurement Partner
+- [Upgrade to Tech Partner](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/upgrade-to-tech-partner.md): Upgrade to Tech Partner
+- [App Review](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/app-review.md): App Review
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/overview.md): Overview
+- [Implementation](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/implementation.md): Implementation
+- [Onboarding for Tech Providers](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-customers-as-a-tech-provider.md): Onboarding for Tech Providers
+- [Onboarding for Solution Partners](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-customers-as-a-solution-partner.md): Onboarding for Solution Partners
+- [Cloud API flow](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/default-flow.md): Cloud API flow
+- [Custom flows](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/custom-flows.md): Custom flows
+- [Pre-filling screens](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/pre-filled-data.md): Pre-filling screens
+- [Pre-verified phone numbers](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/pre-verified-numbers.md): Pre-verified phone numbers
+- [Bypassing phone number screens](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/bypass-phone-addition.md): Bypassing phone number screens
+- [Making website optional](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/website-optional.md): Making website optional
+- [App-only install](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/app-only-install.md): App-only install
+- [Hosted ES](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/hosted-es.md): Hosted ES
+- [Automatic Events](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/automatic-events-api.md): Automatic Events
+- [Versions](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/versions.md): Versions
+- [v4 public preview](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/version-4-public-preview.md): v4 public preview
+- [v4](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/version-4.md): v4
+- [v3](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/version-3.md): v3
+- [v3 public preview](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/version-3-public-preview.md): v3 public preview
+- [v2 public preview](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/version-2-public-preview.md): v2 public preview
+- [Errors](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/errors.md): Errors
+- [Onboard Business app users (Coexistence)](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users.md): Onboard Business app users (Coexistence)
+- [Reconnect offboarded coexistence clients](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/reconnect-offboarded-coexistence-clients.md): Reconnect offboarded coexistence clients
+- [Partner-initiated WABA creation](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/partner-initiated-waba-creation.md): Partner-initiated WABA creation
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/multi-partner-solutions.md): Overview
+- [Embedded Creation](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/multi-partner-solution-embedded-creation.md): Embedded Creation
+- [Migrate WABAs among solutions via Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-wabas-among-solutions-via-embedded-signup.md): Migrate WABAs among solutions via Embedded Signup
+- [Migrate WABAs among solutions via Meta Business Suite](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-wabas-among-solutions-via-meta-business-suite.md): Migrate WABAs among solutions via Meta Business Suite
+- [Migrate WABAs among partners via Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-wabas-among-solution-partners-via-embedded-signup.md): Migrate WABAs among partners via Embedded Signup
+- [Migrating customers off solutions via Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-customers-off-solutions-via-embedded-signup.md): Migrating customers off solutions via Embedded Signup
+- [Migrating customers off solutions via Meta Business Suite](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-customers-off-solutions-via-meta-business-suite.md): Migrating customers off solutions via Meta Business Suite
+- [Add WABAs to a Multi-Partner Solution](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/adding-waba-to-mps.md): Add WABAs to a Multi-Partner Solution
+- [Multi-Solution Conversations](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/multi-solution-conversations.md): Multi-Solution Conversations
+- [Partner-led business verification](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/partner-led-business-verification.md): Partner-led business verification
+- [Pixel tracking](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/pixel-tracking.md): Pixel tracking
+- [WhatsApp Business Accounts](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/manage-accounts.md): WhatsApp Business Accounts
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/manage-phone-numbers.md): Overview
+- [Registering phone numbers via API](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/registering-phone-numbers.md): Registering phone numbers via API
+- [System users](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/manage-system-users.md): System users
+- [Credit lines](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/share-and-revoke-credit-lines.md): Credit lines
+- [Webhooks](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/manage-webhooks.md): Webhooks
+- [Support](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support.md): Support
+- [Migrate numbers among partners via Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-phone-numbers-among-solution-partners-via-embedded-signup.md): Migrate numbers among partners via Embedded Signup
+- [Migrate numbers among partners programmatically](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/migrating-phone-numbers-among-solution-partners-programmatically.md): Migrate numbers among partners programmatically
+- [Business customer support](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/support/business-customer-support.md): Business customer support
+- [OBO model deprecation](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/obo-model-deprecation.md): OBO model deprecation
+
+### Payments
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/overview.md): Overview
+- [Onboarding APIs](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/onboarding-apis.md): Onboarding APIs
+- [Dynamic VPA](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/upi-intent/dynamic-vpa.md): Dynamic VPA
+- [Cashfree](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/upi-intent/pg-guide-cashfree.md): Cashfree
+- [Billdesk](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/upi-intent/pg-guide-billdesk.md): Billdesk
+- [CCAvenue](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/upi-intent/pg-guide-ccavenue.md): CCAvenue
+- [Payment links](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/payment-links.md): Payment links
+- [Enhanced payment links](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/enhanced-payment-links.md): Enhanced payment links
+- [Payment gateway](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/pg.md): Payment gateway
+- [Order details templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/orderdetailstemplate.md): Order details templates
+- [Order status templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/orderstatustemplate.md): Order status templates
+- [Checkout button templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-in/checkout-button-templates.md): Checkout button templates
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/overview.md): Overview
+- [Orders](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/orders.md): Orders
+- [Pix](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/offsite-pix.md): Pix
+- [Payment links](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/payment-links.md): Payment links
+- [Boleto](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/boleto.md): Boleto
+- [One-click payments](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/one-click-payments.md): One-click payments
+- [Order details templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/orderdetailstemplate.md): Order details templates
+- [Payment request CTA templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-br/payment-request-cta.md): Payment request CTA templates
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/overview.md): Overview
+- [Orders](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/orders.md): Orders
+- [Payment links](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/payment-links.md): Payment links
+- [Payment account](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/payment-account.md): Payment account
+- [Cash voucher](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/cash-voucher.md): Cash voucher
+- [Order details templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/payments/payments-mx/orderdetailstemplate.md): Order details templates
+
+### Service messages
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/send-messages.md): Overview
+- [Address](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/address-messages.md): Address
+- [Audio](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/audio-messages.md): Audio
+- [Contacts](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/contacts-messages.md): Contacts
+- [Document](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/document-messages.md): Document
+- [Image](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/image-messages.md): Image
+- [URL button](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-cta-url-messages.md): URL button
+- [List buttons](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-list-messages.md): List buttons
+- [Media carousel](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-media-carousel-messages.md): Media carousel
+- [Reply buttons](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-reply-buttons-messages.md): Reply buttons
+- [Location](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/location-messages.md): Location
+- [Location request](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/location-request-messages.md): Location request
+- [Message with link](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/message-with-link.md): Message with link
+- [Reaction](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/reaction-messages.md): Reaction
+- [Sticker](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/sticker-messages.md): Sticker
+- [Text](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/text-messages.md): Text
+- [Video](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/video-messages.md): Video
+
+### Support
+
+- [Support](https://developers.facebook.com/documentation/business-messaging/whatsapp/support.md): Support
+- [API status page](https://developers.facebook.com/documentation/business-messaging/whatsapp/support/api-status-page.md): API status page
+- [Health status](https://developers.facebook.com/documentation/business-messaging/whatsapp/support/health-status.md): Health status
+- [Load testing](https://developers.facebook.com/documentation/business-messaging/whatsapp/support/load-testing.md): Load testing
+- [Experiments](https://developers.facebook.com/documentation/business-messaging/whatsapp/support/experiments.md): Experiments
+- [Use an existing WhatsApp number](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/migrate-existing-whatsapp-number-to-a-business-account.md): Use an existing WhatsApp number
+
+### Template fundamentals
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview.md): Overview
+- [Components](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/components.md): Components
+- [Languages](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/supported-languages.md): Languages
+- [Categorization](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-categorization.md): Categorization
+- [Comparison](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-comparison.md): Comparison
+- [Library](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-library.md): Library
+- [Archival](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-archival.md): Archival
+- [Media](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-media.md): Media
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-management.md): Overview
+- [Migration](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-migration.md): Migration
+- [Groups](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-groups.md): Groups
+- [Configure time-to-live](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/time-to-live.md): Configure time-to-live
+- [Tap target URL title override](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/tap-target-url-title-override.md): Tap target URL title override
+- [Quality rating](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-quality.md): Quality rating
+- [Review](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-review.md): Review
+- [Pausing](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-pausing.md): Pausing
+- [Business portfolio pacing](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/portfolio-pacing.md): Business portfolio pacing
+- [Template pacing](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-pacing.md): Template pacing
+- [Messaging limits](https://developers.facebook.com/documentation/business-messaging/whatsapp/messaging-limits.md): Messaging limits
+- [Upcoming changes to messaging limits](https://developers.facebook.com/documentation/business-messaging/whatsapp/upcoming-messaging-limits-changes.md): Upcoming changes to messaging limits
+- [Per-user marketing template limits](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/marketing-templates/per-user-limits.md): Per-user marketing template limits
+
+### Utility messages
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/utility-templates/utility-templates.md): Overview
+- [Call permission request templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/utility-templates/utility-call-permission-request-templates.md): Call permission request templates
+- [Booking appointment templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/utility-templates/booking-appointment-templates.md): Booking appointment templates
+- [Location request templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/utility-templates/location-request-templates.md): Location request templates
+- [Location templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/utility-templates/location-templates.md): Location templates
+
+### Webhooks
+
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/overview.md): Overview
+- [Create a webhook endpoint](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/create-webhook-endpoint.md): Create a webhook endpoint
+- [Create a test webhook endpoint](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/set-up-whatsapp-echo-bot.md): Create a test webhook endpoint
+- [Override the callback URL](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/override.md): Override the callback URL
+- [Message echoes](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/message_echoes.md): Message echoes
+- [account_alerts](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/account_alerts.md): account_alerts
+- [account_review_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/account_review_update.md): account_review_update
+- [account_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/account_update.md): account_update
+- [automatic_events](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/automatic_events.md): automatic_events
+- [business_capability_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/business_capability_update.md): business_capability_update
+- [history](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/history.md): history
+- [message_template_components_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/message_template_components_update.md): message_template_components_update
+- [message_template_quality_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/message_template_quality_update.md): message_template_quality_update
+- [message_template_status_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/message_template_status_update.md): message_template_status_update
+- [Overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages.md): Overview
+- [audio messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/audio.md): audio messages
+- [button messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/button.md): button messages
+- [contacts messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/contacts.md): contacts messages
+- [document messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/document.md): document messages
+- [edit messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/edit.md): edit messages
+- [errors messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/errors.md): errors messages
+- [group messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/group.md): group messages
+- [image messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/image.md): image messages
+- [interactive messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/interactive.md): interactive messages
+- [location messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/location.md): location messages
+- [order messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/order.md): order messages
+- [reaction messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/reaction.md): reaction messages
+- [revoke messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/revoke.md): revoke messages
+- [status messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/status.md): status messages
+- [sticker messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/sticker.md): sticker messages
+- [system messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/system.md): system messages
+- [text messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/text.md): text messages
+- [unsupported messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/unsupported.md): unsupported messages
+- [video messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/video.md): video messages
+- [partner_solutions](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/partner_solutions.md): partner_solutions
+- [payment_configuration_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/payment_configuration_update.md): payment_configuration_update
+- [phone_number_name_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/phone_number_name_update.md): phone_number_name_update
+- [phone_number_quality_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/phone_number_quality_update.md): phone_number_quality_update
+- [pricing](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/pricing.md): pricing
+- [security](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/security.md): security
+- [smb_app_state_sync](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/smb_app_state_sync.md): smb_app_state_sync
+- [smb_message_echoes](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/smb_message_echoes.md): smb_message_echoes
+- [template_category_update](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/template_category_update.md): template_category_update
+- [user_preferences](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/user_preferences.md): user_preferences
+
+### WhatsApp Business Platform
+
+- [WhatsApp Business Platform](https://developers.facebook.com/documentation/business-messaging/whatsapp/overview.md): WhatsApp Business Platform

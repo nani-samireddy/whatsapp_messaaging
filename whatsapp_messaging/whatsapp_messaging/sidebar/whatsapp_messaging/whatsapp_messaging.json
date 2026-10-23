@@ -1,0 +1,36 @@
+{
+ "doctype": "Sidebar",
+ "name": "Whatsapp Messaging",
+ "title": "Whatsapp Messaging",
+ "module": "Whatsapp Messaging",
+ "app": "whatsapp_messaging",
+ "standard": 1,
+ "creation": "2026-10-18 12:08:03.456625",
+ "modified": "2026-10-18 17:05:00.000000",
+ "items": [
+  {
+   "type": "Link",
+   "label": "WhatsApp Messaging",
+   "link_type": "Workspace",
+   "link_to": "WhatsApp Messaging"
+  },
+  {
+   "type": "Link",
+   "label": "WhatsApp Templates & Automation",
+   "link_type": "Workspace",
+   "link_to": "WhatsApp Templates & Automation"
+  },
+  {
+   "type": "Link",
+   "label": "WhatsApp Administration",
+   "link_type": "Workspace",
+   "link_to": "WhatsApp Administration"
+  },
+  {
+   "type": "Link",
+   "label": "User guide",
+   "link_type": "Page",
+   "link_to": "whatsapp-guide"
+  }
+ ]
+}

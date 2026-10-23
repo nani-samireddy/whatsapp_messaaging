@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-21",
+  "scope": "Mac local WhatsApp app only",
+  "changes": [
+    "Inline editable Message Text with native form saving",
+    "Media selection relabels the same field Caption; removal restores Message Text without losing content",
+    "Theme-aware live text, private-image and PDF preview with readable placeholder chips",
+    "Searchable Insert field menu replaces comma-separated field summary",
+    "All readable persisted Single DocTypes available as Static sources; Hospital Settings confirmed on both sites",
+    "Shared System Manager field policies for record and static fields; document and field permissions enforced during rendering",
+    "Static access rechecked at dispatch; policy revocation invalidates referencing rule versions",
+    "Private JPEG/PNG/PDF upload defaults and automatic content Type"
+  ],
+  "verification": {
+    "local_tests": {
+      "count": 26,
+      "result": "pass"
+    },
+    "frappe_integration_tests": {
+      "security_and_roles": 35,
+      "messaging_workflows": 53,
+      "record_naming": 7,
+      "token_length": 2,
+      "template_configuration": 12,
+      "total": 109,
+      "result": "pass"
+    },
+    "browser": [
+      "Inline source and static field insertion",
+      "Search filters approved fields",
+      "Static settings with no approved fields show shared configuration action",
+      "Multiline text preview updates while typing and escapes literal HTML",
+      "Image and PDF previews with Caption preserve body",
+      "Removing Media restores Message Text and text type",
+      "Native Save persists inline text and static placeholder; PDF selection also saved",
+      "Actual HMS guide loads version 4 with new screenshots"
+    ],
+    "local_sites": [
+      {
+        "site": "hms.localhost",
+        "editable_message": true,
+        "static_sources": 32,
+        "hospital_settings_available": true,
+        "operational_templates_unchanged": true
+      },
+      {
+        "site": "development.localhost",
+        "editable_message": true,
+        "static_sources": 32,
+        "hospital_settings_available": true,
+        "operational_templates_unchanged": true
+      }
+    ],
+    "assets": "App build passed; both site caches refreshed",
+    "documentation": "18 workflows exported; template walkthrough and screenshots refreshed",
+    "screenshots": [
+      "message-composer.png",
+      "template-static-fields.png",
+      "template-caption.png",
+      "local-template.png"
+    ],
+    "static_checks": [
+      "JavaScript syntax",
+      "Python compilation",
+      "git diff --check",
+      "Every guide screenshot reference exists"
+    ]
+  },
+  "operational_template_records_changed_by_editor_rollout": false,
+  "existing_user_field_approvals_preserved": true,
+  "real_provider_messages_sent": false,
+  "credentials_changed": false,
+  "server_or_production_touched": false,
+  "test_environment": "Isolated internal Docker network with fictional Riverbend Hospital data; temporary services removed after verification"
+}

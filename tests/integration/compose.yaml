@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mariadb:11.8
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: integration-only-password
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+  redis:
+    image: redis:7.2-alpine
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  test:
+    image: frappe/bench:latest
+    user: root
+    working_dir: /testbench/sites
+    environment:
+      PYTHONPATH: /testbench/apps/frappe:/testbench/apps/whatsapp_messaging
+      FRAPPE_BENCH_ROOT: /testbench
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+      - bench:/testbench
+      - ${FRAPPE_FRAMEWORK_PATH:?Set the path to the Frappe 16.52.0 checkout}:/testbench/apps/frappe:ro
+      - ${FRAPPE_PYTHON_ENV:?Set the path to its Python virtual environment}:/opt/frappe-test-env:ro
+      - ../..:/testbench/apps/whatsapp_messaging:ro
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    command: [bash, /testbench/apps/whatsapp_messaging/tests/integration/run.sh]
+networks:
+  default:
+    internal: true
+volumes:
+  bench:
+  database:

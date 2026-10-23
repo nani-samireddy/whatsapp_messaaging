@@ -1,0 +1,388 @@
+{
+  "date": "2026-10-18",
+  "scope": "Mac local app and both local sites",
+  "sites": [
+    "hms.localhost",
+    "development.localhost"
+  ],
+  "doctype_count": 24,
+  "ordinary_records": 20,
+  "child_tables": 3,
+  "singletons": 1,
+  "site_naming_overrides": [],
+  "document_naming_rules": [],
+  "title_fields_currently_configured": 20,
+  "status": "Implemented and verified on both Mac local development sites; existing record names preserved",
+  "doctypes": [
+    {
+      "doctype": "Static Recipient",
+      "kind": "Record",
+      "previous_effective_naming": "format:{label}",
+      "schema_autoname_before": "format:{label}",
+      "schema_autoname_current": "format:{label}",
+      "implemented_naming": "Keep the Label as the name",
+      "display_title_example": "Reception coordinator",
+      "title_field": "label",
+      "search_fields": "label,phone_number"
+    },
+    {
+      "doctype": "Static Recipient Link",
+      "kind": "Child table",
+      "previous_effective_naming": "Automatic 10-character child-row ID",
+      "schema_autoname_before": null,
+      "schema_autoname_current": null,
+      "implemented_naming": "Keep parent-managed internal row ID",
+      "display_title_example": "Show selected recipient in the parent table",
+      "title_field": null,
+      "search_fields": null
+    },
+    {
+      "doctype": "WhatsApp Approved Template",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-ATPL-.######",
+      "implemented_naming": "WA-ATPL-000001",
+      "display_title_example": "appointment_confirmation · en",
+      "title_field": "record_title",
+      "search_fields": "template_name,language,waba_id,provider_template_id"
+    },
+    {
+      "doctype": "WhatsApp Attachment",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-ATT-.YYYY.-.######",
+      "implemented_naming": "WA-ATT-2026-000001",
+      "display_title_example": "visit-instructions.pdf",
+      "title_field": "record_title",
+      "search_fields": "file_name,message,account"
+    },
+    {
+      "doctype": "WhatsApp Automation Run",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-RUN-.YYYY.-.######",
+      "implemented_naming": "WA-RUN-2026-000001",
+      "display_title_example": "Appointment confirmation · Schedule · 19 Oct",
+      "title_field": "record_title",
+      "search_fields": "rule,kind,state,schedule"
+    },
+    {
+      "doctype": "WhatsApp Conversation",
+      "kind": "Record",
+      "previous_effective_naming": "New canonical: 20-character generated ID; legacy: recipient value (controller overrides schema)",
+      "schema_autoname_before": "format:{recipient}",
+      "schema_autoname_current": "WA-CONV-.######",
+      "implemented_naming": "WA-CONV-000001",
+      "display_title_example": "Riverbend Patient Services · Meera Rao",
+      "title_field": "record_title",
+      "search_fields": "recipient,account,peer,assigned_to"
+    },
+    {
+      "doctype": "WhatsApp Conversation Activity",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "hash",
+      "implemented_naming": "Keep internal ID",
+      "display_title_example": "Conversation · action · actor · time",
+      "title_field": "record_title",
+      "search_fields": "conversation,action,actor"
+    },
+    {
+      "doctype": "WhatsApp Conversation Field",
+      "kind": "Child table",
+      "previous_effective_naming": "Automatic 10-character child-row ID",
+      "schema_autoname_before": null,
+      "schema_autoname_current": null,
+      "implemented_naming": "Keep parent-managed internal row ID",
+      "display_title_example": "Show message details in the parent table",
+      "title_field": null,
+      "search_fields": null
+    },
+    {
+      "doctype": "WhatsApp Conversation Read",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "hash",
+      "implemented_naming": "Keep internal ID",
+      "display_title_example": "Conversation · user",
+      "title_field": "record_title",
+      "search_fields": "conversation,user"
+    },
+    {
+      "doctype": "WhatsApp Identity Alias",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "hash",
+      "implemented_naming": "Keep internal ID",
+      "display_title_example": "Contact · identity kind · value",
+      "title_field": "record_title",
+      "search_fields": "peer,identity_kind,identity_value"
+    },
+    {
+      "doctype": "WhatsApp Media",
+      "kind": "Record",
+      "previous_effective_naming": "20-character generated ID from controller",
+      "schema_autoname_before": null,
+      "schema_autoname_current": "WA-MEDIA-.######",
+      "implemented_naming": "WA-MEDIA-000001",
+      "display_title_example": "Visit instructions",
+      "title_field": "record_title",
+      "search_fields": "media_id,phone_number_id,document_type"
+    },
+    {
+      "doctype": "WhatsApp Message",
+      "kind": "Record",
+      "previous_effective_naming": "format:{to}-{######}; to is not a field, so names appear as to-000023",
+      "schema_autoname_before": "format:{to}-{######}",
+      "schema_autoname_current": "WA-MSG-.YYYY.-.######",
+      "implemented_naming": "WA-MSG-2026-000001",
+      "display_title_example": "Outbound · Meera Rao · Delivered",
+      "title_field": "record_title",
+      "search_fields": "conversation,account,peer,provider_message_id,source_doctype,source_name"
+    },
+    {
+      "doctype": "WhatsApp Message Log",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (framework fallback)",
+      "schema_autoname_before": null,
+      "schema_autoname_current": null,
+      "implemented_naming": "Keep historical IDs",
+      "display_title_example": "Legacy source / message / date",
+      "title_field": "record_title",
+      "search_fields": "recipient,type,status"
+    },
+    {
+      "doctype": "WhatsApp Message Template",
+      "kind": "Record",
+      "previous_effective_naming": "format:{template_name}",
+      "schema_autoname_before": "format:{template_name}",
+      "schema_autoname_current": "format:{template_name}",
+      "implemented_naming": "Keep Template name as the name",
+      "display_title_example": "Appointment confirmation",
+      "title_field": "template_name",
+      "search_fields": "template_name,template_doctype,phone_number_id"
+    },
+    {
+      "doctype": "WhatsApp Outbox",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-OUT-.YYYY.-.######",
+      "implemented_naming": "WA-OUT-2026-000001",
+      "display_title_example": "WA-MSG-2026-000001 · Ready",
+      "title_field": "record_title",
+      "search_fields": "message,conversation,account,state,source_doctype,source_name"
+    },
+    {
+      "doctype": "WhatsApp Peer",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-PEER-.######",
+      "implemented_naming": "WA-PEER-000001",
+      "display_title_example": "Meera Rao",
+      "title_field": "record_title",
+      "search_fields": "display_name,phone_number,provider_identity"
+    },
+    {
+      "doctype": "WhatsApp Phone Number ID",
+      "kind": "Record",
+      "previous_effective_naming": "format:{label}",
+      "schema_autoname_before": "format:{label}",
+      "schema_autoname_current": "format:{label}",
+      "implemented_naming": "Keep the Label as the name",
+      "display_title_example": "Riverbend Patient Services",
+      "title_field": "label",
+      "search_fields": "label,display_phone,phone_number_id,waba_id"
+    },
+    {
+      "doctype": "WhatsApp Record Link",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "hash",
+      "implemented_naming": "Keep internal ID",
+      "display_title_example": "Conversation · linked record",
+      "title_field": "record_title",
+      "search_fields": "conversation,reference_doctype,reference_name"
+    },
+    {
+      "doctype": "WhatsApp Schedule",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-SCH-.######",
+      "implemented_naming": "WA-SCH-000001",
+      "display_title_example": "Appointment confirmation · Daily 09:00",
+      "title_field": "record_title",
+      "search_fields": "rule,state,timezone,cron_expression"
+    },
+    {
+      "doctype": "WhatsApp Send Attempt",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-TRY-.YYYY.-.######",
+      "implemented_naming": "WA-TRY-2026-000001",
+      "display_title_example": "WA-OUT-2026-000001 · Attempt 1",
+      "title_field": "record_title",
+      "search_fields": "outbox,outcome,provider_message_id"
+    },
+    {
+      "doctype": "WhatsApp Settings",
+      "kind": "Singleton",
+      "previous_effective_naming": "Fixed name: WhatsApp Settings",
+      "schema_autoname_before": null,
+      "schema_autoname_current": null,
+      "implemented_naming": "Keep the fixed singleton name",
+      "display_title_example": "WhatsApp Settings",
+      "title_field": null,
+      "search_fields": null
+    },
+    {
+      "doctype": "WhatsApp Static Recipient",
+      "kind": "Child table",
+      "previous_effective_naming": "Automatic 10-character child-row ID",
+      "schema_autoname_before": null,
+      "schema_autoname_current": null,
+      "implemented_naming": "Keep parent-managed internal row ID",
+      "display_title_example": "Show recipient in the parent table",
+      "title_field": null,
+      "search_fields": null
+    },
+    {
+      "doctype": "WhatsApp Status Event",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-STE-.YYYY.-.######",
+      "implemented_naming": "WA-STE-2026-000001",
+      "display_title_example": "WA-MSG-2026-000001 · Delivered",
+      "title_field": "record_title",
+      "search_fields": "message,provider_message_id,provider_status"
+    },
+    {
+      "doctype": "WhatsApp Webhook Event",
+      "kind": "Record",
+      "previous_effective_naming": "Automatic 10-character ID (hash rule)",
+      "schema_autoname_before": "hash",
+      "schema_autoname_current": "WA-WHE-.YYYY.-.######",
+      "implemented_naming": "WA-WHE-2026-000001",
+      "display_title_example": "Processed · received time",
+      "title_field": "record_title",
+      "search_fields": "state"
+    }
+  ],
+  "readable_naming_series_count": 12,
+  "backups": "Database and file backups completed before migrating each local site",
+  "sites_verified": [
+    {
+      "site": "hms.localhost",
+      "regular_doctypes_verified": 20,
+      "title_patch": "applied",
+      "switches": {
+        "enable_outbound_messages": false,
+        "enable_inbound": false,
+        "enable_automation": false
+      },
+      "record_counts": {
+        "WhatsApp Webhook Event": 0,
+        "WhatsApp Status Event": 0,
+        "WhatsApp Conversation Read": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Peer": 0,
+        "WhatsApp Message Template": 0,
+        "WhatsApp Identity Alias": 0,
+        "WhatsApp Record Link": 0,
+        "WhatsApp Media": 0,
+        "WhatsApp Approved Template": 0,
+        "WhatsApp Phone Number ID": 0,
+        "WhatsApp Attachment": 0,
+        "WhatsApp Conversation Activity": 0,
+        "WhatsApp Send Attempt": 0,
+        "WhatsApp Conversation": 0,
+        "Static Recipient": 0,
+        "WhatsApp Schedule": 0,
+        "WhatsApp Message": 0,
+        "WhatsApp Message Log": 0,
+        "WhatsApp Automation Run": 0
+      },
+      "transactional_naming_tests": {
+        "count": 7,
+        "result": "pass",
+        "fixtures": "rolled back"
+      }
+    },
+    {
+      "site": "development.localhost",
+      "regular_doctypes_verified": 20,
+      "title_patch": "applied",
+      "switches": {
+        "enable_outbound_messages": false,
+        "enable_inbound": false,
+        "enable_automation": false
+      },
+      "record_counts": {
+        "WhatsApp Webhook Event": 0,
+        "WhatsApp Status Event": 0,
+        "WhatsApp Conversation Read": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Peer": 0,
+        "WhatsApp Message Template": 0,
+        "WhatsApp Identity Alias": 0,
+        "WhatsApp Record Link": 0,
+        "WhatsApp Media": 0,
+        "WhatsApp Approved Template": 0,
+        "WhatsApp Phone Number ID": 0,
+        "WhatsApp Attachment": 0,
+        "WhatsApp Conversation Activity": 0,
+        "WhatsApp Send Attempt": 0,
+        "WhatsApp Conversation": 0,
+        "Static Recipient": 0,
+        "WhatsApp Schedule": 0,
+        "WhatsApp Message": 0,
+        "WhatsApp Message Log": 0,
+        "WhatsApp Automation Run": 0
+      },
+      "transactional_naming_tests": {
+        "count": 7,
+        "result": "pass",
+        "fixtures": "rolled back"
+      }
+    }
+  ],
+  "tests": {
+    "local_regressions": {
+      "count": 22,
+      "result": "pass"
+    },
+    "isolated_frappe_integration": {
+      "security_and_roles": 35,
+      "messaging_workflows": 53,
+      "naming_regressions": 7,
+      "total": 95,
+      "result": "pass"
+    },
+    "transactional_naming_on_mac_sites": {
+      "count_per_site": 7,
+      "result": "pass",
+      "fixture_records": "rolled back"
+    },
+    "static_checks": [
+      "Python compilation",
+      "JSON parsing and search/title-field definitions",
+      "git diff --check"
+    ],
+    "browser_check": "Updated message list exposes record-title search on hms.localhost; user tabs left untouched"
+  },
+  "disposable_test_environment": "Removed containers, internal network and volumes belonging only to whatsapp-naming-tests",
+  "real_provider_messages_sent": false,
+  "home_server_changes": false,
+  "source_status": "Uncommitted local changes; no commit or push"
+}

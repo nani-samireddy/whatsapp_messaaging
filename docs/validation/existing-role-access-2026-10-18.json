@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-18",
+  "branch": "secure-send-foundation",
+  "scope": "Existing-role authorization in the Mac local development bench only",
+  "framework_version": "16.52.0",
+  "python_version": "3.14.8",
+  "local_tests": {
+    "count": 22,
+    "result": "pass"
+  },
+  "frappe_integration_tests": {
+    "count": 35,
+    "result": "pass",
+    "environment": "Disposable internal-only Docker stack with fictional users and credentials"
+  },
+  "policy": {
+    "single_send_roles": [
+      "Whatsapp Editor",
+      "Whatsapp Admin",
+      "System Manager"
+    ],
+    "bulk_send_roles": [
+      "Whatsapp Admin",
+      "System Manager"
+    ],
+    "credential_access": "System Manager only",
+    "history_for_app_roles": "read-only",
+    "login": "Existing Frappe session",
+    "user_role_assignments_changed": false
+  },
+  "mac_sites": [
+    {
+      "site": "hms.localhost",
+      "role_schema": "pass",
+      "history_read_only": "pass",
+      "credentials_protected": "pass",
+      "outbound_enabled": false,
+      "workspace": "pass",
+      "conversation_controller": "pass"
+    },
+    {
+      "site": "development.localhost",
+      "role_schema": "pass",
+      "history_read_only": "pass",
+      "credentials_protected": "pass",
+      "outbound_enabled": false,
+      "workspace": "pass",
+      "conversation_controller": "pass"
+    }
+  ],
+  "migration": "Database/config backups created for both Mac sites before migration; both site migrations completed successfully",
+  "workspace": "Frappe v16 standard workspace, current modification timestamp, module ownership, role restrictions and Conversations shortcut verified on both existing sites",
+  "http_ping": {
+    "hms.localhost": "pong",
+    "development.localhost": "pong"
+  },
+  "static_validation": "Python syntax, app JSON and git diff --check pass",
+  "disposable_stack_cleanup": "Containers, network and volumes removed",
+  "outbound": "Disabled on both Mac sites; no real sends",
+  "source_status": "Uncommitted local changes; no commit or push",
+  "server_changes": false,
+  "limitations": [
+    "Inbox thread/composer and reply API still pending",
+    "No browser form QA",
+    "No end-to-end RQ worker execution",
+    "No live Meta/provider contract tests"
+  ]
+}

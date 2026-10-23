@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class WhatsappConversationField(Document):
+class WhatsAppConversationField(Document):
 	pass

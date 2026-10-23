@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-22",
+  "scope": "Mac-local development only",
+  "source": "/Users/samireddynani/projects/frappe/development/frappe-bench/apps/whatsapp_messaging",
+  "feature": "Optional fixed text header and footer for local messages and Meta templates; 60 characters each, single line, body variables only",
+  "integration_tests_passed": 168,
+  "local_tests_passed": 26,
+  "total_passed": 194,
+  "final_feature_suite_passed": 30,
+  "asset_build": "passed",
+  "javascript_syntax": "passed",
+  "diff_whitespace": "passed",
+  "provider_verification": "All provider transport mocked or blocked; no live template submissions or real recipient sends",
+  "browser_checks": [
+    "Header and Footer fields visible beside live preview",
+    "Typing updates heading and footer immediately",
+    "Native form Save persists fields and remains Draft",
+    "Actual Hospital Welcome uses separate heading and footer; original body wording preserved",
+    "Field help links reference the official Meta components documentation"
+  ],
+  "sending_checks": [
+    "Meta registration receives HEADER TEXT, BODY and FOOTER components",
+    "Static framing does not add per-send parameters",
+    "Local text and media captions include framing",
+    "History, Inbox template chooser, campaign summary and bulk preview include framing",
+    "Header/footer edits invalidate approval and prepared versions",
+    "Header variables, media headers, duplicate components and excessive lengths remain unsupported"
+  ],
+  "local_migration": [
+    {
+      "site": "hms.localhost",
+      "hospital_welcome_uses_separate_fields": true,
+      "other_template_content_and_timestamps_preserved": true,
+      "switches_unchanged": true,
+      "unchanged_tables": {
+        "WhatsApp Campaign": true,
+        "WhatsApp Message": true,
+        "WhatsApp Outbox": true,
+        "File": true,
+        "WhatsApp Phone Number ID": true
+      }
+    },
+    {
+      "site": "development.localhost",
+      "hospital_welcome_uses_separate_fields": false,
+      "other_template_content_and_timestamps_preserved": true,
+      "switches_unchanged": true,
+      "unchanged_tables": {
+        "WhatsApp Campaign": true,
+        "WhatsApp Message": true,
+        "WhatsApp Outbox": true,
+        "File": true,
+        "WhatsApp Phone Number ID": true
+      }
+    }
+  ],
+  "backups": {
+    "hms.localhost": "20261022_085422-hms_localhost-database.sql.gz",
+    "development.localhost": "20261022_085425-development_localhost-database.sql.gz"
+  },
+  "screenshots": {
+    "guide": "whatsapp_messaging/public/docs/screenshots/template-header-footer.png",
+    "actual_local_draft": ".integration/hospital-welcome-header-footer.png"
+  },
+  "official_reference": "https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/components",
+  "docs": "docs/TEMPLATES-AND-CAMPAIGNS.md#header-and-footer"
+}

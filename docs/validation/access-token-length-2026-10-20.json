@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-20",
+  "scope": "Mac local development only",
+  "doctype": "WhatsApp Phone Number ID",
+  "field": "access_token",
+  "previous_browser_limit": 140,
+  "new_browser_limit": 1000,
+  "fieldtype": "Password",
+  "permlevel": 1,
+  "database_mask_column": "text (framework Password type)",
+  "sites": [
+    "hms.localhost",
+    "development.localhost"
+  ],
+  "backups": "Database backups completed before migration on each site",
+  "migration": "Both sites migrated successfully",
+  "regression_checks": {
+    "token_lengths": [
+      308,
+      1000
+    ],
+    "checks": [
+      "Save and decrypt full token without truncation",
+      "Header preparation receives full token",
+      "Document and database mask exclude plaintext",
+      "__Auth stores encrypted credentials",
+      "Editing unrelated field preserves the full token"
+    ],
+    "tests_per_site": 2,
+    "result": "pass",
+    "fixtures": "Fictional sender records and tokens rolled back; no real sender credentials changed"
+  },
+  "browser_check": {
+    "site": "hms.localhost",
+    "maxlength": "1000",
+    "input_type": "password",
+    "user_form": "Left untouched; verified in a separate temporary tab"
+  },
+  "local_regressions": {
+    "count": 22,
+    "result": "pass"
+  },
+  "real_provider_requests_sent": false,
+  "home_server_changes": false
+}

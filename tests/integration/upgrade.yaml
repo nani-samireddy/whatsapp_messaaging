@@ -1,0 +1,7 @@
+services:
+  test:
+    environment:
+      WHATSAPP_TEST_BASELINE_PATH: /baseline-app
+      WHATSAPP_EXPECT_UPGRADE: '1'
+    volumes:
+      - ${WHATSAPP_BASELINE_PATH:?Set a clean reviewed app checkout}:/baseline-app:ro

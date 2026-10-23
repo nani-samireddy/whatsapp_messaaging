@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-18",
+  "branch": "secure-send-foundation",
+  "reviewed_app_revision": "d55395fe92f576287c3a1a1778e135bf3e21f9d5",
+  "framework_version": "16.52.0",
+  "framework_revision": "4515014c87ece6cb20ee91d2cfb121c5cbd1ff4a",
+  "python_version": "3.14.8",
+  "database": "MariaDB 11.8",
+  "redis": "7.2",
+  "local_tests": {
+    "count": 20,
+    "result": "pass"
+  },
+  "frappe_tests": {
+    "count": 23,
+    "fresh_install": "pass",
+    "after_upgrade": "pass"
+  },
+  "upgrade": {
+    "baseline_app_revision": "d55395fe92f576287c3a1a1778e135bf3e21f9d5",
+    "legacy_data_token_encrypted": "pass",
+    "credential_preserved": "pass",
+    "patch_log_entry": "pass",
+    "outbound_default_off": "pass"
+  },
+  "transport": "No real sends; internal-only Docker network and dummy credentials",
+  "limitations": [
+    "No browser form QA yet",
+    "No end-to-end RQ worker execution yet",
+    "No live Meta/provider contract tests"
+  ],
+  "source_status": "Uncommitted local changes; no push or deployment"
+}

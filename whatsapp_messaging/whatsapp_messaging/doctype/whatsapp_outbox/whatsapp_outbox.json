@@ -1,0 +1,227 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Outbox",
+ "module": "Whatsapp Messaging",
+ "autoname": "WA-OUT-.YYYY.-.######",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-21 17:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "request_key",
+  "payload_hash",
+  "message",
+  "conversation",
+  "account",
+  "state",
+  "payload_json",
+  "requester",
+  "origin_key",
+  "source_doctype",
+  "source_name",
+  "rule_doctype",
+  "rule",
+  "run",
+  "next_attempt_at",
+  "lease_until",
+  "lease_owner",
+  "network_started",
+  "attempt_count",
+  "error_code",
+  "error_reason",
+  "cancel_reason",
+  "template_hash",
+  "accepted_at",
+  "deleted_source",
+  "input_hash",
+  "rule_version"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "request_key",
+   "label": "Request Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "payload_hash",
+   "label": "Payload Hash",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "message",
+   "label": "Message",
+   "fieldtype": "Link",
+   "options": "WhatsApp Message"
+  },
+  {
+   "fieldname": "conversation",
+   "label": "Conversation",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation"
+  },
+  {
+   "fieldname": "account",
+   "label": "Account",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "state",
+   "label": "State",
+   "fieldtype": "Select",
+   "default": "Ready",
+   "in_list_view": 1,
+   "options": "Ready\nClaimed\nAccepted\nHeld\nRetry wait\nFailed\nUnknown\nCancelled"
+  },
+  {
+   "fieldname": "payload_json",
+   "label": "Payload Json",
+   "fieldtype": "Code",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "requester",
+   "label": "Requester",
+   "fieldtype": "Link",
+   "options": "User"
+  },
+  {
+   "fieldname": "origin_key",
+   "label": "Origin Key",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "source_doctype",
+   "label": "Source Doctype",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "source_name",
+   "label": "Source Name",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "rule",
+   "label": "Campaign",
+   "fieldtype": "Dynamic Link",
+   "options": "rule_doctype"
+  },
+  {
+   "fieldname": "run",
+   "label": "Run",
+   "fieldtype": "Link",
+   "options": "WhatsApp Automation Run"
+  },
+  {
+   "fieldname": "next_attempt_at",
+   "label": "Next Attempt At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "lease_until",
+   "label": "Lease Until",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "lease_owner",
+   "label": "Lease Owner",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "network_started",
+   "label": "Network Started",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "attempt_count",
+   "label": "Attempt Count",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "error_code",
+   "label": "Error Code",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "error_reason",
+   "label": "Error Reason",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "cancel_reason",
+   "label": "Cancel Reason",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "template_hash",
+   "label": "Template Hash",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "accepted_at",
+   "label": "Accepted At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "deleted_source",
+   "label": "Deleted source snapshot",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "input_hash",
+   "label": "Input Hash",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "rule_version",
+   "label": "Rule Version",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "rule_doctype",
+   "fieldtype": "Data",
+   "label": "Campaign / Legacy Rule Type",
+   "hidden": 1,
+   "read_only": 1,
+   "default": "WhatsApp Campaign"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "message,conversation,account,state,source_doctype,source_name"
+}

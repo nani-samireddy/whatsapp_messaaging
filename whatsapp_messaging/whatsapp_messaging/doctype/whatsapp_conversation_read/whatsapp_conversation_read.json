@@ -1,0 +1,82 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Conversation Read",
+ "module": "Whatsapp Messaging",
+ "autoname": "hash",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-18 19:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "read_key",
+  "conversation",
+  "user",
+  "last_read_sequence",
+  "read_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "read_key",
+   "label": "Read Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "conversation",
+   "label": "Conversation",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation"
+  },
+  {
+   "fieldname": "user",
+   "label": "User",
+   "fieldtype": "Link",
+   "options": "User"
+  },
+  {
+   "fieldname": "last_read_sequence",
+   "label": "Last Read Sequence",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "read_at",
+   "label": "Read At",
+   "fieldtype": "Datetime"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "conversation,user"
+}

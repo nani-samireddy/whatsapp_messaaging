@@ -1,57 +1,78 @@
 {
- "app": "hms",
- "charts": [],
- "content": "[{\"id\":\"KwinnXj-z4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Quick Links</span>\",\"col\":12}},{\"id\":\"HyHTqIIX4i\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Templates\",\"col\":3}},{\"id\":\"U6LTNFj6WD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Media\",\"col\":3}},{\"id\":\"LYeGyBg4lK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Phone Numbers\",\"col\":3}}]",
- "creation": "2025-10-09 19:01:32.545116",
- "custom_blocks": [],
- "docstatus": 0,
  "doctype": "Workspace",
- "for_user": "",
- "hide_custom": 0,
- "icon": "message-1",
- "idx": 0,
- "indicator_color": "green",
- "is_hidden": 0,
- "label": "WhatsApp Messaging",
- "link_type": "DocType",
- "links": [],
- "modified": "2025-10-09 19:04:41.240168",
- "modified_by": "Administrator",
- "module": "Whatsapp Messaging",
  "name": "WhatsApp Messaging",
- "number_cards": [],
- "owner": "Administrator",
- "parent_page": "",
+ "title": "WhatsApp Messaging",
+ "label": "WhatsApp Messaging",
+ "module": "Whatsapp Messaging",
+ "standard": 1,
  "public": 1,
- "quick_lists": [],
- "roles": [],
+ "icon": "message-1",
  "sequence_id": 23.0,
- "shortcuts": [
+ "creation": "2026-10-18 12:08:03.456625",
+ "modified": "2026-10-18 17:05:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "content": "[{\"id\":\"messaging-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Messaging Summary\",\"col\":12}},{\"id\":\"messaging-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inbox\",\"col\":3}},{\"id\":\"messaging-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Conversations\",\"col\":3}},{\"id\":\"messaging-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Messages\",\"col\":3}},{\"id\":\"messaging-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Media\",\"col\":3}},{\"id\":\"messaging-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Recipients\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
+ "roles": [
   {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Templates",
-   "link_to": "WhatsApp Message Template",
-   "stats_filter": "[]",
-   "type": "DocType"
+   "role": "System Manager"
   },
   {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Media",
-   "link_to": "WhatsApp Media",
-   "stats_filter": "[]",
-   "type": "DocType"
+   "role": "Whatsapp Admin"
   },
   {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Phone Numbers",
-   "link_to": "WhatsApp Phone Number ID",
-   "stats_filter": "[]",
-   "type": "DocType"
+   "role": "Whatsapp Editor"
   }
  ],
- "title": "WhatsApp Messaging",
- "type": "Workspace"
+ "shortcuts": [
+  {
+   "label": "Inbox",
+   "type": "Page",
+   "link_to": "whatsapp-inbox",
+   "doc_view": "",
+   "color": "Grey"
+  },
+  {
+   "label": "Conversations",
+   "type": "DocType",
+   "link_to": "WhatsApp Conversation",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Messages",
+   "type": "DocType",
+   "link_to": "WhatsApp Message",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Media",
+   "type": "DocType",
+   "link_to": "WhatsApp Media",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Recipients",
+   "type": "DocType",
+   "link_to": "Static Recipient",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "User guide",
+   "type": "Page",
+   "link_to": "whatsapp-guide",
+   "doc_view": "",
+   "color": "Green"
+  }
+ ],
+ "custom_blocks": [
+  {
+   "custom_block_name": "WhatsApp Messaging Summary",
+   "label": "WhatsApp Messaging Summary"
+  }
+ ],
+ "links": []
 }

@@ -5,3 +5,12 @@
 tags
 node_modules
 __pycache__
+.integration/
+
+# Built by bench from the checked-in JavaScript sources.
+/whatsapp_messaging/public/dist/
+
+# Preserve cancelled video production locally, outside app source history.
+/docs/tutorials/
+/scripts/tutorial_*.py
+/scripts/render_tutorial.py

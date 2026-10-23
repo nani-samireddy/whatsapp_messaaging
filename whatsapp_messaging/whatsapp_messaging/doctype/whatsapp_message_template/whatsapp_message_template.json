@@ -7,16 +7,43 @@
  "engine": "InnoDB",
  "field_order": [
   "basics_section",
-  "phone_number_id",
   "template_name",
+  "phone_number_id",
   "template_doctype",
+  "basics_column",
+  "delivery_mode",
+  "template_type",
+  "media_section",
+  "media",
+  "text_template_section",
+  "shared_source_fields",
+  "allowed_source_fields",
+  "meta_header",
+  "message_preview",
+  "meta_footer",
+  "preview_column",
+  "template_edit_trigger",
+  "meta_section",
+  "meta_template_name",
+  "meta_language",
+  "meta_category",
+  "meta_examples",
+  "meta_status_column",
+  "meta_status",
+  "meta_provider_id",
+  "meta_rejection_reason",
+  "meta_rejection_detail",
+  "meta_recommendation",
+  "meta_fix_guidance",
+  "meta_action_error",
+  "meta_checked_on",
+  "sending_section",
   "template_button_label",
   "phone_number_field_name",
   "other_recipients",
   "is_single",
   "disable",
   "column_break_ldrj",
-  "template_type",
   "template_event",
   "schedule",
   "schedule_job_type_link",
@@ -27,17 +54,23 @@
   "query_filters",
   "filtered_records_html",
   "template_target_field",
-  "text_template_section",
-  "message_preview",
-  "template_edit_trigger",
-  "media_section",
-  "media"
+  "automation_section",
+  "automation_active",
+  "run_as",
+  "schedule_record",
+  "approved_template",
+  "parameter_fields",
+  "meta_submission_state",
+  "meta_submission_key",
+  "meta_submission_hash",
+  "meta_submission_at",
+  "legacy_message_text"
  ],
  "fields": [
   {
    "fieldname": "basics_section",
    "fieldtype": "Section Break",
-   "label": "Basics"
+   "label": "Template"
   },
   {
    "fieldname": "template_name",
@@ -48,25 +81,30 @@
   },
   {
    "fieldname": "column_break_ldrj",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "hidden": 1
   },
   {
    "fieldname": "template_type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "text\ndocument\naudio\nimage\nvideo\nsticker\nlocation\ncontacts\ninteractive\nlist"
+   "options": "text\nimage\ndocument",
+   "read_only": 1,
+   "default": "text",
+   "description": "Detected automatically from the selected media: text, image or PDF document."
   },
   {
    "fieldname": "text_template_section",
    "fieldtype": "Section Break",
-   "label": "Message Details"
+   "label": "Compose Message"
   },
   {
    "fieldname": "template_doctype",
    "fieldtype": "Link",
-   "label": "DocType",
+   "label": "Source DocType",
    "options": "DocType",
-   "reqd": 1
+   "reqd": 1,
+   "description": "Record type whose fields personalize this message."
   },
   {
    "default": "None",
@@ -75,46 +113,54 @@
    "fieldtype": "Select",
    "label": "Event",
    "options": "None\nCreate\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
-   "sort_options": 1
+   "sort_options": 1,
+   "hidden": 1
   },
   {
    "default": "Send Message",
    "fieldname": "template_button_label",
    "fieldtype": "Data",
-   "label": "Button Label"
+   "label": "Button Label",
+   "hidden": 1
   },
   {
    "fieldname": "phone_number_field_name",
    "fieldtype": "Select",
-   "label": "Phone Number Field"
+   "label": "Phone Number Field",
+   "hidden": 1
   },
   {
    "depends_on": "eval:doc.template_event==='Update Field'",
    "fieldname": "template_target_field",
    "fieldtype": "Select",
-   "label": "Target Field"
+   "label": "Target Field",
+   "hidden": 1
   },
   {
    "default": "0",
    "fieldname": "is_single",
    "fieldtype": "Check",
-   "label": "Is Single"
+   "label": "Bulk campaign template",
+   "description": "Use campaign preview and start for a set of business records.",
+   "hidden": 1
   },
   {
    "fieldname": "media_section",
    "fieldtype": "Section Break",
-   "label": "Media"
+   "label": "Content"
   },
   {
    "fieldname": "media",
    "fieldtype": "Link",
    "label": "Media",
-   "options": "WhatsApp Media"
+   "options": "WhatsApp Media",
+   "description": "Optional. Choose a private image or PDF to send with a caption."
   },
   {
    "fieldname": "update_query_button",
    "fieldtype": "Button",
-   "label": "Set Query"
+   "label": "Set Query",
+   "hidden": 1
   },
   {
    "fieldname": "query_filters",
@@ -125,7 +171,8 @@
   {
    "fieldname": "filtered_records_html",
    "fieldtype": "HTML",
-   "label": "Records"
+   "label": "Records",
+   "hidden": 1
   },
   {
    "depends_on": "eval:doc.template_event==='Scheduled'",
@@ -134,7 +181,8 @@
    "label": "Schedule",
    "mandatory_depends_on": "eval:doc.template_event==='Scheduled'",
    "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
-   "sort_options": 1
+   "sort_options": 1,
+   "hidden": 1
   },
   {
    "default": "Weekly",
@@ -143,7 +191,8 @@
    "fieldtype": "Select",
    "label": "Interval",
    "mandatory_depends_on": "eval:doc.template_event==='Cron'",
-   "options": "Hourly\nDaily\nWeekly\nMonthly\nYearly\nCustom cron format"
+   "options": "Hourly\nDaily\nWeekly\nMonthly\nYearly\nCustom cron format",
+   "hidden": 1
   },
   {
    "default": "Pending",
@@ -152,7 +201,8 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Pending\nCompleted\nFailed",
-   "sort_options": 1
+   "sort_options": 1,
+   "hidden": 1
   },
   {
    "depends_on": "eval:doc.template_event==='Scheduled'",
@@ -166,10 +216,11 @@
    "sort_options": 1
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "disable",
    "fieldtype": "Check",
-   "label": "Disable"
+   "label": "Disable",
+   "hidden": 1
   },
   {
    "depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\"",
@@ -177,38 +228,275 @@
    "fieldname": "custom_cron_format",
    "fieldtype": "Data",
    "label": "Cron format",
-   "mandatory_depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\""
+   "mandatory_depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\"",
+   "hidden": 1
   },
   {
    "fieldname": "other_recipients",
    "fieldtype": "Table MultiSelect",
    "label": "Other Recipients",
-   "options": "Static Recipient Link"
+   "options": "Static Recipient Link",
+   "hidden": 1
   },
   {
-   "default": "Your template goes here...",
    "fieldname": "message_preview",
    "fieldtype": "Long Text",
-   "label": "Message Preview",
-   "placeholder": "Your template goes here...",
-   "read_only": 1
+   "label": "Message Text",
+   "placeholder": "Write your message\u2026",
+   "description": "Write your message and use Insert field to add information from your records."
   },
   {
    "fieldname": "template_edit_trigger",
    "fieldtype": "HTML",
-   "label": "Template Message"
+   "label": "Live Preview"
   },
   {
    "fieldname": "phone_number_id",
    "fieldtype": "Link",
-   "label": "From",
+   "label": "Sender",
    "options": "WhatsApp Phone Number ID",
-   "reqd": 1
+   "reqd": 1,
+   "description": "Account used to register Meta content. Campaigns choose their sending account within the same WABA."
+  },
+  {
+   "fieldname": "allowed_source_fields",
+   "fieldtype": "Long Text",
+   "label": "Allowed Source Fields (JSON)",
+   "default": "[]",
+   "permlevel": 1,
+   "description": "Legacy snapshot of the shared source-DocType policy. Configure shared fields in WhatsApp Administration.",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "automation_active",
+   "label": "Automation Active",
+   "fieldtype": "Check",
+   "default": "0",
+   "description": "Allows event rules and schedules. Global automation and outbound switches must also be enabled.",
+   "hidden": 1
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Run As",
+   "fieldtype": "Link",
+   "read_only": 1,
+   "options": "User",
+   "hidden": 1
+  },
+  {
+   "fieldname": "approved_template",
+   "label": "Approved Template",
+   "fieldtype": "Link",
+   "options": "WhatsApp Approved Template",
+   "hidden": 1,
+   "read_only": 1,
+   "description": "Internal Meta catalogue reference; managed from this form."
+  },
+  {
+   "fieldname": "parameter_fields",
+   "label": "Parameter Fields",
+   "fieldtype": "Code",
+   "permlevel": 1,
+   "options": "JSON",
+   "hidden": 1,
+   "description": "Legacy positional mapping retained for compatibility."
+  },
+  {
+   "fieldname": "schedule_record",
+   "label": "Schedule",
+   "fieldtype": "Link",
+   "read_only": 1,
+   "options": "WhatsApp Schedule",
+   "hidden": 1
+  },
+  {
+   "fieldname": "shared_source_fields",
+   "label": "Shared Message Fields",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "preview_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "automation_section",
+   "fieldtype": "Section Break",
+   "label": "Automation & Execution",
+   "hidden": 1
+  },
+  {
+   "fieldname": "delivery_mode",
+   "fieldtype": "Select",
+   "label": "Message Mode",
+   "options": "Local message\nMeta-approved template",
+   "default": "Local message",
+   "description": "Local messages use the open reply window. Meta templates are submitted and reviewed before use."
+  },
+  {
+   "fieldname": "meta_section",
+   "fieldtype": "Section Break",
+   "label": "Meta Approval",
+   "depends_on": "eval:doc.delivery_mode === \"Meta-approved template\""
+  },
+  {
+   "fieldname": "meta_template_name",
+   "fieldtype": "Data",
+   "label": "Meta Template Name",
+   "length": 512,
+   "description": "Lowercase letters, numbers and underscores. This is the name registered with Meta."
+  },
+  {
+   "fieldname": "meta_language",
+   "fieldtype": "Data",
+   "label": "Language Code",
+   "default": "en_US",
+   "description": "Meta language code, such as en_US or te. The message is not translated automatically."
+  },
+  {
+   "fieldname": "meta_category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "UTILITY\nMARKETING",
+   "default": "UTILITY",
+   "description": "Utility is for transactional updates; Marketing is for promotions. Text headers and footers are optional."
+  },
+  {
+   "fieldname": "meta_footer",
+   "fieldtype": "Small Text",
+   "label": "Footer",
+   "description": "Optional fixed text, up to 60 characters on one line. Included below the body or caption. <a href=\"https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/components#footer\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: footers</a>."
+  },
+  {
+   "fieldname": "meta_examples",
+   "fieldtype": "Table",
+   "label": "Variables & Review Examples",
+   "options": "WhatsApp Template Variable",
+   "description": "Insert fields in Message Text. For an imported numbered variable, choose its source field here. Enter fictional examples for Meta review; the app never fetches patient values for submission."
+  },
+  {
+   "fieldname": "meta_status_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "meta_status",
+   "fieldtype": "Data",
+   "label": "Meta Review Status",
+   "read_only": 1,
+   "no_copy": 1,
+   "default": "Draft",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "meta_provider_id",
+   "fieldtype": "Data",
+   "label": "Meta Template ID",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_rejection_reason",
+   "fieldtype": "Data",
+   "label": "Meta Rejection Code",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_rejection_detail",
+   "fieldtype": "Small Text",
+   "label": "What Meta Reported",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_recommendation",
+   "fieldtype": "Small Text",
+   "label": "Meta Recommendation",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_fix_guidance",
+   "fieldtype": "Small Text",
+   "label": "How to Fix It",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_action_error",
+   "fieldtype": "Small Text",
+   "label": "Submission / Sync Details",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_checked_on",
+   "fieldtype": "Datetime",
+   "label": "Last Checked with Meta",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sending_section",
+   "fieldtype": "Section Break",
+   "label": "Sending Rules",
+   "hidden": 1
+  },
+  {
+   "fieldname": "meta_submission_state",
+   "fieldtype": "Data",
+   "label": "Submission State",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_submission_key",
+   "fieldtype": "Data",
+   "label": "Submission Key",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_submission_hash",
+   "fieldtype": "Data",
+   "label": "Submission Hash",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "meta_submission_at",
+   "fieldtype": "Datetime",
+   "label": "Submission Started",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "legacy_message_text",
+   "fieldtype": "Long Text",
+   "label": "Previous Message Text",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "basics_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "meta_header",
+   "fieldtype": "Data",
+   "label": "Header",
+   "length": 60,
+   "description": "Optional fixed text, up to 60 characters on one line. Put personalized fields in Message Text. <a href=\"https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/components#text-header\" target=\"_blank\" rel=\"noopener noreferrer\">Meta: text headers</a>."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-09 18:57:10.346089",
+ "modified": "2026-10-21 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Template",
@@ -250,11 +538,26 @@
    "role": "Whatsapp Editor",
    "share": 1,
    "write": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
   }
  ],
  "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "title_field": "template_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "template_name,template_doctype,phone_number_id"
 }
