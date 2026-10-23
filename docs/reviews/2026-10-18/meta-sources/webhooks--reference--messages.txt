@@ -1,0 +1,119 @@
+# messages webhook reference
+
+
+
+The **messages** webhook describes messages sent from a WhatsApp user to a business and the status of messages sent by a business to a WhatsApp user.
+
+
+## Payload structures
+
+### Incoming messages
+
+Messages webhooks describing a message sent by a WhatsApp user — either directly, via an ad, or via a UI component in a previously received message — all have the same common structure. You can easily identify these webhooks because they include a `messages` array. For example, this webhook describes a text message sent to a business:
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;102290129340398&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;Sheena Nelson&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;16505551234&quot;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;from&quot;: &quot;16505551234&quot;,
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTRBNjU5OUFFRTAzODEwMTQ0RgA=&quot;,
+                &quot;timestamp&quot;: &quot;1749416383&quot;,
+                &quot;type&quot;: &quot;text&quot;,
+                &quot;text&quot;: &#123;
+                  &quot;body&quot;: &quot;Does it come in another color?&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+Objects in the `messages` array can vary greatly based on message type (indicated by the object&#039;s `type` property). For this reason, each incoming message type has a dedicated reference, linked in the menu on the left.
+
+### Outgoing messages
+
+Messages webhooks describing a message sent by a business to a WhatsApp user have a different structure. You can easily identify these because they include a `statuses` array. For example, this webhook describes a message that has been delivered to a WhatsApp user&#039;s device:
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;102290129340398&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;statuses&quot;: [
+              &#123;
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBI3MTE5MjVBOTE3MDk5QUVFM0YA&quot;,
+                &quot;status&quot;: &quot;delivered&quot;,
+                &quot;timestamp&quot;: &quot;1750263773&quot;,
+                &quot;recipient_id&quot;: &quot;16505551234&quot;,
+                &quot;conversation&quot;: &#123;
+                  &quot;id&quot;: &quot;6ceb9d929c9bdc4f90e967a32f8639b4&quot;,
+                  &quot;origin&quot;: &#123;
+                    &quot;type&quot;: &quot;service&quot;
+                  &#125;
+                &#125;,
+                &quot;pricing&quot;: &#123;
+                  &quot;billable&quot;: true,
+                  &quot;pricing_model&quot;: &quot;CBP&quot;,
+                  &quot;category&quot;: &quot;service&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+These webhooks don&#039;t describe the contents of the outgoing message itself, only its status, and each outgoing message can have up to three separate webhooks (one for a status of sent, one for delivered, and one for read).
+
+Status webhooks also have a [dedicated reference](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/status).
+
+## Errors
+
+Errors in messages webhooks can be surfaced in three places:
+
+- System-, app-, and account-level errors appear as a `value` object property (`entry.changes.value.errors`). See the [errors](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/errors) reference.
+- Incoming message errors appear in the `messages` array (`entry.changes.value.messages.errors`). These webhooks have `type` set to `unsupported`. See the [unsupported](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/unsupported) reference.
+- Outgoing message errors appear in the `statuses` array (`entry.changes.value.statuses.errors`). See the [status](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/status) reference.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

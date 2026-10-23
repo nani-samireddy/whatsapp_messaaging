@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-22",
+  "video": "docs/tutorials/whatsapp-messaging-en.mp4",
+  "language": "English",
+  "narration": "Synthetic English voice-over generated locally with macOS Rishi",
+  "format": "H.264 video / AAC audio",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "duration_seconds": 562.221333,
+  "chapters": 20,
+  "size_bytes": 16696945,
+  "captions": "Burned into video; separate SRT provided",
+  "visuals": "Narrated screenshots from the app using fictional Riverbend Hospital training records",
+  "checks": {
+    "full_decode": "Passed; zero decoder errors",
+    "audio_mean_db": -15.9,
+    "audio_peak_db": -1.2,
+    "chapter_metadata": 20,
+    "caption_blocks": 60,
+    "visual_review": [
+      "opening",
+      "import selection",
+      "header and footer",
+      "media upload status",
+      "delivery tracking"
+    ]
+  },
+  "external_uploads": false
+}

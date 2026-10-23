@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "record_title",
   "recipient",
   "timestamp",
   "status",
@@ -13,6 +14,15 @@
   "message"
  ],
  "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
   {
    "fieldname": "recipient",
    "fieldtype": "Data",
@@ -64,7 +74,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-04 15:59:44.344670",
+ "modified": "2026-10-18 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message Log",
@@ -83,32 +93,22 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Admin",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   },
   {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Editor",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   }
  ],
  "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "recipient,type,status"
 }

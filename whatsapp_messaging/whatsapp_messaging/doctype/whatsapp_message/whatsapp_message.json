@@ -1,18 +1,46 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "format:{to}-{######}",
+ "allow_rename": 0,
+ "autoname": "WA-MSG-.YYYY.-.######",
  "creation": "2024-07-09 09:36:03.402612",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "record_title",
   "message_details_section",
   "recipients",
   "status",
   "message",
-  "message_media"
+  "message_media",
+  "conversation",
+  "account",
+  "peer",
+  "direction",
+  "message_type",
+  "provider_message_id",
+  "provider_key",
+  "sequence",
+  "sequence_key",
+  "provider_at",
+  "received_at",
+  "agent",
+  "reply_to",
+  "approved_template",
+  "source_doctype",
+  "source_name",
+  "legacy_origin",
+  "status_at"
  ],
  "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
   {
    "fieldname": "message_details_section",
    "fieldtype": "Section Break",
@@ -27,27 +55,132 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Failed\nSent"
+   "options": "Failed\nSent\nQueued\nAccepted\nHeld\nDelivered\nRead\nUnknown\nCancelled\nReceived"
   },
   {
    "fieldname": "recipients",
    "fieldtype": "Table",
    "label": "Recipients",
-   "options": "WhatsApp Static Recipient"
+   "options": "WhatsApp Static Recipient",
+   "depends_on": "eval:!doc.conversation"
   },
   {
    "fieldname": "message_media",
    "fieldtype": "Attach",
-   "label": "Media"
+   "label": "Media",
+   "depends_on": "eval:!doc.conversation"
+  },
+  {
+   "fieldname": "conversation",
+   "label": "Conversation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "options": "WhatsApp Conversation"
+  },
+  {
+   "fieldname": "account",
+   "label": "Account",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "peer",
+   "label": "Peer",
+   "fieldtype": "Link",
+   "options": "WhatsApp Peer"
+  },
+  {
+   "fieldname": "direction",
+   "label": "Direction",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "options": "Inbound\nOutbound\nLegacy"
+  },
+  {
+   "fieldname": "message_type",
+   "label": "Message Type",
+   "fieldtype": "Data",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "provider_message_id",
+   "label": "Provider Message Id",
+   "fieldtype": "Data",
+   "length": 255
+  },
+  {
+   "fieldname": "provider_key",
+   "label": "Provider Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "sequence",
+   "label": "Sequence",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "sequence_key",
+   "label": "Sequence Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "provider_at",
+   "label": "Provider At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "received_at",
+   "label": "Received At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "agent",
+   "label": "Agent",
+   "fieldtype": "Link",
+   "options": "User"
+  },
+  {
+   "fieldname": "reply_to",
+   "label": "Reply To",
+   "fieldtype": "Data",
+   "length": 255
+  },
+  {
+   "fieldname": "approved_template",
+   "label": "Approved Template",
+   "fieldtype": "Link",
+   "options": "WhatsApp Approved Template"
+  },
+  {
+   "fieldname": "source_doctype",
+   "label": "Source Doctype",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "source_name",
+   "label": "Source Name",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "legacy_origin",
+   "label": "Legacy Origin",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "status_at",
+   "label": "Status At",
+   "fieldtype": "Datetime"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-04 15:58:59.947824",
+ "modified": "2026-10-18 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Message",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -63,31 +196,21 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Admin",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   },
   {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Editor",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   }
  ],
  "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "conversation,account,peer,provider_message_id,source_doctype,source_name"
 }

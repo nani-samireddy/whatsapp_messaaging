@@ -1,0 +1,122 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Schedule",
+ "module": "Whatsapp Messaging",
+ "autoname": "WA-SCH-.######",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-21 17:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "schedule_key",
+  "rule_doctype",
+  "rule",
+  "state",
+  "run_as",
+  "timezone",
+  "cron_expression",
+  "next_due_at",
+  "one_shot",
+  "last_error"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "schedule_key",
+   "label": "Schedule Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "rule",
+   "label": "Campaign",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "options": "rule_doctype"
+  },
+  {
+   "fieldname": "state",
+   "label": "State",
+   "fieldtype": "Select",
+   "default": "Paused",
+   "in_list_view": 1,
+   "options": "Active\nPaused\nCompleted"
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Run As",
+   "fieldtype": "Link",
+   "options": "User"
+  },
+  {
+   "fieldname": "timezone",
+   "label": "Timezone",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "cron_expression",
+   "label": "Cron Expression",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "next_due_at",
+   "label": "Next Due At",
+   "fieldtype": "Datetime",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "one_shot",
+   "label": "One Shot",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "last_error",
+   "label": "Last Error",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "rule_doctype",
+   "fieldtype": "Data",
+   "label": "Campaign / Legacy Rule Type",
+   "hidden": 1,
+   "read_only": 1,
+   "default": "WhatsApp Campaign"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "rule,state,timezone,cron_expression"
+}

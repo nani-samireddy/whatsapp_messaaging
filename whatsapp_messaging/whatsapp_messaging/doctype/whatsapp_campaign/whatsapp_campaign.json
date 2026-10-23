@@ -1,0 +1,284 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Campaign",
+ "module": "Whatsapp Messaging",
+ "autoname": "format:{campaign_name}",
+ "allow_rename": 0,
+ "engine": "InnoDB",
+ "creation": "2026-10-21 17:00:00.000000",
+ "modified": "2026-10-21 17:00:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "field_order": [
+  "campaign_name",
+  "message_template",
+  "campaign_column",
+  "phone_number_id",
+  "template_doctype",
+  "content_summary_section",
+  "message_summary",
+  "audience_section",
+  "template_button_label",
+  "phone_number_field_name",
+  "other_recipients",
+  "is_single",
+  "disable",
+  "column_break_ldrj",
+  "template_event",
+  "schedule",
+  "schedule_job_type_link",
+  "schedule_status",
+  "cron_interval",
+  "custom_cron_format",
+  "update_query_button",
+  "query_filters",
+  "filtered_records_html",
+  "template_target_field",
+  "automation_section",
+  "automation_active",
+  "run_as",
+  "schedule_record"
+ ],
+ "fields": [
+  {
+   "fieldname": "campaign_name",
+   "fieldtype": "Data",
+   "label": "Campaign Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "message_template",
+   "fieldtype": "Link",
+   "label": "Message Template",
+   "options": "WhatsApp Message Template",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "phone_number_id",
+   "fieldtype": "Link",
+   "label": "Sender",
+   "options": "WhatsApp Phone Number ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template_doctype",
+   "fieldtype": "Link",
+   "label": "Source DocType",
+   "options": "DocType",
+   "read_only": 1,
+   "fetch_from": "message_template.template_doctype"
+  },
+  {
+   "fieldname": "message_summary",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "audience_section",
+   "fieldtype": "Section Break",
+   "label": "Audience & Sending"
+  },
+  {
+   "default": "Send Message",
+   "fieldname": "template_button_label",
+   "fieldtype": "Data",
+   "label": "Button Label"
+  },
+  {
+   "fieldname": "phone_number_field_name",
+   "fieldtype": "Select",
+   "label": "Phone Number Field"
+  },
+  {
+   "fieldname": "other_recipients",
+   "fieldtype": "Table MultiSelect",
+   "label": "Other Recipients",
+   "options": "Static Recipient Link"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_single",
+   "fieldtype": "Check",
+   "label": "Send to filtered records (bulk)",
+   "description": "Use campaign preview and start for a set of business records."
+  },
+  {
+   "default": "1",
+   "fieldname": "disable",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "column_break_ldrj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "None",
+   "depends_on": "eval:doc.is_single!==1;",
+   "fieldname": "template_event",
+   "fieldtype": "Select",
+   "label": "Event",
+   "options": "None\nCreate\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
+   "sort_options": 1
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Scheduled'",
+   "fieldname": "schedule",
+   "fieldtype": "Datetime",
+   "label": "Schedule",
+   "mandatory_depends_on": "eval:doc.template_event==='Scheduled'",
+   "options": "None\nCreate\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
+   "sort_options": 1
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Scheduled'",
+   "description": "This document will be created automatically and assigned.",
+   "fieldname": "schedule_job_type_link",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Schedule Job Type Link",
+   "options": "Scheduled Job Type",
+   "print_hide": 1,
+   "sort_options": 1
+  },
+  {
+   "default": "Pending",
+   "depends_on": "eval:doc.template_event==='Scheduled'",
+   "fieldname": "schedule_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nCompleted\nFailed",
+   "sort_options": 1,
+   "hidden": 1
+  },
+  {
+   "default": "Weekly",
+   "depends_on": "eval:doc.template_event==='Cron'",
+   "fieldname": "cron_interval",
+   "fieldtype": "Select",
+   "label": "Interval",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron'",
+   "options": "Hourly\nDaily\nWeekly\nMonthly\nYearly\nCustom cron format"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\"",
+   "description": "<pre>*  *  *  *  *\n\u252c  \u252c  \u252c  \u252c  \u252c\n\u2502  \u2502  \u2502  \u2502  \u2502\n\u2502  \u2502  \u2502  \u2502  \u2514 day of week (0 - 6) (0 is Sunday)\n\u2502  \u2502  \u2502  \u2514\u2500\u2500\u2500\u2500\u2500 month (1 - 12)\n\u2502  \u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 day of month (1 - 31)\n\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 hour (0 - 23)\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 minute (0 - 59)\n\n---\n\n* - Any value\n/ - Step values\n\n---\n\nUse tools like <a href=\"https://tool.crontap.com/cronjob-debugger\">tools.crontap/cronjob-debugger</a> and <a href=\"http://crontab.guru/\">crontab.guru</a> to create custom cron expressions\n</pre>",
+   "fieldname": "custom_cron_format",
+   "fieldtype": "Data",
+   "label": "Cron format",
+   "mandatory_depends_on": "eval:doc.template_event==='Cron' && doc.cron_interval===\"Custom cron format\""
+  },
+  {
+   "fieldname": "update_query_button",
+   "fieldtype": "Button",
+   "label": "Set Query"
+  },
+  {
+   "fieldname": "query_filters",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Query Filters"
+  },
+  {
+   "fieldname": "filtered_records_html",
+   "fieldtype": "HTML",
+   "label": "Records"
+  },
+  {
+   "depends_on": "eval:doc.template_event==='Update Field'",
+   "fieldname": "template_target_field",
+   "fieldtype": "Select",
+   "label": "Target Field"
+  },
+  {
+   "fieldname": "automation_section",
+   "fieldtype": "Section Break",
+   "label": "Automation & Execution"
+  },
+  {
+   "fieldname": "automation_active",
+   "label": "Automation Active",
+   "fieldtype": "Check",
+   "default": "0",
+   "description": "Allows event rules and schedules. Global automation and outbound switches must also be enabled."
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Run As",
+   "fieldtype": "Link",
+   "read_only": 1,
+   "options": "User"
+  },
+  {
+   "fieldname": "schedule_record",
+   "label": "Schedule",
+   "fieldtype": "Link",
+   "read_only": 1,
+   "options": "WhatsApp Schedule"
+  },
+  {
+   "fieldname": "campaign_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "content_summary_section",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Whatsapp Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Whatsapp Editor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
+  }
+ ],
+ "title_field": "campaign_name",
+ "search_fields": "campaign_name,message_template,template_doctype",
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

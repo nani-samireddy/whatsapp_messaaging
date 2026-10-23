@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-23",
+  "scope": "Mac-local app completion pass; video production stopped",
+  "source": "/Users/samireddynani/projects/frappe/development/frappe-bench/apps/whatsapp_messaging",
+  "branch": "secure-send-foundation",
+  "tests": {
+    "fresh_install": true,
+    "frappe_version": "16.52.0",
+    "integration_passed": 176,
+    "suite_counts": {
+      "database_and_http_security": 35,
+      "messaging_and_http": 53,
+      "record_naming": 7,
+      "token_length": 2,
+      "template_configuration": 12,
+      "media_library": 13,
+      "media_cloud": 16,
+      "templates_and_campaigns": 38
+    },
+    "local_regression_passed": 26,
+    "total_passed": 202,
+    "provider_transport": "mocked; separate internal-only Docker network",
+    "log": ".integration/completion-check-2026-10-23.log"
+  },
+  "changes": [
+    "Added Media \u2192 Help \u2192 User guide for the media-library workflow",
+    "Added shared-field policy \u2192 Help \u2192 User guide for template configuration",
+    "Corrected role documentation: System Manager approves shared fields; Editors configure campaigns; supervisors control bulk start and Meta review",
+    "Updated workspace/implementation documentation for template/campaign separation, fixed headers/footers, selective import and cloud media reuse",
+    "Replaced obsolete README workflow description and recorded current completion/acceptance status"
+  ],
+  "verification": {
+    "asset_build": "passed",
+    "javascript_syntax": "passed",
+    "git_diff_check": "passed",
+    "local_http_asset_check": "HTTP 200; updated bundle includes both form-help mappings",
+    "development_asset_caches": "cleared for hms.localhost and development.localhost"
+  },
+  "video": {
+    "generation": "stopped",
+    "recording_and_voice_processes": "none active",
+    "tutorial_proxy": "stopped",
+    "tutorial_containers": "stopped, data retained",
+    "existing_files": "preserved",
+    "temporary_resolve_menu_launcher": "removed, copy retained under .integration/tutorial-v2"
+  },
+  "site_changes": "No users, role assignments, credentials, business records or sending switches changed; assets rebuilt and caches cleared only",
+  "server_changes": false,
+  "provider_requests_made_by_validation": false,
+  "remaining": [
+    "Live Meta send/media/recipient delivery acceptance with an opted-in test recipient",
+    "Meta review and signed inbound/delivery callbacks through selected HTTPS test ingress",
+    "Worker/scheduler/reconnect and hospital source mapping acceptance in the live test environment"
+  ],
+  "production_ready_claim": false
+}

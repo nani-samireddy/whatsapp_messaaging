@@ -1,0 +1,71 @@
+{
+ "doctype": "Workspace",
+ "name": "WhatsApp Templates & Automation",
+ "title": "WhatsApp Templates & Automation",
+ "label": "WhatsApp Templates & Automation",
+ "module": "Whatsapp Messaging",
+ "standard": 1,
+ "public": 1,
+ "icon": "message-1",
+ "sequence_id": 23.1,
+ "creation": "2026-10-18 12:08:03.456625",
+ "modified": "2026-10-18 17:05:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "content": "[{\"id\":\"automation-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Automation Summary\",\"col\":12}},{\"id\":\"automation-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Templates\",\"col\":3}},{\"id\":\"automation-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaigns\",\"col\":3}},{\"id\":\"automation-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Schedules\",\"col\":3}},{\"id\":\"automation-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaign Runs\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Whatsapp Admin"
+  },
+  {
+   "role": "Whatsapp Editor"
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "Templates",
+   "type": "DocType",
+   "link_to": "WhatsApp Message Template",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Campaigns",
+   "type": "DocType",
+   "link_to": "WhatsApp Campaign",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Schedules",
+   "type": "DocType",
+   "link_to": "WhatsApp Schedule",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Campaign Runs",
+   "type": "Page",
+   "link_to": "whatsapp-automations",
+   "doc_view": "",
+   "color": "Grey"
+  },
+  {
+   "label": "User guide",
+   "type": "Page",
+   "link_to": "whatsapp-guide",
+   "doc_view": "",
+   "color": "Green"
+  }
+ ],
+ "custom_blocks": [
+  {
+   "custom_block_name": "WhatsApp Automation Summary",
+   "label": "WhatsApp Automation Summary"
+  }
+ ],
+ "links": []
+}

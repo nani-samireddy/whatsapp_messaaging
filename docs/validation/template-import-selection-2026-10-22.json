@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-22",
+  "scope": "Mac-local WhatsApp app only",
+  "integration_tests": 176,
+  "local_tests": 26,
+  "feature_tests": 38,
+  "feature_test_log": ".integration/import-feature-tests.log",
+  "checks": [
+    "Fetch opens a selection dialog without creating content",
+    "Selective imports preserve text header, body, footer, language and category",
+    "Existing drafts remain unchanged; repeated selections are idempotent",
+    "Different languages remain distinct",
+    "Unsupported formats, cross-WABA entries, invalid selections and missing sources rejected",
+    "Supervisor, sender and source access checked",
+    "Variables require explicit source mappings",
+    "No campaigns, messages, outbox entries or jobs created by imports"
+  ],
+  "browser": "Verified the local sender lists all nine Meta templates. On an isolated site, selected appointment_confirmation, expanded its preview and imported it. UI confirmed exactly one import and a reminder to map its two variables. Existing and unsupported rows were disabled.",
+  "media_record": "WA-MEDIA-000003 had been blocked because outbound requests were disabled; latest status Uploaded with no error. No retry or upload performed for this investigation.",
+  "provider_writes": false,
+  "total_passed": 202,
+  "screenshots": [
+    ".integration/template-import-local.png",
+    "whatsapp_messaging/public/docs/screenshots/template-import-selection.png",
+    ".integration/template-import-result.png"
+  ]
+}

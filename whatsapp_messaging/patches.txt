@@ -1,6 +1,19 @@
 [pre_model_sync]
+whatsapp_messaging.patches.v1_0.encrypt_access_tokens
 # Patches added in this section will be executed before doctypes are migrated
 # Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+
+whatsapp_messaging.patches.v1_0.readable_record_titles
+
+whatsapp_messaging.patches.v1_0.shared_template_fields
+whatsapp_messaging.patches.v1_0.automatic_template_types
+
+whatsapp_messaging.patches.v1_0.media_library_details
+
+whatsapp_messaging.patches.v1_0.media_cloud_uploads
+
+whatsapp_messaging.patches.v1_0.templates_and_campaigns
+whatsapp_messaging.patches.v1_0.template_framing

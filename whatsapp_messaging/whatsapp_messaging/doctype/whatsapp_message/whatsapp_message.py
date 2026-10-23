@@ -1,9 +1,10 @@
-# Copyright (c) 2024, nani-samireddy and contributors
-# For license information, please see license.txt
-
-import frappe
 from frappe.model.document import Document
+from whatsapp_messaging.messaging.documents import protect_canonical
 
 
 class WhatsAppMessage(Document):
-    pass
+    def validate(self):
+        protect_canonical(self)
+
+    def on_trash(self):
+        protect_canonical(self)

@@ -1,0 +1,70 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Template Field Policy",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "autoname": "field:source_doctype",
+ "naming_rule": "By fieldname",
+ "allow_rename": 0,
+ "title_field": "source_doctype",
+ "show_title_field_in_link": 1,
+ "search_fields": "source_doctype",
+ "creation": "2026-10-20 12:30:00.000000",
+ "modified": "2026-10-20 12:30:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "field_order": [
+  "source_doctype",
+  "field_picker",
+  "allowed_fields"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_doctype",
+   "label": "Source DocType",
+   "fieldtype": "Link",
+   "options": "DocType",
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "description": "Choose once which business fields all templates for this DocType may insert. Only System Manager can change this shared policy."
+  },
+  {
+   "fieldname": "field_picker",
+   "label": "Allowed Message Fields",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "allowed_fields",
+   "label": "Approved Fields",
+   "fieldtype": "Code",
+   "options": "JSON",
+   "hidden": 1,
+   "default": "[]"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

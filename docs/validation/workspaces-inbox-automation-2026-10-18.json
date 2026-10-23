@@ -1,0 +1,131 @@
+{
+  "date": "2026-10-18",
+  "branch": "secure-send-foundation",
+  "scope": "Mac local development app: three workspaces, inbox, durable messaging, signed inbound/status webhooks and full automation rebuild",
+  "framework_version": "16.52.0",
+  "python_version": "3.14.8",
+  "local_tests": {
+    "count": 22,
+    "result": "pass"
+  },
+  "frappe_integration_tests": {
+    "count": 88,
+    "security_and_roles": 35,
+    "messaging_and_workflows": 53,
+    "result": "pass",
+    "environment": "Disposable internal Docker network with fictional users and mocked provider transport"
+  },
+  "covered_workflows": [
+    "Desk app registration and workspace role visibility",
+    "Inbox, personal unread cursors, assignment/version conflicts and business-record permissions",
+    "Outbox idempotency, leases, pacing, retries, timeout Unknown and delivery projections",
+    "Signed webhook HTTP verification, durable receipt, duplicates, batches and quarantine",
+    "Private outgoing/incoming JPEG, PNG and PDF with mocked transport and checksum validation",
+    "Event rules, deleted source snapshots, scoped reruns and activation-user permissions",
+    "Campaign previews, paged per-record recipient expansion, pause/resume/cancel",
+    "Schedules, timezone/DST, one-hour catch-up and skipped older occurrences",
+    "Real RQ SimpleWorker handling committed intents with mocked provider requests"
+  ],
+  "browser_checks": {
+    "environment": "Disposable site, fictional Editor user",
+    "result": "pass",
+    "checks": [
+      "Two Editor workspaces and no Administration workspace",
+      "Permission-aware summary cards and empty state",
+      "Conversation navigation, claim and status actions",
+      "Mobile navigation",
+      "Draft preservation across navigation"
+    ]
+  },
+  "static_validation": {
+    "python_files": 96,
+    "javascript_sources": 15,
+    "app_json": "pass",
+    "git_diff_check": "pass"
+  },
+  "mac_sites": [
+    {
+      "site": "hms.localhost",
+      "workspace_roles": {
+        "WhatsApp Messaging": [
+          "System Manager",
+          "Whatsapp Admin",
+          "Whatsapp Editor"
+        ],
+        "WhatsApp Administration": [
+          "System Manager",
+          "Whatsapp Admin"
+        ],
+        "WhatsApp Templates & Automation": [
+          "System Manager",
+          "Whatsapp Admin",
+          "Whatsapp Editor"
+        ]
+      },
+      "switches": {
+        "enable_outbound_messages": false,
+        "enable_inbound": false,
+        "enable_automation": false
+      },
+      "operational_record_counts": {
+        "WhatsApp Message": 0,
+        "WhatsApp Conversation": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Automation Run": 0,
+        "WhatsApp Phone Number ID": 0
+      },
+      "page_and_sidebar_installation": "pass",
+      "encrypted_credential_schema": "pass",
+      "fixed_scheduler_hook": "installed",
+      "desk_app_registration": "pass: WhatsApp alongside HMS; route /desk/whatsapp-messaging",
+      "reported_branch": "secure-send-foundation"
+    },
+    {
+      "site": "development.localhost",
+      "workspace_roles": {
+        "WhatsApp Messaging": [
+          "System Manager",
+          "Whatsapp Admin",
+          "Whatsapp Editor"
+        ],
+        "WhatsApp Administration": [
+          "System Manager",
+          "Whatsapp Admin"
+        ],
+        "WhatsApp Templates & Automation": [
+          "System Manager",
+          "Whatsapp Admin",
+          "Whatsapp Editor"
+        ]
+      },
+      "switches": {
+        "enable_outbound_messages": false,
+        "enable_inbound": false,
+        "enable_automation": false
+      },
+      "operational_record_counts": {
+        "WhatsApp Message": 0,
+        "WhatsApp Conversation": 0,
+        "WhatsApp Outbox": 0,
+        "WhatsApp Automation Run": 0,
+        "WhatsApp Phone Number ID": 0
+      },
+      "page_and_sidebar_installation": "pass",
+      "encrypted_credential_schema": "pass",
+      "fixed_scheduler_hook": "installed",
+      "desk_app_registration": "pass: WhatsApp alongside HMS; route /desk/whatsapp-messaging",
+      "reported_branch": "secure-send-foundation"
+    }
+  ],
+  "rollout": "Both Mac sites backed up including files, migrated and assets built",
+  "disposable_stack_cleanup": "Test containers, internal network and volumes removed; loopback test proxy stopped",
+  "source_status": "Uncommitted local changes; no commit or push",
+  "home_server_changes": false,
+  "real_provider_messages_sent": false,
+  "limitations": [
+    "Live Meta contract/account capability tests not performed",
+    "Public HTTPS webhook ingress not provisioned or verified",
+    "Production rollout excluded",
+    "Mac site inbound, outbound and automation switches remain off"
+  ]
+}

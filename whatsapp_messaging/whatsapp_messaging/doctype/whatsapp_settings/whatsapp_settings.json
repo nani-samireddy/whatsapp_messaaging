@@ -7,7 +7,13 @@
  "field_order": [
   "basic_details_section",
   "whatsapp_api_url",
-  "whatsapp_api_version"
+  "whatsapp_api_version",
+  "enable_outbound_messages",
+  "enable_inbound",
+  "meta_app_id",
+  "app_secret",
+  "verify_token",
+  "enable_automation"
  ],
  "fields": [
   {
@@ -16,7 +22,7 @@
    "label": "Basic Details"
   },
   {
-   "default": "v19.0",
+   "default": "v26.0",
    "fieldname": "whatsapp_api_version",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -30,12 +36,52 @@
    "in_list_view": 1,
    "label": "URL",
    "reqd": 1
+  },
+  {
+   "fieldname": "enable_outbound_messages",
+   "fieldtype": "Check",
+   "label": "Enable Outbound Requests",
+   "default": "0",
+   "permlevel": 1,
+   "description": "Allows message sends and media uploads. Keep disabled until the integration is configured and tested."
+  },
+  {
+   "fieldname": "enable_inbound",
+   "label": "Enable Inbound",
+   "fieldtype": "Check",
+   "default": "0",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "meta_app_id",
+   "label": "Meta App Id",
+   "fieldtype": "Data",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "app_secret",
+   "label": "App Secret",
+   "fieldtype": "Password",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "verify_token",
+   "label": "Verify Token",
+   "fieldtype": "Password",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "enable_automation",
+   "label": "Enable Automation",
+   "fieldtype": "Check",
+   "default": "0",
+   "permlevel": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-28 15:50:07.194103",
+ "modified": "2026-10-18 12:01:58.383175",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Settings",
@@ -52,13 +98,13 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "print": 1,
-   "read": 1,
    "role": "Whatsapp Admin",
-   "share": 1,
+   "read": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1,
    "write": 1
   }
  ],

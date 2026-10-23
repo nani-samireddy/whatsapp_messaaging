@@ -1,0 +1,9 @@
+# Template messages
+
+
+This page has moved. See [Template fundamentals](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview) for information about template messages.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

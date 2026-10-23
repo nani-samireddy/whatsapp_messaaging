@@ -1,132 +1,53 @@
-### Whatsapp Messaging
+# WhatsApp Messaging
 
-Integrate Whatsapp messaging with frappe
+A Frappe app for WhatsApp conversations, reusable message content, media and campaigns. Users sign in with their existing Frappe account and use the existing Whatsapp Editor, Whatsapp Admin and System Manager roles.
 
-Workflow diagram:
+## Workflows
 
-```mermaid
-flowchart TD
-    %% Frappe Host Layer
-    subgraph "Frappe Host Layer"
-        FrappeFramework["Frappe Framework"]:::frappe
-    end
+- **Messaging:** shared Inbox, replies, approved-template messages, private images/PDFs, assignment, business-record links and delivery history.
+- **Templates & Automation:** reusable content with shared field pickers, text headers/footers, live preview, selective Meta import, explicit submission/review, campaigns, document events and schedules.
+- **Administration:** sender credentials, integration switches, consent/suppression, Outbox, send attempts and signed webhook diagnostics.
 
-    %% Application Logic Layer
-    subgraph "Application Logic Layer"
-        WA["Whatsapp Messaging App"]:::app
+Templates define the message. Campaigns define its audience and sending rules. Saving content or uploading media does not send a message. Outbox acceptance and provider delivery receipts are shown separately.
 
-        subgraph "Controller & Hooks"
-            Controller["Controller"]:::controller
-            Hooks["Hooks"]:::controller
-        end
+Open **User guide** from a workspace or **Help → User guide** on supported forms for purpose, steps and hospital screenshots. The training scenario uses fictional Riverbend Hospital records.
 
-        subgraph "Async Tasks"
-            Cron["Cron"]:::tasks
-            DocEvents["Doc Events"]:::tasks
-            Scheduler["Scheduler"]:::tasks
-        end
+## Local setup
 
-        subgraph "Utilities & Config"
-            Config["Config"]:::config
-            subgraph "Utils"
-                LogManager["LogManager"]:::config
-                MediaController["MediaController"]:::config
-                MessageController["MessageController"]:::config
-            end
-        end
-    end
+The current checkout is developed and tested against Frappe 16.52.0. With this app already checked out in the bench's `apps` directory, install it on a new site:
 
-    %% Document/Data Model Layer
-    subgraph "Document/Data Model Layer"
-        DoctypeModules["Doctype Modules (Conversations,Messages,Media,etc.)"]:::doctype
-    end
-
-    %% Asset/Client-side Layer
-    subgraph "Asset/Client-side Layer"
-        subgraph "Client-side Assets"
-            PublicAssets["Public Assets (JS Bundles)"]:::assets
-            Templates["Templates"]:::assets
-        end
-    end
-
-    %% Connections
-    FrappeFramework -->|"installs"| WA
-    WA -->|"routes_to"| Controller
-    WA -->|"routes_to"| Hooks
-    Controller -->|"triggers"| Cron
-    Controller -->|"triggers"| DocEvents
-    Controller -->|"triggers"| Scheduler
-    Hooks -->|"triggers"| Cron
-    Hooks -->|"triggers"| DocEvents
-    Hooks -->|"triggers"| Scheduler
-    Cron -->|"updates"| DoctypeModules
-    DocEvents -->|"updates"| DoctypeModules
-    Scheduler -->|"updates"| DoctypeModules
-    Controller -->|"CRUD"| DoctypeModules
-    WA -->|"configured_by"| Config
-    Controller -->|"uses"| Config
-    Controller -->|"uses"| LogManager
-    Controller -->|"uses"| MediaController
-    Controller -->|"uses"| MessageController
-    Cron -->|"uses"| LogManager
-    Cron -->|"uses"| MediaController
-    Cron -->|"uses"| MessageController
-    WA -->|"serves"| PublicAssets
-    WA -->|"serves"| Templates
-    FrappeFramework -->|"renders"| PublicAssets
-    FrappeFramework -->|"renders"| Templates
-
-    %% Click Events
-    click WA "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/"
-    click Controller "https://github.com/nani-samireddy/whatsapp_messaaging/blob/develop/whatsapp_messaging/controller.py"
-    click Hooks "https://github.com/nani-samireddy/whatsapp_messaaging/blob/develop/whatsapp_messaging/hooks.py"
-    click Cron "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/tasks/cron"
-    click DocEvents "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/tasks/doc_events"
-    click Scheduler "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/tasks/scheduler"
-    click DoctypeModules "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/whatsapp_messaging/doctype/"
-    click Config "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/config/"
-    click LogManager "https://github.com/nani-samireddy/whatsapp_messaaging/blob/develop/whatsapp_messaging/utils/log_manager.py"
-    click MediaController "https://github.com/nani-samireddy/whatsapp_messaaging/blob/develop/whatsapp_messaging/utils/media_controller.py"
-    click MessageController "https://github.com/nani-samireddy/whatsapp_messaaging/blob/develop/whatsapp_messaging/utils/message_controller.py"
-    click PublicAssets "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/public/"
-    click Templates "https://github.com/nani-samireddy/whatsapp_messaaging/tree/develop/whatsapp_messaging/templates/"
-
-    %% Styles
-    classDef frappe fill:#ffcc00,stroke:#333,stroke-width:2px;
-    classDef app fill:#88cc88,stroke:#333,stroke-width:2px;
-    classDef controller fill:#66a3ff,stroke:#333,stroke-width:2px;
-    classDef tasks fill:#ff9966,stroke:#333,stroke-width:2px;
-    classDef doctype fill:#ccccff,stroke:#333,stroke-width:2px;
-    classDef config fill:#cc99ff,stroke:#333,stroke-width:2px;
-    classDef assets fill:#99ccff,stroke:#333,stroke-width:2px;
+```sh
+bench --site YOUR_SITE install-app whatsapp_messaging
+bench --site YOUR_SITE migrate
+bench build --app whatsapp_messaging
 ```
 
-### Installation
+For an existing installation, migrate and rebuild assets. Open `/desk/whatsapp-messaging` and assign the appropriate existing app role through Frappe's User form.
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+A System Manager configures the sender, WABA and encrypted access token. Outbound requests, inbound events and automation have independent switches and default off. Queued work requires the appropriate workers and scheduler; media cloud uploads use the dedicated `whatsapp_media` queue. See [operation and workspaces](docs/WORKSPACES-AND-INBOX.md) and [media setup](docs/MEDIA-LIBRARY-REVIEW.md).
 
-```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app whatsapp_messaging
+## Documentation
+
+- [App completion status](docs/APP-COMPLETION.md)
+- [User guide](docs/user-guide/README.md)
+- [Roles and permissions](docs/ROLE-PERMISSIONS.md)
+- [Templates, campaigns and Meta review](docs/TEMPLATES-AND-CAMPAIGNS.md)
+- [Implementation and migration history](docs/IMPLEMENTATION-PROGRESS.md)
+
+## Verification
+
+```sh
+python3 -m unittest discover -s tests -v
 ```
 
-### Contributing
+The [isolated integration harness](tests/integration/README.md) verifies a fresh install, migrations, database/HTTP permissions, worker execution, messaging, webhooks, templates, media and automation using fictional fixtures and mocked provider transport. It uses its own internal Docker network, database and Redis.
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+Live Meta acceptance and public webhook delivery are tracked separately in the completion status; passing local tests does not establish provider delivery. The home server is outside the current development work.
 
-```bash
-cd apps/whatsapp_messaging
-pre-commit install
-```
+## Contributing
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+Formatting and lint hooks are configured in `.pre-commit-config.yaml`. Install `pre-commit` and run `pre-commit install` before contributing.
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+## License
 
-### License
-
-mit
+MIT.

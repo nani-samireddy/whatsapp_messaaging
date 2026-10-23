@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-21",
+  "scope": "Mac-local development only; production and HMS review site untouched",
+  "source": "/Users/samireddynani/projects/frappe/development/frappe-bench/apps/whatsapp_messaging",
+  "integration_tests": {
+    "passed": 160,
+    "suites": {
+      "database_and_http_security": 35,
+      "messaging_and_http": 53,
+      "record_naming": 7,
+      "token_length": 2,
+      "template_configuration": 12,
+      "media_library": 13,
+      "media_cloud": 16,
+      "templates_and_campaigns": 22
+    }
+  },
+  "local_security_tests": {
+    "passed": 26
+  },
+  "total_passed": 186,
+  "fresh_install": {
+    "success": true,
+    "tests_passed": 159,
+    "note": "Fresh Frappe install and migration passed. The subsequent final 160-check suite additionally covers imported static mapping revocation."
+  },
+  "build_and_syntax": {
+    "asset_build": "passed",
+    "form_and_bundle_syntax": "passed",
+    "diff_whitespace": "passed"
+  },
+  "provider_verification": "Meta HTTP requests mocked; isolated Docker network has no provider connectivity. No live Meta submission, approval or real recipient delivery was attempted.",
+  "local_migration": [
+    {
+      "site": "hms.localhost",
+      "templates": 1,
+      "campaigns": 1,
+      "campaign_configuration_preserved": true,
+      "template_and_campaign_timestamps_preserved": true,
+      "original_content_preserved": true,
+      "stored_files_unchanged": true,
+      "senders_unchanged": true,
+      "messages_unchanged": true,
+      "outbox_work_unchanged": true,
+      "messaging_switches_unchanged": true
+    },
+    {
+      "site": "development.localhost",
+      "templates": 0,
+      "campaigns": 0,
+      "campaign_configuration_preserved": true,
+      "template_and_campaign_timestamps_preserved": true,
+      "original_content_preserved": true,
+      "stored_files_unchanged": true,
+      "senders_unchanged": true,
+      "messages_unchanged": true,
+      "outbox_work_unchanged": true,
+      "messaging_switches_unchanged": true
+    }
+  ],
+  "backups": {
+    "hms.localhost": "20261021_194554-hms_localhost-database.sql.gz",
+    "development.localhost": "20261021_194556-development_localhost-database.sql.gz"
+  },
+  "browser_checks": [
+    "Create a disabled campaign from a saved template, select the recipient phone field, save and reopen",
+    "Campaign source summary and record count render once; filters open correctly",
+    "Meta rejection code, provider explanation, recommendation and separate app guidance visible",
+    "Meta menu offers submit changes, status refresh and content import",
+    "Schedule dialog selects Campaign; no schedule saved during UI check",
+    "Bulk preview shows personalized fictional records; Start campaign not clicked",
+    "Updated user guide describes content versus sending configuration with screenshots",
+    "Actual hms.localhost Campaigns list contains Welcome and its form opens with the linked content",
+    "Open the actual Welcome template from its campaign and return; summary and recipient controls remain correct"
+  ],
+  "screenshots": [
+    "template-content.png",
+    "template-composer.png",
+    "template-meta-review.png",
+    "campaign-configuration.png",
+    "campaign-event.png",
+    "campaign-activation.png",
+    "campaign-schedule.png",
+    "campaign-preview.png"
+  ],
+  "migration_review_note": "Combined campaign and content versions hold legacy pending previews/intents for review rather than automatically replaying them.",
+  "supported_meta_authoring": "Text body, positional field mappings and fictional review examples, Utility/Marketing category, optional fixed footer. Headers, media, buttons, authentication and named parameter authoring remain unsupported.",
+  "role_model": "Existing Whatsapp Editor can draft content and configure campaigns; Whatsapp Admin and System Manager can submit/check Meta review and start bulk campaigns. Sender secrets remain restricted to System Manager.",
+  "local_browser_proof": ".integration/hms-campaigns.png",
+  "cleanup": "Task-owned internal test containers, volumes and browser proxy removed; actual local stack, dedicated media worker and HMS review server left running"
+}

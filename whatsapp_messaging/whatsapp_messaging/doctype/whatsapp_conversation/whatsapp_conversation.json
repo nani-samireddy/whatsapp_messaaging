@@ -1,16 +1,38 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "format:{recipient}",
+ "allow_rename": 0,
+ "autoname": "WA-CONV-.######",
  "creation": "2025-01-27 08:59:41.884663",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "record_title",
   "recipient",
   "messages_log_section",
-  "conversations"
+  "conversations",
+  "identity_key",
+  "account",
+  "peer",
+  "workflow_status",
+  "assigned_to",
+  "last_activity_at",
+  "last_message",
+  "last_sequence",
+  "last_inbound_at",
+  "window_expires_at",
+  "last_outbound_at",
+  "version"
  ],
  "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
   {
    "fieldname": "recipient",
    "fieldtype": "Data",
@@ -24,16 +46,89 @@
   {
    "fieldname": "conversations",
    "fieldtype": "Table",
-   "options": "WhatsApp Conversation Field"
+   "options": "WhatsApp Conversation Field",
+   "depends_on": "eval:!doc.account"
+  },
+  {
+   "fieldname": "identity_key",
+   "label": "Identity Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "account",
+   "label": "Account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "peer",
+   "label": "Peer",
+   "fieldtype": "Link",
+   "options": "WhatsApp Peer"
+  },
+  {
+   "fieldname": "workflow_status",
+   "label": "Workflow Status",
+   "fieldtype": "Select",
+   "default": "Open",
+   "in_list_view": 1,
+   "options": "Open\nPending\nResolved"
+  },
+  {
+   "fieldname": "assigned_to",
+   "label": "Assigned To",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "options": "User"
+  },
+  {
+   "fieldname": "last_activity_at",
+   "label": "Last Activity At",
+   "fieldtype": "Datetime",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "last_message",
+   "label": "Last Message",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "last_sequence",
+   "label": "Last Sequence",
+   "fieldtype": "Int",
+   "default": "0"
+  },
+  {
+   "fieldname": "last_inbound_at",
+   "label": "Last Inbound At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "window_expires_at",
+   "label": "Window Expires At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "last_outbound_at",
+   "label": "Last Outbound At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "version",
+   "label": "Version",
+   "fieldtype": "Int",
+   "default": "0"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-04 16:00:09.049509",
+ "modified": "2026-10-18 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "WhatsApp Conversation",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -49,32 +144,21 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Admin",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Whatsapp Editor",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "report": 1
   }
  ],
  "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "recipient,account,peer,assigned_to"
 }

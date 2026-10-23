@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-20",
+  "scope": "Mac local WhatsApp app only",
+  "issue": "Patient Mobile is Data with Options=Phone; the picker and recipient validation previously accepted only native Phone fields",
+  "fix": [
+    "Shared compatibility predicate supports Phone and Data with Options=Phone",
+    "Picker includes readable compatible fields and excludes hidden/sensitive recipient fields",
+    "Recipient resolution accepts both formats while preserving field permissions and phone-number validation",
+    "Optional empty HTTP field-type filters are normalized correctly",
+    "Source filters and record count refresh when selecting a DocType on a new form"
+  ],
+  "verification": {
+    "local_regressions": {
+      "count": 25,
+      "result": "pass"
+    },
+    "sites": [
+      "hms.localhost",
+      "development.localhost"
+    ],
+    "patient_picker": "patient_phone_number available on both sites",
+    "recipient_resolution": "Unsaved Patient with fictional number normalized correctly on both sites",
+    "browser": "Patient source and patient_phone_number selected without a server error; source record count refreshes correctly",
+    "screenshot": ".integration/phone-field-selection.jpg",
+    "static_checks": [
+      "Python compilation",
+      "JavaScript syntax",
+      "git diff --check"
+    ]
+  },
+  "operational_records_changed": false,
+  "real_messages_sent": false,
+  "credentials_changed": false,
+  "user_form": "Untouched; verified using unsaved temporary forms which were closed"
+}

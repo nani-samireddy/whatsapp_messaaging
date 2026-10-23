@@ -1,0 +1,110 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Peer",
+ "module": "Whatsapp Messaging",
+ "autoname": "WA-PEER-.######",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-18 19:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "identity_key",
+  "provider_identity",
+  "portfolio_id",
+  "display_name",
+  "phone_number",
+  "suppressed",
+  "consent_recorded",
+  "consent_source",
+  "consent_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "identity_key",
+   "label": "Identity Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "provider_identity",
+   "label": "Provider Identity",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "length": 255
+  },
+  {
+   "fieldname": "portfolio_id",
+   "label": "Portfolio Id",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "display_name",
+   "label": "Display Name",
+   "fieldtype": "Data",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "phone_number",
+   "label": "Phone Number",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "suppressed",
+   "label": "Suppressed",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "consent_recorded",
+   "label": "Consent Recorded",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "consent_source",
+   "label": "Consent Source",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "consent_at",
+   "label": "Consent At",
+   "fieldtype": "Datetime"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "display_name,phone_number,provider_identity"
+}

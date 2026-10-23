@@ -1,0 +1,160 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Automation Run",
+ "module": "Whatsapp Messaging",
+ "autoname": "WA-RUN-.YYYY.-.######",
+ "engine": "InnoDB",
+ "creation": "2026-10-18 12:01:58.383175",
+ "modified": "2026-10-21 17:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "field_order": [
+  "record_title",
+  "run_key",
+  "schedule",
+  "rule_doctype",
+  "rule",
+  "kind",
+  "state",
+  "run_as",
+  "due_at",
+  "cursor",
+  "snapshot_json",
+  "records_selected",
+  "records_processed",
+  "messages_created",
+  "records_excluded",
+  "last_error"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Record Title",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_preview": 1
+  },
+  {
+   "fieldname": "run_key",
+   "label": "Run Key",
+   "fieldtype": "Data",
+   "unique": 1
+  },
+  {
+   "fieldname": "schedule",
+   "label": "Schedule",
+   "fieldtype": "Link",
+   "options": "WhatsApp Schedule"
+  },
+  {
+   "fieldname": "rule",
+   "label": "Campaign",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "options": "rule_doctype"
+  },
+  {
+   "fieldname": "kind",
+   "label": "Kind",
+   "fieldtype": "Select",
+   "options": "Schedule\nCampaign\nEvent\nManual"
+  },
+  {
+   "fieldname": "state",
+   "label": "State",
+   "fieldtype": "Select",
+   "default": "Ready",
+   "in_list_view": 1,
+   "options": "Preview\nReady\nExpanding\nPaused\nCompleted\nFailed\nSkipped\nCancelled"
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Run As",
+   "fieldtype": "Link",
+   "options": "User"
+  },
+  {
+   "fieldname": "due_at",
+   "label": "Due At",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "cursor",
+   "label": "Cursor",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "snapshot_json",
+   "label": "Snapshot Json",
+   "fieldtype": "Code",
+   "options": "JSON",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "records_selected",
+   "label": "Records Selected",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "records_processed",
+   "label": "Records Processed",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "messages_created",
+   "label": "Messages Created",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "records_excluded",
+   "label": "Records Excluded",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "last_error",
+   "label": "Last Error",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "rule_doctype",
+   "fieldtype": "Data",
+   "label": "Campaign / Legacy Rule Type",
+   "hidden": 1,
+   "read_only": 1,
+   "default": "WhatsApp Campaign"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1
+  }
+ ],
+ "istable": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 0,
+ "title_field": "record_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "rule,kind,state,schedule"
+}

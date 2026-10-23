@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-21",
+  "environment": "Mac local Frappe development only",
+  "sites": [
+    "hms.localhost",
+    "development.localhost"
+  ],
+  "integration_tests": {
+    "passed": 138,
+    "suites": [
+      35,
+      53,
+      7,
+      2,
+      12,
+      13,
+      16
+    ],
+    "log": ".integration/media-final-checks.log"
+  },
+  "local_unit_tests": {
+    "passed": 26,
+    "log": ".integration/media-unit-tests.log"
+  },
+  "cloud_transport": "Mocked Meta responses in isolated internal Docker network; no live Meta upload claimed",
+  "browser_checks": [
+    "Private native uploads in Quick Entry and full form",
+    "Explicit Save required; replacement from PNG to PDF updates detected metadata",
+    "Removing selection retains stored File",
+    "New Quick Entry saves Ready PNG, selected Sender, Pending upload",
+    "Browser Save processed through real Redis queue and isolated RQ worker with mocked successful Meta response",
+    "Uploaded status, Media ID, timestamps and refresh action visible",
+    "19 workflow guides; updated media workflow and both screenshots verified"
+  ],
+  "message_sending": "Media save and cloud upload create no WhatsApp Message records",
+  "rollout": [
+    {
+      "site": "hms.localhost",
+      "media_records": 2,
+      "status_counts": {
+        "Ready": 1,
+        "Needs Attention": 1
+      },
+      "media_ids_urls_and_timestamps_preserved": true,
+      "template_records_unchanged": true,
+      "stored_file_records_unchanged": true,
+      "messaging_switches_unchanged": true
+    },
+    {
+      "site": "development.localhost",
+      "media_records": 0,
+      "status_counts": {},
+      "media_ids_urls_and_timestamps_preserved": true,
+      "template_records_unchanged": true,
+      "stored_file_records_unchanged": true,
+      "messaging_switches_unchanged": true
+    }
+  ],
+  "local_worker": {
+    "queue": "whatsapp_media",
+    "running_workers": 1,
+    "message_queues_started": false
+  },
+  "guide": "docs/user-guide/media-library.md",
+  "review": "docs/MEDIA-LIBRARY-REVIEW.md",
+  "screenshots": [
+    "whatsapp_messaging/public/docs/screenshots/media-quick-entry.png",
+    "whatsapp_messaging/public/docs/screenshots/media-file-details.png"
+  ],
+  "checks": [
+    "Production/server untouched",
+    "Database backups created before local schema updates",
+    "Messaging switches preserved",
+    "No existing media automatically uploaded by migration",
+    "JavaScript asset build passed",
+    "git diff --check passed"
+  ]
+}

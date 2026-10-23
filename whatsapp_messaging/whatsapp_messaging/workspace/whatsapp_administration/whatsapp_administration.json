@@ -1,0 +1,103 @@
+{
+ "doctype": "Workspace",
+ "name": "WhatsApp Administration",
+ "title": "WhatsApp Administration",
+ "label": "WhatsApp Administration",
+ "module": "Whatsapp Messaging",
+ "standard": 1,
+ "public": 1,
+ "icon": "message-1",
+ "sequence_id": 23.2,
+ "creation": "2026-10-18 12:08:03.456625",
+ "modified": "2026-10-20 12:30:00.000000",
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "content": "[{\"id\": \"administration-summary\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"WhatsApp Administration Summary\", \"col\": 12}}, {\"id\": \"administration-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Phone Numbers\", \"col\": 3}}, {\"id\": \"administration-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Integration Settings\", \"col\": 3}}, {\"id\": \"shared-template-fields\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Template Field Policies\", \"col\": 3}}, {\"id\": \"administration-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Outbound Queue\", \"col\": 3}}, {\"id\": \"administration-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Webhook Events\", \"col\": 3}}, {\"id\": \"administration-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Delivery Events\", \"col\": 3}}, {\"id\": \"administration-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Send Attempts\", \"col\": 3}}, {\"id\": \"administration-6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Activity\", \"col\": 3}}, {\"id\": \"administration-7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Legacy History\", \"col\": 3}}, {\"id\": \"whatsapp-user-guide\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"User guide\", \"col\": 3}}]",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Whatsapp Admin"
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "Phone Numbers",
+   "type": "DocType",
+   "link_to": "WhatsApp Phone Number ID",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Integration Settings",
+   "type": "DocType",
+   "link_to": "WhatsApp Settings",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Template Field Policies",
+   "type": "DocType",
+   "link_to": "WhatsApp Template Field Policy",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Outbound Queue",
+   "type": "DocType",
+   "link_to": "WhatsApp Outbox",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Webhook Events",
+   "type": "DocType",
+   "link_to": "WhatsApp Webhook Event",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Delivery Events",
+   "type": "DocType",
+   "link_to": "WhatsApp Status Event",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Send Attempts",
+   "type": "DocType",
+   "link_to": "WhatsApp Send Attempt",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Activity",
+   "type": "DocType",
+   "link_to": "WhatsApp Conversation Activity",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Legacy History",
+   "type": "DocType",
+   "link_to": "WhatsApp Message Log",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "User guide",
+   "type": "Page",
+   "link_to": "whatsapp-guide",
+   "doc_view": "",
+   "color": "Green"
+  }
+ ],
+ "custom_blocks": [
+  {
+   "custom_block_name": "WhatsApp Administration Summary",
+   "label": "WhatsApp Administration Summary"
+  }
+ ],
+ "links": []
+}

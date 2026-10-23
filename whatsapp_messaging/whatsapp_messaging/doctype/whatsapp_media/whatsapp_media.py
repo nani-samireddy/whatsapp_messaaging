@@ -1,54 +1,35 @@
-# Copyright (c) 2024, nani-samireddy and contributors
-# For license information, please see license.txt
-
-from frappe.model.document import Document
 import frappe
-
-# Internal imports
-from whatsapp_messaging.utils.media_controller import upload_media_to_whatsapp
-
-
+from frappe.model.document import Document
+from whatsapp_messaging.messaging.media_library import update_metadata
+from whatsapp_messaging.send_security import require_send_role
 
 
 class WhatsAppMedia(Document):
-	# Rename the document title with the file or url
-	def autoname(self):
-		if self.media_attachment:
-			self.name = self.media_attachment
-		else:
-			self.name = self.media_url
+    def before_validate(self):
+        require_send_role()
+        previous = self.get_doc_before_save()
+        # Removing a file saves an unavailable library record, never deletes the
+        # stored File or a previously queued message's immutable attachment.
+        update_metadata(self)
+        from whatsapp_messaging.messaging.media_cloud import prepare
+        prepare(self, previous)
 
-	def after_insert(self):
-		frappe.enqueue(
-			upload_media_to_whatsapp,
-			queue="long",
-			media_file=self.media_attachment,
-			doc=self
-		)
+    def on_update(self):
+        from whatsapp_messaging.messaging.media_cloud import enqueue
+        enqueue(self)
+        if not self.file_reference:
+            return
+        file = frappe.get_doc('File', self.file_reference)
+        if not file.attached_to_doctype and not file.attached_to_name and file.owner == frappe.session.user:
+            # Bind a new private upload only after the explicit media Save. Never
+            # move a file away from a business record or change its visibility.
+            frappe.db.set_value('File', file.name, dict(attached_to_doctype=self.doctype,
+                attached_to_name=self.name, attached_to_field='media_attachment'), update_modified=False)
 
-	# def after_save(self):
-	# 	"""
-	# 	Triggers media upload to WhatsApp:
-	# 	- For new documents
-	# 	- When the media_attachment field is updated
-	# 	"""
-	# 	if not self.media_attachment or not self.phone_number_id:
-	# 		return  # skip if essential fields are missing
-
-	# 	doc_before_save = self.get_doc_before_save()
-
-	# 	is_new = self.is_new()
-	# 	frappe.log_error(f"WhatsApp Media Document {'created' if is_new else 'updated'}: {self.name}")
-	# 	media_changed = (
-	# 		doc_before_save and
-	# 		getattr(doc_before_save, "media_attachment", None) != self.media_attachment
-	# 	)
-
-	# 	if is_new or media_changed:
-	# 		frappe.log_error(f"{'New' if is_new else 'Updated'} WhatsApp Media uploaded: {self.media_attachment}")
-	# 		frappe.enqueue(
-	# 			upload_media_to_whatsapp,
-	# 			queue="long",
-	# 			media_file=self.media_attachment,
-	# 			doc=self
-	# 	 )
+    def on_trash(self):
+        # Deleting a library entry must not delete files held by queued messages
+        # or history. Physical file removal remains an explicit File action.
+        for name in frappe.get_all('File', filters={'attached_to_doctype':self.doctype,
+                'attached_to_name':self.name}, pluck='name'):
+            frappe.db.set_value('File', name, dict(attached_to_doctype=None,
+                attached_to_name=None, attached_to_field=None), update_modified=False)

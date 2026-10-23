@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-18",
+  "scope": "Mac local development only",
+  "sites": [
+    "hms.localhost",
+    "development.localhost"
+  ],
+  "fields_with_help": [
+    "label",
+    "phone_number_id",
+    "access_token",
+    "enabled",
+    "waba_id",
+    "portfolio_id",
+    "display_phone"
+  ],
+  "checks": [
+    "Both sites migrated successfully",
+    "App assets built successfully",
+    "Installed descriptions and encrypted Password field schema verified on both sites",
+    "All seven descriptions and documentation links visible in local browser",
+    "Access-token password-strength widget no longer hides help text",
+    "JavaScript syntax and git diff whitespace checks passed"
+  ],
+  "screenshot": ".integration/sender-field-help.jpg",
+  "records_created": 0,
+  "naming_changed": false
+}
