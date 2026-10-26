@@ -1,0 +1,182 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Conversation Flow",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "flow_title",
+   "label": "Flow name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "account",
+   "label": "Business WhatsApp number",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "label": "Published status",
+   "fieldtype": "Select",
+   "options": "Draft\nPublished\nPaused",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "start_step",
+   "label": "First step",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "default": "main_menu"
+  },
+  {
+   "fieldname": "trigger_mode",
+   "label": "Start automatically",
+   "fieldtype": "Select",
+   "options": "First message or keyword\nKeyword only",
+   "default": "First message or keyword",
+   "reqd": 1,
+   "description": "Starts only when reception has not taken over the conversation."
+  },
+  {
+   "fieldname": "keywords",
+   "label": "Start words",
+   "fieldtype": "Small Text",
+   "default": "hi, hello, menu",
+   "description": "Comma-separated words. The entire incoming message must match. People can type menu to return to the first step."
+  },
+  {
+   "fieldname": "steps_section",
+   "label": "Conversation steps",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "builder",
+   "label": "Flow overview",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "steps",
+   "label": "Steps",
+   "fieldtype": "Table",
+   "options": "WhatsApp Flow Step",
+   "reqd": 1
+  },
+  {
+   "fieldname": "choices",
+   "label": "Menu options",
+   "fieldtype": "Table",
+   "options": "WhatsApp Flow Choice"
+  },
+  {
+   "fieldname": "published_section",
+   "label": "Published version",
+   "fieldtype": "Section Break",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "is_active",
+   "label": "Automatic replies enabled",
+   "fieldtype": "Check",
+   "read_only": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "published_account",
+   "label": "Published business number",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "published_at",
+   "label": "Published on",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Published by",
+   "fieldtype": "Link",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "published_version",
+   "label": "Published version",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "published_definition",
+   "label": "Published definition",
+   "fieldtype": "Long Text",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "layout_json",
+   "label": "Canvas positions",
+   "fieldtype": "JSON",
+   "hidden": 1
+  }
+ ],
+ "field_order": [
+  "flow_title",
+  "account",
+  "status",
+  "start_step",
+  "trigger_mode",
+  "keywords",
+  "steps_section",
+  "builder",
+  "steps",
+  "choices",
+  "published_section",
+  "is_active",
+  "published_account",
+  "published_at",
+  "run_as",
+  "published_version",
+  "published_definition",
+  "layout_json"
+ ],
+ "istable": 0,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "autoname": "WA-FLOW-.####",
+ "title_field": "flow_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "flow_title,account"
+}

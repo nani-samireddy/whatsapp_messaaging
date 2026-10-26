@@ -34,3 +34,5 @@ WHATSAPP_TOKEN_TEST_SITE=whatsapp-test.localhost "$python_bin" /testbench/apps/w
 "$python_bin" /testbench/apps/whatsapp_messaging/tests/integration/check_media_library.py
 "$python_bin" /testbench/apps/whatsapp_messaging/tests/integration/check_media_cloud.py
 "$python_bin" /testbench/apps/whatsapp_messaging/tests/integration/check_templates_campaigns.py
+
+"$python_bin" /testbench/apps/whatsapp_messaging/tests/integration/check_flows.py

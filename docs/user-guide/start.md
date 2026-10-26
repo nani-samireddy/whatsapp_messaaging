@@ -46,4 +46,4 @@ Messaging workspace: inbox shortcuts, summary cards and User guide.
 - [Create and review a message template](templates.md)
 - [Configure a sender and integration](senders.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

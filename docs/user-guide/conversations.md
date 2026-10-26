@@ -12,7 +12,7 @@ This groups messages between one recipient and one sender account into a convers
 
 ## 1. Open Inbox
 
-From Messaging, choose Inbox. Select Riverbend Patient Services or All senders, search for Meera Rao or another patient, and use the status and assignment filters.
+From Messaging, choose Inbox. Select Riverbend Patient Services or All business numbers, search for Meera Rao or another patient, and use the status and assignment filters.
 
 ## 2. Use your unread view
 
@@ -44,6 +44,6 @@ New conversation asks for a sender and an international recipient number.
 
 - [Reply to a message](replies.md)
 - [Use an approved WhatsApp template](approved-templates.md)
-- [Claim, assign and resolve](assignment.md)
+- [Assign conversations and track progress](assignment.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

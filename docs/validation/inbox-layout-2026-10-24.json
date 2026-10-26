@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "scope": "WhatsApp Inbox layout",
+  "checks": {
+    "composer_and_header_fit_viewport": true,
+    "no_horizontal_overflow": true,
+    "conversation_list_width_capped_at_320px": true,
+    "medium_and_mobile_details_drawer_opens_and_closes": true,
+    "escape_closes_details_drawer": true,
+    "draft_survives_window_resize": true,
+    "mobile_back_navigation_works": true,
+    "mobile_list_stays_open_after_background_poll": true,
+    "draft_survives_back_and_reopen": true,
+    "timeline_scroll_does_not_move_header_or_composer": true,
+    "temporary_viewport_override_reset": true
+  },
+  "viewports_checked": [
+    {
+      "width": 1280,
+      "height": 720,
+      "composer_bottom": 703
+    },
+    {
+      "width": 1917,
+      "height": 835,
+      "composer_bottom": 818
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "composer_bottom": 751
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "composer_bottom": 835
+    }
+  ],
+  "asset_build": "passed",
+  "test_messages_sent": 0,
+  "background_poll_observation_seconds": 43,
+  "passed": true
+}

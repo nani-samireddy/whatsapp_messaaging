@@ -12,7 +12,7 @@
  "modified": "2026-10-18 17:05:00.000000",
  "owner": "Administrator",
  "modified_by": "Administrator",
- "content": "[{\"id\":\"automation-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Automation Summary\",\"col\":12}},{\"id\":\"automation-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Templates\",\"col\":3}},{\"id\":\"automation-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaigns\",\"col\":3}},{\"id\":\"automation-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Schedules\",\"col\":3}},{\"id\":\"automation-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaign Runs\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
+ "content": "[{\"id\":\"automation-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Automation Summary\",\"col\":12}},{\"id\":\"automation-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Templates\",\"col\":3}},{\"id\":\"automation-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaigns\",\"col\":3}},{\"id\":\"conversation-flows\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Conversation Flows\",\"col\":3}},{\"id\":\"automation-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Schedules\",\"col\":3}},{\"id\":\"automation-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Campaign Runs\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
  "roles": [
   {
    "role": "System Manager"
@@ -38,6 +38,13 @@
    "link_to": "WhatsApp Campaign",
    "doc_view": "List",
    "color": "Grey"
+  },
+  {
+   "label": "Conversation Flows",
+   "type": "DocType",
+   "link_to": "WhatsApp Conversation Flow",
+   "doc_view": "List",
+   "color": "Blue"
   },
   {
    "label": "Schedules",

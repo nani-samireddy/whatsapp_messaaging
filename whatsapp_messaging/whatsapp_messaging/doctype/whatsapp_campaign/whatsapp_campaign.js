@@ -9,10 +9,16 @@ frappe.ui.form.on('WhatsApp Campaign', {
         campaign_source_fields(frm); campaign_summary(frm);
     },
     template_doctype(frm) { campaign_source_fields(frm); },
+    template_event(frm) {
+        if (frm.doc.template_event === 'Date Reminder' && !frm.doc.reminder_timezone)
+            frm.set_value('reminder_timezone',frappe.boot.time_zone?.system || frappe.sys_defaults.time_zone);
+        campaign_source_fields(frm);
+    },
 });
 function campaign_source_fields(frm) {
     update_parent_doc_field_options(frm,frm.doc.template_doctype,'phone_number_field_name',['Phone']);
     update_parent_doc_field_options(frm,frm.doc.template_doctype,'template_target_field');
+    update_parent_doc_field_options(frm,frm.doc.template_doctype,'reminder_date_field',['Date']);
     render_filter_group(frm); refresh_filtered_records(frm);
 }
 async function campaign_summary(frm) {
@@ -52,9 +58,16 @@ function update_parent_doc_field_options(
 			doctype: doctype,
 			input_types: input_fieldtypes.length ? input_fieldtypes : null,
 		},
-	).then((r) => {
+	).then(async (r) => {
 		if (r.message) {
-			frm.fields_dict[target_field_name].df.options = r.message;
+            let options = r.message;
+            if (target_field_name === 'reminder_date_field') {
+                await frappe.model.with_doctype(doctype);
+                const fields = frappe.get_meta(doctype).fields;
+                options = options.map(value => ({value, label: __(fields.find(field => field.fieldname === value)?.label || value)}));
+            }
+            if (frm.doc.template_doctype !== doctype) return;
+			frm.fields_dict[target_field_name].df.options = options;
 			frm.fields_dict[target_field_name].refresh();
 		}
 	});

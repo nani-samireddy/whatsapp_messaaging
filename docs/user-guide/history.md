@@ -45,4 +45,4 @@ Canonical message record showing its status, content and account.
 - [Find or start a conversation](conversations.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

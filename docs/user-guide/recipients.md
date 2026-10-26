@@ -46,4 +46,4 @@ Reception coordinator contact with the country code and phone number entered.
 - [Record consent or stop sending](consent.md)
 - [Configure and run a campaign](campaigns.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

@@ -61,9 +61,19 @@ def inbound(sender,item,display_name=None):
     if frappe.db.exists('WhatsApp Message',{'provider_key':key}):return
     kind=item.get('type','unknown')
     body=item.get('text',{}).get('body','') if kind=='text' else item.get(kind,{}).get('caption','')
-    if kind not in ('text','image','document'):body='Unsupported incoming message ('+str(kind)[:40]+')'
+    selection=None
+    if kind=='interactive':
+        interactive=item.get('interactive') or {}
+        response=interactive.get('button_reply') or interactive.get('list_reply') or {}
+        selection=str(response.get('id') or '')[:200] or None
+        body=str(response.get('title') or 'Menu selection')[:240]
+    elif kind=='button':
+        selection=str(item.get('button',{}).get('payload') or '')[:200] or None
+        body=str(item.get('button',{}).get('text') or 'Button selection')[:240]
+    elif kind not in ('text','image','document'):body='Unsupported incoming message ('+str(kind)[:40]+')'
     seq=int(doc.last_sequence or 0)+1
     message=insert('WhatsApp Message',conversation=doc.name,account=sender.name,peer=peer.name,direction='Inbound',message_type=kind,message=str(body)[:65535],status='Received',provider_message_id=provider_id,provider_key=key,sequence=seq,sequence_key=digest(doc.name,seq),provider_at=occurred,received_at=utcnow(),reply_to=item.get('context',{}).get('id'))
+    if selection:set_record_values(message.doctype,message.name,'interactive_reply_id',selection)
     if kind in ('image','document'):
         attachment_data=item.get(kind,{})
         mime=attachment_data.get('mime_type','')
@@ -73,6 +83,8 @@ def inbound(sender,item,display_name=None):
     latest=max(get_datetime(doc.last_inbound_at),occurred) if doc.last_inbound_at else occurred
     activity=max(get_datetime(doc.last_activity_at),occurred) if doc.last_activity_at else occurred
     changed(doc,last_sequence=seq,last_message=str(body)[:240],last_activity_at=activity,last_inbound_at=latest,window_expires_at=latest+timedelta(hours=24),workflow_status='Open')
+    from .flows import enqueue_inbound
+    enqueue_inbound(message)
 
 
 def status_event(sender,item):

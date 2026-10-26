@@ -12,19 +12,19 @@ This lets you write a text response in an existing conversation. The app saves t
 
 ## 1. Open the right thread
 
-Confirm the sender, recipient and Reply window open notice. For a reply to a specific incoming message, choose that message’s Reply action.
+Confirm the sender, recipient and You can reply now notice. For a reply to a specific incoming message, choose that message’s Reply action.
 
 ## 2. Write your reply
 
-Write the appointment confirmation or patient-services reply in Message text. In the walkthrough, reception confirms Meera Rao’s 9:30 AM appointment. Your draft stays while switching conversations within this page session; text is limited to 4,096 characters.
+Write in the message box. Add an emoji with Emoji, or attach an image or PDF with Attach. The counter shows 4,096 characters for text or 1,024 for an attachment caption. Your draft stays while switching conversations within this page session.
 
-## 3. Queue the reply
+## 3. Send the reply
 
-Choose Queue reply once. This creates a send request; provider acceptance and delivery are separate outcomes.
+Choose the send arrow at the top right of the message box once, or press Ctrl+Enter (Command+Enter on Mac). The message first shows Waiting to send; check Delivered or Read for its later progress.
 
 ## 4. Check the timeline
 
-Look for the new message and its status. If the reply window has closed, choose Approved template instead.
+Look for the new message and its status. If the reply window has closed, choose Template in the bottom toolbar.
 
 ## What to check
 
@@ -32,13 +32,13 @@ The message appears in the timeline with a status. Delivered or Read requires a 
 
 ## If you need help
 
-Queue reply is unavailable when outbound is disabled, the reply window is closed or the recipient is suppressed. Reloading the browser ends the in-memory draft session.
+Send reply is unavailable when sending is off, the contact has been blocked or more than 24 hours have passed since their last message. The explanation above the reply box tells you what to do. Your draft stays when switching conversations in this tab, but reloading or leaving the page clears it.
 
 ## Screenshots
 
-![Reply composer with Attach image / PDF, Queue reply and Approved template actions.](../../whatsapp_messaging/public/docs/screenshots/inbox-reply.jpg)
+![Message box with send arrow, Template, Emoji, Attach and a character counter.](../../whatsapp_messaging/public/docs/screenshots/inbox-composer.jpg)
 
-Reply composer with Attach image / PDF, Queue reply and Approved template actions.
+Message box with send arrow, Template, Emoji, Attach and a character counter.
 
 ![Desktop inbox with conversation list, timeline and recipient details.](../../whatsapp_messaging/public/docs/screenshots/inbox-thread.jpg)
 
@@ -50,4 +50,4 @@ Desktop inbox with conversation list, timeline and recipient details.
 - [Use an approved WhatsApp template](approved-templates.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost only",
+  "changes": [
+    "Inbox composer with bordered text area, send arrow at upper right, Template/Emoji/Attach toolbar and character counter",
+    "Canvas workflow map with draggable cards, labelled arrows, zoom, expanded view, inspector and step-list fallback",
+    "Validated saved canvas positions, excluded from published conversation definitions",
+    "Public hospital details added to inactive WA-FLOW-0001 draft"
+  ],
+  "validation": {
+    "node_tests": 11,
+    "isolated_frappe_tests": 198,
+    "build": "passed",
+    "git_diff_check": "passed",
+    "browser": [
+      "Typing and emoji insertion updated draft and counter",
+      "Empty text send disabled",
+      "390px mobile Inbox: no horizontal page overflow; toolbar fits",
+      "Dragged card, saved draft, reloaded and confirmed identical coordinates",
+      "Pencil opens existing step editor; Step list retained",
+      "Expanded map covers sidebar, Fit map and 100% zoom work",
+      "Hospital flow remains Draft and inactive"
+    ]
+  },
+  "limits": [
+    "Voice-message recording is not part of the existing sending pipeline; no nonfunctional Voice Message button was added",
+    "Maps and official website list different reception numbers; draft uses the user-supplied Maps listing, documented separately"
+  ],
+  "messages_sent_by_this_work": 0
+}

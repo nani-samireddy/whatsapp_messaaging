@@ -46,4 +46,4 @@ A fictional ToDo record with its configured WhatsApp message action.
 - [Link a business record](record-links.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

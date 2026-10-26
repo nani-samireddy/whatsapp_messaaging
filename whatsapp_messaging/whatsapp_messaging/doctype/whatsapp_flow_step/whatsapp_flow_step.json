@@ -1,0 +1,131 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Flow Step",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "step_key",
+   "label": "Step name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "A short unique name, for example main_menu or preferred_date."
+  },
+  {
+   "fieldname": "step_type",
+   "label": "Action",
+   "fieldtype": "Select",
+   "options": "Menu\nQuestion\nMessage\nTemplate\nHandoff\nEnd",
+   "default": "Menu",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "prompt",
+   "label": "Message to send",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "description": "Use {{answers.name}} to insert an answer collected earlier. Plain text only.",
+   "mandatory_depends_on": "eval:doc.step_type!==\"Template\"",
+   "depends_on": "eval:doc.step_type!==\"Template\""
+  },
+  {
+   "fieldname": "next_step",
+   "label": "Next step",
+   "fieldtype": "Data",
+   "description": "Used after a message or answer. Choose a step name from this flow."
+  },
+  {
+   "fieldname": "answer_key",
+   "label": "Save answer as",
+   "fieldtype": "Data",
+   "description": "For questions only. For example name or preferred_date."
+  },
+  {
+   "fieldname": "answer_type",
+   "label": "Answer format",
+   "fieldtype": "Select",
+   "options": "Text\nDate\nPhone",
+   "default": "Text"
+  },
+  {
+   "fieldname": "message_template",
+   "fieldtype": "Link",
+   "options": "WhatsApp Message Template",
+   "label": "Message template",
+   "depends_on": "eval:doc.step_type===\"Template\"",
+   "mandatory_depends_on": "eval:doc.step_type===\"Template\""
+  },
+  {
+   "fieldname": "template_bindings",
+   "fieldtype": "JSON",
+   "label": "Template field values",
+   "hidden": 1
+  },
+  {
+   "fieldname": "template_data_source",
+   "fieldtype": "Select",
+   "label": "Template data",
+   "options": "Flow values\nRecord lookup",
+   "default": "Flow values"
+  },
+  {
+   "fieldname": "record_phone_field",
+   "fieldtype": "Data",
+   "label": "Contact phone field"
+  },
+  {
+   "fieldname": "record_filters",
+   "fieldtype": "JSON",
+   "label": "Record filters",
+   "hidden": 1
+  },
+  {
+   "fieldname": "no_match_step",
+   "fieldtype": "Data",
+   "label": "No record found"
+  },
+  {
+   "fieldname": "multiple_match_step",
+   "fieldtype": "Data",
+   "label": "More than one record"
+  },
+  {
+   "fieldname": "record_selection",
+   "fieldtype": "Select",
+   "label": "Choose matching record",
+   "options": "Exactly one record\nMost recently created",
+   "default": "Exactly one record",
+   "description": "Most recently created uses record creation time, not appointment date or last edit."
+  },
+  {
+   "fieldname": "phone_mismatch_step",
+   "fieldtype": "Data",
+   "label": "Different registered number",
+   "description": "Phone answers that differ from the WhatsApp contact go to a help step. Record lookup always uses the current WhatsApp number."
+  }
+ ],
+ "field_order": [
+  "step_key",
+  "step_type",
+  "prompt",
+  "message_template",
+  "template_bindings",
+  "next_step",
+  "answer_key",
+  "answer_type",
+  "phone_mismatch_step",
+  "template_data_source",
+  "record_phone_field",
+  "record_filters",
+  "record_selection",
+  "no_match_step",
+  "multiple_match_step"
+ ],
+ "istable": 1,
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0
+}

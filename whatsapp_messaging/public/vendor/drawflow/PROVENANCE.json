@@ -1,0 +1,9 @@
+{
+  "package": "drawflow",
+  "version": "0.0.60",
+  "source": "https://github.com/jerosoler/Drawflow",
+  "tarball": "https://registry.npmjs.org/drawflow/-/drawflow-0.0.60.tgz",
+  "integrity": "sha512-UGj1+1DnWCVY6vJXBb6Ayt7KpPINBGqncVqpYDumVeBdIKxlBGn0tksp2yciVzQjkYsjFwMMDEdoVyWzUa2wkA==",
+  "sha256": "e587758f8c4e8e02aca57de4f6c63f88f57a46c6a033f470e7c8f3acea080021",
+  "license": "MIT"
+}

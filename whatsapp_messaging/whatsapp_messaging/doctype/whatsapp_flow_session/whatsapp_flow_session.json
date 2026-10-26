@@ -1,0 +1,130 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Flow Session",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "conversation",
+   "label": "Conversation",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "flow",
+   "label": "Conversation flow",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation Flow",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "flow_version",
+   "label": "Flow version",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "state",
+   "label": "Progress",
+   "fieldtype": "Select",
+   "options": "Active\nWaiting for staff\nCompleted\nPaused",
+   "default": "Active",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "current_step",
+   "label": "Current step",
+   "fieldtype": "Data",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "answers_json",
+   "label": "Collected answers",
+   "fieldtype": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "state_json",
+   "label": "Internal progress",
+   "fieldtype": "Long Text",
+   "hidden": 1
+  },
+  {
+   "fieldname": "generation",
+   "label": "Reply generation",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "last_sequence",
+   "label": "Last processed message",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "last_provider_at",
+   "label": "Last message time",
+   "fieldtype": "Datetime",
+   "hidden": 1
+  },
+  {
+   "fieldname": "last_outbox",
+   "label": "Last flow message",
+   "fieldtype": "Link",
+   "options": "WhatsApp Outbox",
+   "hidden": 1
+  },
+  {
+   "fieldname": "expires_at",
+   "label": "Session expires at (UTC)",
+   "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "pause_reason",
+   "label": "Staff note",
+   "fieldtype": "Small Text"
+  }
+ ],
+ "field_order": [
+  "conversation",
+  "flow",
+  "flow_version",
+  "state",
+  "current_step",
+  "answers_json",
+  "state_json",
+  "generation",
+  "last_sequence",
+  "last_provider_at",
+  "last_outbox",
+  "expires_at",
+  "pause_reason"
+ ],
+ "istable": 0,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "autoname": "WA-FLOW-SESSION-.######"
+}

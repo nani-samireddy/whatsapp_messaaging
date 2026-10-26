@@ -120,7 +120,8 @@ def get_conversation(name, before=None, after=None, limit=40):
     links=[]
     for row in frappe.get_all('WhatsApp Record Link',filters={'conversation':name},fields=['reference_doctype','reference_name']):
         if frappe.has_permission(row.reference_doctype,'read',row.reference_name): links.append(row)
-    return {'conversation':{key:doc.get(key) for key in ('name','account','recipient','workflow_status','assigned_to','version','last_sequence','window_expires_at')},'peer':{key:peer.get(key) for key in ('name','display_name','suppressed','consent_recorded','consent_source')},'window_open':window_open(doc),'messages':result,'links':links,'activity':frappe.get_list('WhatsApp Conversation Activity',filters={'conversation':name},fields=['actor','action','details','creation'],order_by='creation desc',limit_page_length=20)}
+    sessions=frappe.get_list('WhatsApp Flow Session',filters={'conversation':name},fields=['name','flow','state','current_step','answers_json','pause_reason'],limit_page_length=1)
+    return {'conversation':{key:doc.get(key) for key in ('name','account','recipient','workflow_status','assigned_to','version','last_sequence','window_expires_at')},'peer':{key:peer.get(key) for key in ('name','display_name','suppressed','consent_recorded','consent_source')},'window_open':window_open(doc),'messages':result,'links':links,'activity':frappe.get_list('WhatsApp Conversation Activity',filters={'conversation':name},fields=['actor','action','details','creation'],order_by='creation desc',limit_page_length=20),'flow_session':sessions[0] if sessions else None}
 
 
 @frappe.whitelist(methods=['POST'])
@@ -147,6 +148,9 @@ def assign(name, version, user=None):
     if user and (not frappe.db.get_value('User',user,'enabled') or not set(frappe.get_roles(user)).intersection(('Whatsapp Editor','Whatsapp Admin','System Manager'))):
         frappe.throw('Choose an enabled WhatsApp agent')
     changed(doc,assigned_to=user)
+    if user:
+        from .flows import pause_session
+        pause_session(doc,'Conversation assigned to a team member')
     insert('WhatsApp Conversation Activity',conversation=name,actor=frappe.session.user,action='Assignment',details=user or 'Unassigned')
     return {'version':int(doc.version or 0)+1}
 

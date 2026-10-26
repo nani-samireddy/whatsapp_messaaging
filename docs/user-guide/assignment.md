@@ -1,4 +1,4 @@
-# Claim, assign and resolve
+# Assign conversations and track progress
 
 Coordinate patient conversations between reception staff.
 
@@ -6,29 +6,29 @@ Coordinate patient conversations between reception staff.
 
 ## What this workflow does
 
-This records who is responsible for handling a conversation and what stage the work has reached. Users can claim or release conversations they are allowed to manage, while supervisors can assign them to another eligible user. Open, Pending and Resolved help the team track work that needs attention, is waiting or is finished.
+This records who will handle a conversation and whether it needs attention, is waiting for a response or is finished. Choose Assign to me to take responsibility, or Remove assignment to release your own conversation. Supervisors can assign conversations to another team member.
 
 [All workflows](README.md)
 
-## 1. Claim an unassigned conversation
+## 1. Assign a conversation to yourself
 
-Open a thread and choose Claim conversation. Editors can claim unassigned conversations and release their own.
+Open a conversation and choose Assign to me. Choose Remove assignment when you no longer need to handle it.
 
 ## 2. Update your conversation’s status
 
-Use Change status: Open for active work, Pending when waiting, and Resolved when handled. Editors must own the thread to change its status.
+Use the Status selector: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status.
 
 ## 3. Reassign when supervising
 
-Admin and System Manager can choose Assign agent and select Priya from Reception, Anil the front desk lead, or Unassigned.
+Admin and System Manager can choose Assign to someone, select a Team member or Not assigned, and choose Save assignment.
 
 ## 4. Review activity
 
-The Activity section records assignment and status changes. A new incoming message reopens a resolved conversation.
+Conversation history records assignment and status changes. A new incoming message reopens a resolved conversation.
 
 ## What to check
 
-The owner and workflow status update, with an activity entry. Use Mine or Unassigned to find the next conversation.
+The assigned team member and status update, with an entry in Conversation history. Use Assigned to me or Unassigned to find conversations.
 
 ## If you need help
 
@@ -36,13 +36,13 @@ Assignment coordinates work; app users still share permitted history and sending
 
 ## Screenshots
 
-![Assign agent dialog: a supervisor can choose an eligible user or Unassigned.](../../whatsapp_messaging/public/docs/screenshots/assignment.jpg)
+![Assign conversation dialog: a supervisor can choose a team member or Not assigned.](../../whatsapp_messaging/public/docs/screenshots/assignment.jpg)
 
-Assign agent dialog: a supervisor can choose an eligible user or Unassigned.
+Assign conversation dialog: a supervisor can choose a team member or Not assigned.
 
 ## Related workflows
 
 - [Find or start a conversation](conversations.md)
 - [Link a business record](record-links.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

@@ -32,7 +32,7 @@ The matching business action creates a durable event run in the same transaction
 
 ## If you need help
 
-The activating user must keep the app role and source permissions. Disable the campaign or clear Automation Active to stop new event runs; already in-flight provider requests may finish.
+The activating user must keep the app role and source permissions. Disable the campaign or clear Automation Active to stop new event runs; already in-flight provider requests may finish. A date becoming due is not a record-update event. Use a Date Reminder campaign for follow-up and OP-validity reminders.
 
 ## Screenshots
 
@@ -50,4 +50,4 @@ Automation Active and Run As belong to the campaign.
 - [Check delivery and handle blocked sends](delivery.md)
 - [Create or pause a schedule](schedules.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

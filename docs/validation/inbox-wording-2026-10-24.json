@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "scope": "Inbox labels, calls to action, delivery explanations and error messages",
+  "changes": {
+    "Queue reply": "Send reply",
+    "Approved template": "Send a template",
+    "Claim conversation": "Assign to me",
+    "Assign agent": "Assign to someone",
+    "Update eligibility": "Messaging permissions",
+    "Link business record": "Link a record",
+    "Pending": "Waiting (stored value remains Pending)"
+  },
+  "verification": {
+    "build": "passed",
+    "send_error_behavior_tests": 3,
+    "browser": "Verified rebuilt Inbox, permission dialog, assignment dialog and template review without submitting changes or sending messages",
+    "horizontal_overflow": false,
+    "draft_error_copy": "Clarifies that reloading or leaving clears the draft",
+    "guide": "Updated canonical JSON and regenerated Markdown"
+  },
+  "automation_flows": "Not yet implemented; incoming interactive selections are currently unsupported"
+}

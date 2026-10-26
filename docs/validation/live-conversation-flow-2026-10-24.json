@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "flow": "WA-FLOW-0001",
+  "incoming_message": "WA-MSG-2026-000016",
+  "incoming_text": "Hi",
+  "flow_event": "WA-FLOW-EVENT-000001",
+  "flow_event_state": "Processed",
+  "session_state": "Active",
+  "current_step": "main_menu",
+  "outbox": "WA-OUT-2026-000013",
+  "outbox_state": "Accepted",
+  "outgoing_message": "WA-MSG-2026-000017",
+  "message_status": "Read",
+  "interactive_type": "button",
+  "choices": [
+    "Book an appointment",
+    "Hospital information",
+    "Talk to reception"
+  ],
+  "tunnel_reconnected": true,
+  "meta_callback_verified": true,
+  "settings_and_permissions_preserved": true
+}

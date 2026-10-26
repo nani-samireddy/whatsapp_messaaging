@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost development site",
+  "scope": "Basic live two-way WhatsApp messaging",
+  "passed": true,
+  "checks": {
+    "meta_callback_verification": true,
+    "messages_subscription_active": true,
+    "sender_access_token_valid": true,
+    "approved_template_delivered_and_read": true,
+    "real_incoming_reply_received_and_visible_in_inbox": true,
+    "incoming_reply_opens_service_window": true,
+    "reply_queued_through_inbox_ui": true,
+    "reply_context_preserved": true,
+    "inbox_reply_delivered_and_read": true,
+    "one_send_attempt_per_test_message": true,
+    "repeated_request_reuses_existing_intent": true,
+    "desk_and_generic_api_not_exposed": true,
+    "gateway_boundary_tests_passed": 10
+  },
+  "runtime": {
+    "web": "running",
+    "default_worker": "running after inspection of pending queue",
+    "scheduler": "not started",
+    "tunnel": "temporary webhook-only Cloudflare tunnel"
+  },
+  "coverage_limits": [
+    "Live media, campaign and schedule workflows were not exercised by this basic round trip.",
+    "The temporary callback requires the Mac, gateway and tunnel to remain running."
+  ],
+  "credentials_included": false,
+  "extended_workflow_report": "live-workflows-2026-10-24.json"
+}

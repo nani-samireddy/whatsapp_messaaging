@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-25",
+  "environment": "Mac-local hms.localhost only",
+  "canvas": {
+    "library": "Drawflow",
+    "version": "0.0.60",
+    "license": "MIT",
+    "locally_bundled": true
+  },
+  "draft": {
+    "name": "WA-FLOW-0002",
+    "title": "Appointment lookup example",
+    "status": "Draft",
+    "enabled": false,
+    "source_doctype": "Patient Appointment",
+    "phone_field": "patient.patient_phone_number",
+    "filters": [
+      {
+        "field": "status",
+        "operator": "=",
+        "value": "Scheduled"
+      },
+      {
+        "field": "appointment_date",
+        "operator": "=",
+        "value": "{{answers.appointment_date}}"
+      }
+    ],
+    "no_match": "reception",
+    "multiple_match": "reception"
+  },
+  "live_flow": {
+    "name": "WA-FLOW-0001",
+    "published_version_unchanged": true,
+    "enabled": true
+  },
+  "tests": {
+    "full_isolated_frappe_suite_before_final_source_pin": {
+      "passed": 212,
+      "failed": 0
+    },
+    "final_flow_integration_suite": {
+      "passed": 37,
+      "failed": 0
+    },
+    "pure_flow_engine": {
+      "passed": 28,
+      "failed": 0
+    },
+    "javascript": {
+      "passed": 17,
+      "failed": 0
+    },
+    "build": "passed",
+    "browser": [
+      "add/remove record filter; save and reload",
+      "drag connection; undo restores destination",
+      "add connected step; undo restores graph",
+      "drag card; undo restores position",
+      "fictional matching preview completes",
+      "no-match and multiple-match previews hand off",
+      "modal spacing and template field controls reviewed"
+    ]
+  },
+  "limitations": [
+    "Text templates only",
+    "Phone values use international digits or +digits",
+    "No live message sent for this feature validation; provider transport mocked in integration tests",
+    "Meta template approval is required before publishing the example"
+  ],
+  "screenshot": "whatsapp_messaging/public/docs/screenshots/conversation-flow-template-lookup.jpg"
+}

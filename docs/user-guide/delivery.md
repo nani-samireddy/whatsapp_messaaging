@@ -16,15 +16,15 @@ Use the conversation timeline or Campaign Runs → View details. Admin and Syste
 
 ## 2. Read the status
 
-Ready or Queued is waiting; Accepted is acknowledged by the provider. Sent, Delivered and Read follow receipts. Held means a precondition needs review; Retry wait is waiting for a bounded retry.
+In the Inbox, Waiting to send means the message is queued. Accepted by WhatsApp means WhatsApp has accepted it, but delivery has not been confirmed yet. Sent, Delivered and Read show later updates. Needs attention means sending is on hold; ask an administrator to check the reason.
 
 ## 3. Handle confirmed failures
 
 Review the reason and fix the issue first. Retry confirmed failure is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts.
 
-## 4. Treat Unknown carefully
+## 4. Check an unconfirmed send before sending again
 
-Unknown means the provider outcome is uncertain. Review receipts and history before deliberately composing a new message. The same uncertain request is not retried automatically.
+Send status not confirmed means the app does not know whether WhatsApp sent the message. Check its history and delivery updates before composing another message to avoid sending twice. The same uncertain request is not retried automatically. In administration screens, this status is called Unknown.
 
 ## What to check
 
@@ -46,4 +46,4 @@ Automation run results show each request’s state and a link to its conversatio
 - [Configure and run a campaign](campaigns.md)
 - [Review inbound and webhook issues](webhooks.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

@@ -25,6 +25,10 @@
   "disable",
   "column_break_ldrj",
   "template_event",
+  "reminder_date_field",
+  "reminder_days_before",
+  "reminder_time",
+  "reminder_timezone",
   "schedule",
   "schedule_job_type_link",
   "schedule_status",
@@ -119,7 +123,7 @@
    "fieldname": "template_event",
    "fieldtype": "Select",
    "label": "Event",
-   "options": "None\nCreate\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
+   "options": "None\nCreate\nDate Reminder\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
    "sort_options": 1
   },
   {
@@ -224,6 +228,39 @@
   {
    "fieldname": "content_summary_section",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reminder_date_field",
+   "label": "Reminder Date Field",
+   "fieldtype": "Select",
+   "description": "Choose the Date field to watch, such as Follow Up or Validity Expiring On.",
+   "depends_on": "eval:doc.template_event==='Date Reminder'",
+   "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
+  },
+  {
+   "fieldname": "reminder_days_before",
+   "label": "Start Reminders (Days Before)",
+   "fieldtype": "Int",
+   "default": "2",
+   "description": "2 sends once each day: two days before, one day before and on the due date. Past dates are excluded.",
+   "depends_on": "eval:doc.template_event==='Date Reminder'",
+   "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
+  },
+  {
+   "fieldname": "reminder_time",
+   "label": "Daily Reminder Time",
+   "fieldtype": "Time",
+   "default": "09:00:00",
+   "depends_on": "eval:doc.template_event==='Date Reminder'",
+   "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
+  },
+  {
+   "fieldname": "reminder_timezone",
+   "label": "Reminder Timezone",
+   "fieldtype": "Data",
+   "description": "Defaults to the site timezone. The daily time and date window both use this timezone.",
+   "depends_on": "eval:doc.template_event==='Date Reminder'",
+   "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
   }
  ],
  "permissions": [

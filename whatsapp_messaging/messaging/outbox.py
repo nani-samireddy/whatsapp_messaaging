@@ -15,11 +15,15 @@ from . import catalogue, media
 ELIGIBLE_STATES=('Ready','Retry wait')
 
 
-def create_intent(conversation_name,request_id,body='',template=None,parameters=None,file_id=None,reply_to=None,source_doctype=None,source_name=None,rule=None,run=None,origin_key=None,deleted_source=False):
+def create_intent(conversation_name,request_id,body='',template=None,parameters=None,file_id=None,reply_to=None,source_doctype=None,source_name=None,rule=None,run=None,origin_key=None,deleted_source=False,interactive=None,conversation_flow=None,flow_version=None,flow_session=None,flow_generation=None):
     require_send_role()
     if not request_id or len(str(request_id))>200:frappe.throw('A stable request identifier is required')
     doc=conversation(conversation_name,locked=True)
     input_hash=digest(doc.name,str(body or ''),template,parsed(parameters,[]),file_id,reply_to,source_doctype,source_name)
+    if conversation_flow:
+        input_hash=digest(input_hash,interactive,conversation_flow,flow_version,flow_session,flow_generation)
+    elif interactive:
+        frappe.throw('Interactive menus must belong to a published conversation flow.')
     request_key=digest('origin',origin_key) if origin_key else digest(frappe.session.user,request_id)
     existing=frappe.db.get_value('WhatsApp Outbox',{'request_key':request_key},['name','input_hash','message','state','conversation'],as_dict=True)
     if existing:
@@ -45,6 +49,9 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
         if not window_open(doc):frappe.throw('The reply window is closed. Choose an approved template.')
         if not body.strip() and not file_id:frappe.throw('Enter a message or choose an attachment')
         payload.update(type='text',text={'body':body})
+    if interactive:
+        if template or file_id or not conversation_flow:frappe.throw('A menu cannot be combined with a template or attachment.')
+        payload.pop('text',None);payload.update(type='interactive',interactive=interactive)
     if reply_to:
         if not frappe.db.exists('WhatsApp Message',{'conversation':doc.name,'provider_message_id':reply_to}):frappe.throw('Reply context must belong to this conversation')
         payload['context']={'message_id':reply_to}
@@ -75,6 +82,8 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
             from .inbox import link_record
             link_record(doc.name,source_doctype,source_name)
         intent=insert('WhatsApp Outbox',request_key=request_key,payload_hash=payload_hash,message=message.name,conversation=doc.name,account=doc.account,payload_json=json.dumps(payload),requester=frappe.session.user,origin_key=origin_key,source_doctype=source_doctype,source_name=source_name,rule=rule,run=run,next_attempt_at=utcnow(),template_hash=template_hash,input_hash=input_hash,rule_version=rule_version(rule) if rule else None,deleted_source=int(deleted_source),state='Ready',attempt_count=0)
+        if conversation_flow:
+            set_record_values(intent.doctype,intent.name,dict(conversation_flow=conversation_flow,flow_version=flow_version,flow_session=flow_session,flow_generation=flow_generation))
     except (frappe.DuplicateEntryError,frappe.UniqueValidationError):
         frappe.db.rollback(save_point='intent_insert')
         existing=frappe.db.get_value('WhatsApp Outbox',{'request_key':request_key},['name','payload_hash','message','state','conversation'],as_dict=True)
@@ -91,6 +100,9 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
 
 @frappe.whitelist(methods=['POST'])
 def send(conversation_name,request_id,body='',template=None,parameters=None,file_id=None,reply_to=None):
+    doc=conversation(conversation_name,locked=True)
+    from .flows import pause_session
+    pause_session(doc,'A team member sent a reply')
     return create_intent(conversation_name,request_id,body,template,parameters,file_id,reply_to)
 
 
@@ -109,6 +121,9 @@ def validate_dispatch(intent):
     doc=conversation(intent.conversation)
     peer=frappe.get_doc('WhatsApp Peer',doc.peer)
     if peer.suppressed:frappe.throw('Recipient is suppressed')
+    if intent.get('conversation_flow'):
+        from .flows import validate_dispatch as validate_flow_dispatch
+        validate_flow_dispatch(intent,doc)
     if intent.deleted_source:
         if not frappe.has_permission(intent.source_doctype,'read'):frappe.throw('Source type is no longer readable',frappe.PermissionError)
     elif intent.source_doctype and intent.source_name:
@@ -133,6 +148,11 @@ def validate_dispatch(intent):
             from whatsapp_messaging.utils import doc_matches_filters
             source=frappe.get_doc(intent.source_doctype,intent.source_name)
             if not doc_matches_filters(source,rule.query_filters):frappe.throw('The source no longer matches this rule')
+            if rule.template_event=='Date Reminder':
+                from .automation import validate_date_reminder,reminder_matches,origin_key
+                validate_date_reminder(rule)
+                if not intent.run or not reminder_matches(rule,source) or origin_key(rule,source,frappe.get_doc('WhatsApp Automation Run',intent.run),peer.provider_identity)!=intent.origin_key:
+                    frappe.throw('The reminder date changed or is no longer due')
     payload=parsed(intent.payload_json,{})
     if payload.get('to')!=peer.provider_identity:frappe.throw('Recipient identity changed')
     if payload.get('type')=='template':
@@ -258,11 +278,12 @@ def retry(name):
     return {'state':'Ready'}
 
 
-def sweep():
+def sweep(conversation_flows_only=False):
     now=utcnow()
-    for name in frappe.get_all('WhatsApp Outbox',filters={'state':'Claimed','lease_until':['<',now]},pluck='name',limit_page_length=100):
+    scope={'conversation_flow':['is','set']} if conversation_flows_only else {}
+    for name in frappe.get_all('WhatsApp Outbox',filters={**scope,'state':'Claimed','lease_until':['<',now]},pluck='name',limit_page_length=100):
         intent=lock('WhatsApp Outbox',name)
         if intent.state=='Claimed' and intent.lease_until and get_datetime(intent.lease_until)<now:
             set_outcome(intent,'Unknown' if intent.network_started else 'Ready','Worker lease expired')
-    for name in frappe.get_all('WhatsApp Outbox',filters={'state':['in',ELIGIBLE_STATES],'next_attempt_at':['<=',now]},pluck='name',limit_page_length=20,order_by='next_attempt_at asc'):
+    for name in frappe.get_all('WhatsApp Outbox',filters={**scope,'state':['in',ELIGIBLE_STATES],'next_attempt_at':['<=',now]},pluck='name',limit_page_length=20,order_by='next_attempt_at asc'):
         frappe.enqueue('whatsapp_messaging.messaging.outbox.dispatch',name=name,enqueue_after_commit=True)

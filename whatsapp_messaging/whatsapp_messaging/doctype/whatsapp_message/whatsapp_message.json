@@ -29,7 +29,8 @@
   "source_doctype",
   "source_name",
   "legacy_origin",
-  "status_at"
+  "status_at",
+  "interactive_reply_id"
  ],
  "fields": [
   {
@@ -172,6 +173,12 @@
    "fieldname": "status_at",
    "label": "Status At",
    "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "interactive_reply_id",
+   "label": "Selected menu option",
+   "fieldtype": "Data",
+   "hidden": 1
   }
  ],
  "index_web_pages_for_search": 1,

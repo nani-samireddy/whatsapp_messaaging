@@ -42,12 +42,43 @@ def get_rule(name):
     if rule.disable:frappe.throw('This rule is disabled')
     account(rule.phone_number_id)
     if not frappe.has_permission(rule.template_doctype,'read'):frappe.throw('You cannot read this source type',frappe.PermissionError)
+    if rule.template_event=='Date Reminder':validate_date_reminder(rule)
     return rule
+
+
+def validate_date_reminder(rule):
+    from .reminders import date_window, daily_cron
+    meta=frappe.get_meta(rule.template_doctype)
+    field=meta.get_field(rule.reminder_date_field)
+    if not field or field.fieldtype!='Date' or field.hidden or field.fieldname not in meta.get_permitted_fieldnames(permission_type='read'):
+        frappe.throw('Choose a readable Date field for this reminder.',frappe.PermissionError)
+    try:
+        date_window(utcnow(),rule.reminder_timezone,rule.reminder_days_before)
+        daily_cron(rule.reminder_time)
+    except (ValueError,TypeError,KeyError):
+        frappe.throw('Choose a valid reminder timezone, time and a window of 0 to 30 days.')
 
 
 def source_filters(rule):
     value=parsed(rule.query_filters,{})
-    return value.get('filters',[]) if isinstance(value,dict) else value
+    filters=value.get('filters',[]) if isinstance(value,dict) else value
+    if rule.template_event!='Date Reminder':return filters
+    from .reminders import date_window
+    start,end=date_window(utcnow(),rule.reminder_timezone,rule.reminder_days_before)
+    if isinstance(filters,dict):
+        filters=[[key,*(condition if isinstance(condition,(list,tuple)) else ['=',condition])] for key,condition in filters.items()]
+    return [*(filters or []),[rule.template_doctype,rule.reminder_date_field,'between',[str(start),str(end)]]]
+
+
+def reminder_matches(rule,source):
+    from .reminders import matches
+    return rule.template_event!='Date Reminder' or matches(source.get(rule.reminder_date_field),utcnow(),rule.reminder_timezone,rule.reminder_days_before)
+
+
+def origin_key(rule,source,run,recipient):
+    values=[run.run_key,source.doctype,source.name,recipient]
+    if rule.template_event=='Date Reminder':values.append(str(source.get(rule.reminder_date_field) or ''))
+    return digest(*values)
 
 
 def source_snapshot(rule):
@@ -67,6 +98,7 @@ def render(rule,source):
     source.check_permission('read')
     from whatsapp_messaging.utils import doc_matches_filters
     if not doc_matches_filters(source,rule.query_filters):frappe.throw('Source no longer matches the rule')
+    if not reminder_matches(rule,source):frappe.throw('The reminder date is outside this campaign window')
     recipients=get_template_recipients(rule,source)
     if not recipients:frappe.throw('No valid recipients on this record')
     if len(recipients)>100:frappe.throw('At most 100 recipients are supported per record')
@@ -105,7 +137,7 @@ def emit(rule,source,run,deleted=False):
     for recipient in sorted(set(recipients)):
         peer=ensure_peer(recipient,sender)
         doc=ensure_conversation(sender,peer)
-        origin=digest(run.run_key,source.doctype,source.name,recipient)
+        origin=origin_key(rule,source,run,recipient)
         create_intent(doc.name,origin,body=body,template=rule.approved_template,parameters=values,file_id=file_id,
             source_doctype=source.doctype,source_name=source.name,rule=rule.name,run=run.name,origin_key=origin,deleted_source=deleted)
         count+=1

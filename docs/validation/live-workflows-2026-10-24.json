@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost development site",
+  "passed": true,
+  "scope": [
+    "Private PNG and PDF library validation, automatic Meta upload, sending and receipts",
+    "Campaign UI preview and start with one filtered source record",
+    "One-time schedule created in the UI, paused past its actual due time and resumed"
+  ],
+  "results": {
+    "png": {
+      "private_file": true,
+      "validation": "Ready",
+      "cloud_upload": "Uploaded",
+      "unchanged_save_kept_upload": true,
+      "message": {
+        "name": "WA-MSG-2026-000005",
+        "status": "Read",
+        "message_type": "image"
+      },
+      "cloud_id_reused_when_sending": true,
+      "send_attempts": 1
+    },
+    "pdf": {
+      "private_file": true,
+      "validation": "Ready",
+      "cloud_upload": "Uploaded",
+      "unchanged_save_kept_upload": true,
+      "message": {
+        "name": "WA-MSG-2026-000006",
+        "status": "Read",
+        "message_type": "document"
+      },
+      "cloud_id_reused_when_sending": true,
+      "send_attempts": 1
+    },
+    "campaign": {
+      "run": {
+        "name": "WA-RUN-2026-000001",
+        "state": "Completed",
+        "records_selected": 1,
+        "records_processed": 1,
+        "messages_created": 1,
+        "records_excluded": 0,
+        "last_error": null
+      },
+      "messages": [
+        {
+          "outbox": "WA-OUT-2026-000003",
+          "outbox_state": "Accepted",
+          "attempts": 1,
+          "error_code": null,
+          "status": "Read"
+        }
+      ]
+    },
+    "schedule": {
+      "run": {
+        "name": "WA-RUN-2026-000002",
+        "state": "Completed",
+        "records_selected": 1,
+        "records_processed": 1,
+        "messages_created": 1,
+        "records_excluded": 0,
+        "last_error": null
+      },
+      "messages": [
+        {
+          "outbox": "WA-OUT-2026-000007",
+          "outbox_state": "Accepted",
+          "attempts": 1,
+          "error_code": null,
+          "status": "Read"
+        }
+      ],
+      "state": "Completed"
+    }
+  },
+  "additional_checks": {
+    "media_quick_entry_sender_and_file_verified": true,
+    "campaign_preview_sent_nothing": true,
+    "repeated_campaign_start_created_no_duplicate": true,
+    "paused_schedule_created_no_run": true,
+    "repeated_scheduler_tick_created_one_run": true,
+    "schedule_form_refresh_verified": true
+  },
+  "fixes": [
+    "Refresh the campaign after creating or updating its schedule; require unsaved campaign edits to be saved first.",
+    "Show one-time schedule titles in their configured timezone and distinguish the UTC field from its local-time description."
+  ],
+  "verification": {
+    "local_regression_tests_passed": 39,
+    "application_asset_build": "passed",
+    "git_diff_check": "passed"
+  },
+  "cleanup": {
+    "test_campaigns_disabled": true,
+    "active_test_schedules": 0
+  },
+  "coverage_limits": [
+    "The production app scheduler tick was invoked explicitly on the local site using real current time; the global bench scheduler remains stopped.",
+    "Recurring schedules, inbound attachment downloads and large recipient batches were not exercised by this live run."
+  ],
+  "credentials_included": false
+}

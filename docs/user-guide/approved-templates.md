@@ -10,21 +10,21 @@ This lets you send a message using wording already approved by WhatsApp, includi
 
 [All workflows](README.md)
 
-## 1. Check recipient eligibility
+## 1. Check messaging permissions
 
-An Admin must record consent before a template initiates contact. Suppressed recipients cannot receive messages.
+An administrator must record the contact’s permission before you send a template. Blocked contacts cannot receive messages.
 
-## 2. Choose Approved template
+## 2. Choose Send a template
 
-Choose Approved template, select appointment_confirmation and its language for Patient Services, then choose Continue. Only supported approved entries from the sender’s WhatsApp Business Account are offered.
+Choose Send a template, select appointment_confirmation and its language for Patient Services, then choose Review message. Only supported WhatsApp-approved templates for this business number are listed.
 
-## 3. Fill numbered parameters
+## 3. Fill in the message details
 
-Review the body and fill each numbered position. For the hospital walkthrough, Parameter 1 is Meera Rao and Parameter 2 is OPD-1042. Check the patient and appointment reference before queuing.
+Review the wording and fill each Message detail field. Each replaces a numbered placeholder, such as {{1}}. In the hospital walkthrough, Message detail 1 is Meera Rao and Message detail 2 is OPD-1042. Check the name and appointment reference before sending.
 
-## 4. Queue the template
+## 4. Send the template
 
-Choose Queue template, then check the thread status. If the catalogue is empty, ask an Admin to sync approved templates from the sender form. Templates also provides the Meta review status and rejection guidance for authored content.
+Choose Send template, then check the thread status. If the catalogue is empty, ask an Admin to sync approved templates from the sender form. Templates also provides the Meta review status and rejection guidance for authored content.
 
 ## What to check
 
@@ -46,4 +46,4 @@ Approved template parameter dialog: review the body and fill each numbered param
 - [Create and review a message template](templates.md)
 - [Configure a sender and integration](senders.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

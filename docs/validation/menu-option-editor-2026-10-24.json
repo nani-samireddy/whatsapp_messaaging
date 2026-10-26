@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "problem": "Existing option rows carried child-record doctype/name/parent metadata into the dialog, causing inline controls to use hidden-table permissions and disappear.",
+  "fixes": [
+    "Independent plain dialog rows; cancel cannot change the form",
+    "Keep child identities and untouched menus when applying options",
+    "Unique new keys after delete/add or duplicate, with early label and target validation"
+  ],
+  "tests": {
+    "focused_regression_tests": 5,
+    "browser": "Edited an existing option, applied, saved and reloaded a temporary draft; changed label persisted. Existing hospital flow inputs are editable. Unreachable routing is still rejected."
+  }
+}

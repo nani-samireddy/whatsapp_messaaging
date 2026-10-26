@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "template": "Appointment Confirmation",
+  "source_doctype": "Patient Appointment",
+  "mode": "Meta-approved template",
+  "meta_name": "appointment_confirmation",
+  "category": "UTILITY",
+  "status": "Draft",
+  "approved_fields_added": [
+    "appointment_date",
+    "department",
+    "start_time"
+  ],
+  "variable_sources": [
+    "template_doctype.department",
+    "template_doctype.appointment_date",
+    "template_doctype.start_time"
+  ],
+  "validation": [
+    "Compiled three components: fixed header, variable body and footer",
+    "Sequential Meta variables and fictional review examples validated",
+    "Rendered confirmation using fictional appointment details without unresolved variables"
+  ],
+  "submitted_to_meta": false,
+  "messages_sent": 0,
+  "campaigns_created": 0,
+  "notes": [
+    "Use only after reception confirms a booking; flow requests do not automatically send this confirmation.",
+    "Greeting is Hello: Patient Appointment has a patient link but no patient-name field. No patient identifier is placed in the greeting."
+  ]
+}

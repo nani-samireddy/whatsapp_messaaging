@@ -1,7 +1,7 @@
 {
   "title": "WhatsApp user guide",
-  "version": 8,
-  "updated": "22 October 2026",
+  "version": 10,
+  "updated": "24 October 2026",
   "screenshot_notice": "Riverbend Hospital is a fictional training setting; no real patient data is shown.",
   "guides": [
     {
@@ -64,7 +64,7 @@
       "steps": [
         {
           "title": "Open Inbox",
-          "detail": "From Messaging, choose Inbox. Select Riverbend Patient Services or All senders, search for Meera Rao or another patient, and use the status and assignment filters."
+          "detail": "From Messaging, choose Inbox. Select Riverbend Patient Services or All business numbers, search for Meera Rao or another patient, and use the status and assignment filters."
         },
         {
           "title": "Use your unread view",
@@ -99,8 +99,8 @@
       ],
       "screenshots": [
         {
-          "file": "inbox-reply.jpg",
-          "caption": "Reply composer with Attach image / PDF, Queue reply and Approved template actions."
+          "file": "inbox-composer.jpg",
+          "caption": "Message box with send arrow, Template, Emoji, Attach and a character counter."
         },
         {
           "file": "inbox-thread.jpg",
@@ -110,23 +110,23 @@
       "steps": [
         {
           "title": "Open the right thread",
-          "detail": "Confirm the sender, recipient and Reply window open notice. For a reply to a specific incoming message, choose that message’s Reply action."
+          "detail": "Confirm the sender, recipient and You can reply now notice. For a reply to a specific incoming message, choose that message’s Reply action."
         },
         {
           "title": "Write your reply",
-          "detail": "Write the appointment confirmation or patient-services reply in Message text. In the walkthrough, reception confirms Meera Rao’s 9:30 AM appointment. Your draft stays while switching conversations within this page session; text is limited to 4,096 characters."
+          "detail": "Write in the message box. Add an emoji with Emoji, or attach an image or PDF with Attach. The counter shows 4,096 characters for text or 1,024 for an attachment caption. Your draft stays while switching conversations within this page session."
         },
         {
-          "title": "Queue the reply",
-          "detail": "Choose Queue reply once. This creates a send request; provider acceptance and delivery are separate outcomes."
+          "title": "Send the reply",
+          "detail": "Choose the send arrow at the top right of the message box once, or press Ctrl+Enter (Command+Enter on Mac). The message first shows Waiting to send; check Delivered or Read for its later progress."
         },
         {
           "title": "Check the timeline",
-          "detail": "Look for the new message and its status. If the reply window has closed, choose Approved template instead."
+          "detail": "Look for the new message and its status. If the reply window has closed, choose Template in the bottom toolbar."
         }
       ],
       "check": "The message appears in the timeline with a status. Delivered or Read requires a corresponding provider receipt.",
-      "note": "Queue reply is unavailable when outbound is disabled, the reply window is closed or the recipient is suppressed. Reloading the browser ends the in-memory draft session.",
+      "note": "Send reply is unavailable when sending is off, the contact has been blocked or more than 24 hours have passed since their last message. The explanation above the reply box tells you what to do. Your draft stays when switching conversations in this tab, but reloading or leaving the page clears it.",
       "related": [
         "attachments",
         "approved-templates",
@@ -146,17 +146,17 @@
       "screenshots": [
         {
           "file": "attach-file.jpg",
-          "caption": "Private file uploader opened from Attach image / PDF."
+          "caption": "Private file uploader opened from Attach image or PDF."
         }
       ],
       "steps": [
         {
           "title": "Check the reply window",
-          "detail": "Open the conversation and confirm Reply window open. Attachments use the normal reply path."
+          "detail": "Open the conversation and confirm You can reply now. Attachments use the normal reply path."
         },
         {
           "title": "Choose a supported file",
-          "detail": "Choose Attach image / PDF and upload the visit-instructions PDF (up to 20 MB), or one JPEG or PNG (up to 5 MB). The app checks the actual file type as well as size."
+          "detail": "Choose Attach image or PDF and upload the visit-instructions PDF (up to 20 MB), or one JPEG or PNG (up to 5 MB). The app checks the actual file type as well as size."
         },
         {
           "title": "Review the attachment",
@@ -164,7 +164,7 @@
         },
         {
           "title": "Queue and inspect",
-          "detail": "Choose Queue reply. Open a received attachment from the timeline only when its download is ready."
+          "detail": "Choose Send reply. Open a received attachment from the timeline only when its download is ready."
         }
       ],
       "check": "The attachment is linked to the queued message and stored privately. Incoming unsupported files show a placeholder or blocked state.",
@@ -193,20 +193,20 @@
       ],
       "steps": [
         {
-          "title": "Check recipient eligibility",
-          "detail": "An Admin must record consent before a template initiates contact. Suppressed recipients cannot receive messages."
+          "title": "Check messaging permissions",
+          "detail": "An administrator must record the contact’s permission before you send a template. Blocked contacts cannot receive messages."
         },
         {
-          "title": "Choose Approved template",
-          "detail": "Choose Approved template, select appointment_confirmation and its language for Patient Services, then choose Continue. Only supported approved entries from the sender’s WhatsApp Business Account are offered."
+          "title": "Choose Send a template",
+          "detail": "Choose Send a template, select appointment_confirmation and its language for Patient Services, then choose Review message. Only supported WhatsApp-approved templates for this business number are listed."
         },
         {
-          "title": "Fill numbered parameters",
-          "detail": "Review the body and fill each numbered position. For the hospital walkthrough, Parameter 1 is Meera Rao and Parameter 2 is OPD-1042. Check the patient and appointment reference before queuing."
+          "title": "Fill in the message details",
+          "detail": "Review the wording and fill each Message detail field. Each replaces a numbered placeholder, such as {{1}}. In the hospital walkthrough, Message detail 1 is Meera Rao and Message detail 2 is OPD-1042. Check the name and appointment reference before sending."
         },
         {
-          "title": "Queue the template",
-          "detail": "Choose Queue template, then check the thread status. If the catalogue is empty, ask an Admin to sync approved templates from the sender form. Templates also provides the Meta review status and rejection guidance for authored content."
+          "title": "Send the template",
+          "detail": "Choose Send template, then check the thread status. If the catalogue is empty, ask an Admin to sync approved templates from the sender form. Templates also provides the Meta review status and rejection guidance for authored content."
         }
       ],
       "check": "The request uses the selected approved template and language with your supplied parameters.",
@@ -220,7 +220,7 @@
     },
     {
       "id": "assignment",
-      "title": "Claim, assign and resolve",
+      "title": "Assign conversations and track progress",
       "summary": "Coordinate patient conversations between reception staff.",
       "category": "Inbox",
       "audience": "Editor · Admin · System Manager",
@@ -230,34 +230,34 @@
       "screenshots": [
         {
           "file": "assignment.jpg",
-          "caption": "Assign agent dialog: a supervisor can choose an eligible user or Unassigned."
+          "caption": "Assign conversation dialog: a supervisor can choose a team member or Not assigned."
         }
       ],
       "steps": [
         {
-          "title": "Claim an unassigned conversation",
-          "detail": "Open a thread and choose Claim conversation. Editors can claim unassigned conversations and release their own."
+          "title": "Assign a conversation to yourself",
+          "detail": "Open a conversation and choose Assign to me. Choose Remove assignment when you no longer need to handle it."
         },
         {
           "title": "Update your conversation’s status",
-          "detail": "Use Change status: Open for active work, Pending when waiting, and Resolved when handled. Editors must own the thread to change its status."
+          "detail": "Use the Status selector: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status."
         },
         {
           "title": "Reassign when supervising",
-          "detail": "Admin and System Manager can choose Assign agent and select Priya from Reception, Anil the front desk lead, or Unassigned."
+          "detail": "Admin and System Manager can choose Assign to someone, select a Team member or Not assigned, and choose Save assignment."
         },
         {
           "title": "Review activity",
-          "detail": "The Activity section records assignment and status changes. A new incoming message reopens a resolved conversation."
+          "detail": "Conversation history records assignment and status changes. A new incoming message reopens a resolved conversation."
         }
       ],
-      "check": "The owner and workflow status update, with an activity entry. Use Mine or Unassigned to find the next conversation.",
+      "check": "The assigned team member and status update, with an entry in Conversation history. Use Assigned to me or Unassigned to find conversations.",
       "note": "Assignment coordinates work; app users still share permitted history and sending access. If another agent changed the thread first, refresh before trying again.",
       "related": [
         "conversations",
         "record-links"
       ],
-      "description": "This records who is responsible for handling a conversation and what stage the work has reached. Users can claim or release conversations they are allowed to manage, while supervisors can assign them to another eligible user. Open, Pending and Resolved help the team track work that needs attention, is waiting or is finished."
+      "description": "This records who will handle a conversation and whether it needs attention, is waiting for a response or is finished. Choose Assign to me to take responsibility, or Remove assignment to release your own conversation. Supervisors can assign conversations to another team member."
     },
     {
       "id": "record-links",
@@ -271,7 +271,7 @@
       "screenshots": [
         {
           "file": "record-link.jpg",
-          "caption": "Link permitted business record dialog with Record type and Record fields."
+          "caption": "Link a record dialog with Record type and Record fields."
         }
       ],
       "steps": [
@@ -280,8 +280,8 @@
           "detail": "On desktop use the right-hand details panel. On a phone open the thread and choose Details."
         },
         {
-          "title": "Choose Link business record",
-          "detail": "Choose Link business record, select the record type and the specific appointment or follow-up record, then choose Link. The walkthrough links Meera Rao’s OPD-1042 follow-up task."
+          "title": "Choose Link a record",
+          "detail": "Choose Link a record, select the Record type and Choose a record, then choose Link record. The walkthrough links Meera Rao’s OPD-1042 follow-up task."
         },
         {
           "title": "Open the linked record",
@@ -289,7 +289,7 @@
         },
         {
           "title": "Review activity",
-          "detail": "Check the activity entry to confirm which record was linked and by whom."
+          "detail": "Check Conversation history to see who linked a record and when."
         }
       ],
       "check": "The explicit link appears in the conversation. Sending from a readable source record also creates an explicit link.",
@@ -355,34 +355,34 @@
       "screenshots": [
         {
           "file": "recipient-eligibility.jpg",
-          "caption": "Recipient eligibility dialog shown to Admin and System Manager."
+          "caption": "Messaging permissions dialog shown to Admin and System Manager."
         }
       ],
       "steps": [
         {
           "title": "Open the recipient’s thread",
-          "detail": "Confirm the recipient number in Details before changing eligibility."
+          "detail": "Confirm the contact’s WhatsApp number in Details before changing messaging permissions."
         },
         {
-          "title": "Choose Update eligibility",
-          "detail": "Choose Update eligibility. Record Consent recorded only when the patient has given consent, and enter its source, such as Appointment booking form."
+          "title": "Choose Messaging permissions",
+          "detail": "Choose Messaging permissions. Select This contact has agreed to receive messages only when they have given permission. Under How was permission received?, enter its source, such as Appointment booking form."
         },
         {
-          "title": "Suppress when necessary",
-          "detail": "Enable Suppress sending to stop outgoing messages to this recipient. Save the change."
+          "title": "Block messages when needed",
+          "detail": "Enable Block messages to this number to stop all outgoing messages to this contact. Choose Save permissions."
         },
         {
           "title": "Review the result",
-          "detail": "Details displays the updated eligibility and Activity records the change. Eligibility is checked again when dispatching a queued message."
+          "detail": "Details shows the updated permissions, and Conversation history records the change. The app checks the permissions again before sending a waiting message."
         }
       ],
-      "check": "The recipient’s consent or suppression state is saved. Suppression blocks both normal replies and approved-template sends.",
-      "note": "Editors can view the eligibility summary but cannot change it. Never record consent solely to bypass a blocked send.",
+      "check": "The contact’s permission or blocked state is saved. Blocking stops both replies and template messages.",
+      "note": "Editors can view messaging permissions but cannot change them. Never record permission unless the contact has actually agreed to receive messages.",
       "related": [
         "approved-templates",
         "delivery"
       ],
-      "description": "This records whether a recipient has agreed to receive messages and where that agreement was recorded. An Admin can also suppress a recipient to stop outgoing messages to them. The app checks consent and suppression when preparing and sending messages."
+      "description": "This records whether a contact has agreed to receive messages and how that permission was received. An administrator can block outgoing messages to a number, including replies and templates. These permissions are checked again before sending."
     },
     {
       "id": "media-library",
@@ -437,6 +437,74 @@
         "templates",
         "attachments",
         "delivery"
+      ]
+    },
+    {
+      "id": "conversation-flows",
+      "title": "Build a conversation flow",
+      "summary": "Guide people through menus, collect a request and hand over to reception.",
+      "category": "Templates & Automation",
+      "audience": "Admin · System Manager; Editors can preview and handle conversations",
+      "route": [
+        "List",
+        "WhatsApp Conversation Flow"
+      ],
+      "description": "A conversation flow replies when someone messages your business number. It can show menus, collect answers, send a saved template and pass the conversation to staff. A template step can find an existing record using the contact’s phone number and your filters. The hospital starter collects appointment requests for reception to confirm; it does not book appointments.",
+      "steps": [
+        {
+          "title": "Create a draft",
+          "detail": "Open WhatsApp Templates & Automation → Conversation Flows. Choose Create hospital starter flow, select your business WhatsApp number and choose Create draft. You can also create a flow from New."
+        },
+        {
+          "title": "Edit messages and choices",
+          "detail": "The Workflow map shows connected cards and a dot for each branch. Drag a dot onto another card to connect it, or click a branch to choose an existing step or add a connected step. Drag cards to arrange; Save keeps their positions. Use Undo/Redo to reverse edits. Choose a card’s pencil to edit its message or menu choices, then Apply step and Save. Menu labels must be unique and at most 24 characters. Fit map, Expand map, Auto arrange and Step list help you explore. Fill in hospital information before publishing."
+        },
+        {
+          "title": "Reuse a template and find its record",
+          "detail": "Add or edit a step, choose Template and select a saved text template. Flow values lets you choose an earlier answer, contact name, contact phone number or fixed text for each variable. Record lookup finds records of the template’s Source DocType using the contact’s WhatsApp number and your filters. For appointment confirmation, first show the current number and ask whether it is registered with the hospital. Yes continues; No asks for the registered number using a Phone question. An entered number matching the WhatsApp contact continues; a different number is not looked up. The bot asks the person to message from their registered WhatsApp number or contact reception for registration help. Appointment details are only shown for the current WhatsApp number. In the template step, select Patient → Mobile, Status equals Scheduled, and Most recently created. This uses booking creation time, not appointment date or last edit; no date question is needed. Choose reception for no booking or ambiguous registered contacts. Other flows can keep Require a single matching record. Phone numbers must include the country code."
+        },
+        {
+          "title": "Try the conversation",
+          "detail": "Choose Try flow. Select menu options or type in Preview reply. Test the booking, information and reception paths. For record lookup, choose one fictional matching record, no matching record or multiple matching records. The preview uses fictional values, does not query patient records and sends no WhatsApp messages."
+        },
+        {
+          "title": "Publish when ready",
+          "detail": "Choose Publish and enable to run the saved draft. Only one flow can be active for a business number. Enable Inbound, Outbound and Automation in WhatsApp Settings, and keep the background worker running. Changes saved afterward remain a draft until you publish again."
+        },
+        {
+          "title": "Handle a reception request",
+          "detail": "In the Inbox, open Details → Flow details to read the collected department, name and preferred date. Assign to me or send a manual reply to pause automatic replies. Confirm appointment availability yourself. Allow menu requests releases the conversation and waits for the contact to type menu; it does not send a message immediately."
+        }
+      ],
+      "check": "A new message starts the published menu when its start rule matches. Menu selections route to the correct step, saved answers are visible in Flow details, and handoff stops automatic replies. Old menu selections and repeated webhook events do not create another reply.",
+      "note": "Meta templates must be approved before publishing a linked flow; local messages need an open reply window. Media templates are not supported in flow steps yet. Shared field approvals and the publishing user’s record permissions apply. If a template, record or approval changes before sending, the reply is held for review. The flow does not book appointments. Dates use YYYY-MM-DD and must be today or later; three unrecognised answers hand over to reception.",
+      "screenshots": [
+        {
+          "file": "conversation-flow-editor.jpg",
+          "caption": "Workflow map with connected hospital menu steps, branch labels and canvas controls."
+        },
+        {
+          "file": "conversation-flow-preview.png",
+          "caption": "Training preview with the hospital menu and appointment-request answers."
+        },
+        {
+          "file": "conversation-flow-template-lookup.jpg",
+          "caption": "Template step with contact matching, appointment filters and reception fallback branches."
+        },
+        {
+          "file": "appointment-registered-phone-preview.jpg",
+          "caption": "Choosing No asks for the registered hospital number before looking up an appointment."
+        },
+        {
+          "file": "appointment-current-number-help.jpg",
+          "caption": "A different entered number shows registration help; its appointments are not looked up."
+        }
+      ],
+      "related": [
+        "replies",
+        "assignment",
+        "consent",
+        "events"
       ]
     },
     {
@@ -560,7 +628,7 @@
         }
       ],
       "check": "The matching business action creates a durable event run in the same transaction. A rolled-back source change cannot dispatch its message.",
-      "note": "The activating user must keep the app role and source permissions. Disable the campaign or clear Automation Active to stop new event runs; already in-flight provider requests may finish.",
+      "note": "The activating user must keep the app role and source permissions. Disable the campaign or clear Automation Active to stop new event runs; already in-flight provider requests may finish. A date becoming due is not a record-update event. Use a Date Reminder campaign for follow-up and OP-validity reminders.",
       "related": [
         "templates",
         "delivery",
@@ -644,6 +712,10 @@
           "detail": "Use Custom or None for an action on a business record; a document Event for automatic changes; or Scheduled/Cron for future runs. Enable Automation Active for events and schedules. For a bulk run, select Send to filtered records (bulk), save and clear Disabled when ready."
         },
         {
+          "title": "Remind patients before a date",
+          "detail": "Choose Event = Date Reminder and a Reminder Date Field. For Patient follow-ups choose Follow Up; for OP expiry choose Validity Expiring On. Set Start Reminders (Days Before) to 2, Daily Reminder Time to 09:00 and the timezone to Asia/Kolkata. This sends at 9 AM two days before, one day before and on the due date. Use additional filters to exclude disabled patients. Automation Active creates the daily schedule when the campaign is saved and enabled."
+        },
+        {
           "title": "Preview a bulk run",
           "detail": "An Admin opens Campaign Runs → Preview campaign and selects the saved campaign. Review every page of personalized messages, recipients and exclusions. Previewing does not send. Repeated family phone numbers receive a separate message per source record."
         },
@@ -653,7 +725,7 @@
         }
       ],
       "check": "The run creates one message per business record and recipient, deduplicating repeated recipients only within that record.",
-      "note": "Campaigns start Disabled. Enable only after reviewing the audience and content. Meta campaigns must use a sender from the same WABA as the template. Both campaign and shared template edits invalidate older previews and queued versions. Existing queued work may be held for review after the split; it is never automatically resent. Completed means record processing finished, not that every message was delivered. Global switches, consent, source permissions and sender eligibility still apply.",
+      "note": "Campaigns start Disabled. Enable only after reviewing the audience and content. Meta campaigns must use a sender from the same WABA as the template. Both campaign and shared template edits invalidate older previews and queued versions. Existing queued work may be held for review after the split; it is never automatically resent. Completed means record processing finished, not that every message was delivered. Global switches, consent, source permissions and sender eligibility still apply. Date reminders need the scheduler running. They recheck the date before sending and hold stale messages if the date changes. Use a Meta-approved template when recipients may be outside the reply window.",
       "related": [
         "templates",
         "delivery",
@@ -683,15 +755,15 @@
         },
         {
           "title": "Read the status",
-          "detail": "Ready or Queued is waiting; Accepted is acknowledged by the provider. Sent, Delivered and Read follow receipts. Held means a precondition needs review; Retry wait is waiting for a bounded retry."
+          "detail": "In the Inbox, Waiting to send means the message is queued. Accepted by WhatsApp means WhatsApp has accepted it, but delivery has not been confirmed yet. Sent, Delivered and Read show later updates. Needs attention means sending is on hold; ask an administrator to check the reason."
         },
         {
           "title": "Handle confirmed failures",
           "detail": "Review the reason and fix the issue first. Retry confirmed failure is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts."
         },
         {
-          "title": "Treat Unknown carefully",
-          "detail": "Unknown means the provider outcome is uncertain. Review receipts and history before deliberately composing a new message. The same uncertain request is not retried automatically."
+          "title": "Check an unconfirmed send before sending again",
+          "detail": "Send status not confirmed means the app does not know whether WhatsApp sent the message. Check its history and delivery updates before composing another message to avoid sending twice. The same uncertain request is not retried automatically. In administration screens, this status is called Unknown."
         }
       ],
       "check": "You know whether work is queued, blocked, accepted or actually delivered. Run totals separate record expansion from send outcomes.",

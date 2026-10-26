@@ -11,7 +11,10 @@ import {syncTemplatesDialog} from './template_import.js';
     frappe.ui.form.on('WhatsApp Campaign', {
         refresh(frm) {
             if (frm.is_new()) return;
-            frm.add_custom_button(__('Create schedule'), () => frappe.require('whatsapp_inbox.bundle.js', () => whatsapp_messaging.scheduleDialog(null, frm.doc.name)));
+            if (frm.doc.template_event !== 'Date Reminder') frm.add_custom_button(__('Create schedule'), () => {
+                if (frm.is_dirty()) return frappe.msgprint(__('Save the campaign before creating a schedule.'));
+                frappe.require('whatsapp_inbox.bundle.js', () => whatsapp_messaging.scheduleDialog(null, frm.doc.name, () => frm.reload_doc()));
+            });
             frm.add_custom_button(__('Automation runs'), () => { frappe.route_options = {rule: frm.doc.name}; frappe.set_route('whatsapp-automations'); });
             if (frm.doc.is_single && !frm.doc.disable && (frappe.user.has_role('Whatsapp Admin') || frappe.user.has_role('System Manager'))) frm.add_custom_button(__('Preview campaign'), async () => {
                 await frappe.call({method: api + 'automation.preview_campaign', args: {rule_name: frm.doc.name}});
@@ -32,6 +35,13 @@ import {syncTemplatesDialog} from './template_import.js';
         });
     }});
     frappe.ui.form.on('WhatsApp Schedule', {refresh(frm) {
+        frm.set_df_property('next_due_at', 'label', __('Next due (UTC)'));
+        if (frm.doc.next_due_at) {
+            const zone = frm.doc.timezone || 'UTC';
+            const date = new Date(frm.doc.next_due_at.replace(' ', 'T') + 'Z');
+            const local = new Intl.DateTimeFormat(undefined, {dateStyle: 'medium', timeStyle: 'medium', timeZone: zone}).format(date);
+            frm.set_df_property('next_due_at', 'description', __('In schedule timezone: {0} ({1})', [local, zone]));
+        }
         if (frm.is_new() || frm.doc.state === 'Completed') return;
         const action = frm.doc.state === 'Paused' ? 'Resume' : 'Pause';
         frm.add_custom_button(__(action), () => frappe.call({method: api + 'automation.control_schedule', args: {name: frm.doc.name, action}}).then(() => frm.reload_doc()));

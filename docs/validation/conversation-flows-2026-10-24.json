@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "features": [
+    "Draft editing and immutable published versions",
+    "Step cards and menu choice editor",
+    "Reply buttons and list menus",
+    "Text/date questions with saved answers",
+    "Appointment request review and reception handoff",
+    "Inbox Flow details and pause/resume",
+    "Preview using the same engine without creating messages",
+    "Accessible attachment/send/template icon buttons"
+  ],
+  "local_draft": "WA-FLOW-0001",
+  "enabled": false,
+  "hospital_information": "Opening hours, address and departments must be filled before publishing.",
+  "checks": {
+    "pure_engine_tests": 18,
+    "flow_integration_tests": 20,
+    "existing_integration_regression_tests": 176,
+    "send_error_tests": 3,
+    "browser": "Created hospital draft, applied and saved a menu step, completed fictional appointment preview and verified staff handoff. Icon buttons visually verified.",
+    "local_preview_persistence": {
+      "sessions": 0,
+      "events": 0,
+      "active_flows": 0
+    },
+    "provider_transport": "Mocked in an isolated internal Docker network; no live flow messages sent.",
+    "build": "Passed",
+    "syntax_and_diff": "Passed",
+    "integration_total": 196
+  },
+  "runtime": {
+    "default_worker": "Running",
+    "flow_only_local_dispatcher": "Running every 5 seconds",
+    "global_scheduler": "Not started for this task"
+  },
+  "limits": [
+    "HMS appointment creation and clinical-record lookup are outside this release.",
+    "Publishing is required before live automatic replies."
+  ]
+}

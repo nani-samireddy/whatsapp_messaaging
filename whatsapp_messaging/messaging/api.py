@@ -33,6 +33,7 @@ def overview(section='messaging'):
         card('Failed outgoing','WhatsApp Message',{'direction':'Outbound','status':'Failed'})
     elif section=='automation':
         card('Templates','WhatsApp Message Template')
+        card('Conversation Flows','WhatsApp Conversation Flow')
         if frappe.db.has_table('WhatsApp Campaign'):card('Campaigns','WhatsApp Campaign')
         card('Active schedules','WhatsApp Schedule',{'state':'Active'})
         card('Failed runs','WhatsApp Automation Run',{'state':'Failed'})

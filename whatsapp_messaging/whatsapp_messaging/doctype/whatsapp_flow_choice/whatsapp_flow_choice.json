@@ -1,0 +1,47 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Flow Choice",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "from_step",
+   "label": "Menu step",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "choice_key",
+   "label": "Option name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "description": "Unique within its menu; for example appointments."
+  },
+  {
+   "fieldname": "label",
+   "label": "Button or option text",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "next_step",
+   "label": "Go to step",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  }
+ ],
+ "field_order": [
+  "from_step",
+  "choice_key",
+  "label",
+  "next_step"
+ ],
+ "istable": 1,
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0
+}

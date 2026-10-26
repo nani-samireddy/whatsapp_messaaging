@@ -15,7 +15,7 @@ Riverbend Hospital is a fictional training setting; no real patient data is show
 - [Reply to a message](replies.md) — Reply to a patient and follow the message’s delivery status.
 - [Send an image or PDF](attachments.md) — Share visit instructions as a private PDF or image.
 - [Use an approved WhatsApp template](approved-templates.md) — Confirm an appointment outside the reply window with an approved template.
-- [Claim, assign and resolve](assignment.md) — Coordinate patient conversations between reception staff.
+- [Assign conversations and track progress](assignment.md) — Coordinate patient conversations between reception staff.
 - [Link a business record](record-links.md) — Connect a patient conversation to the relevant appointment or follow-up record.
 
 ## Templates & automation
@@ -33,9 +33,13 @@ Riverbend Hospital is a fictional training setting; no real patient data is show
 - [Configure a sender and integration](senders.md) — Configure the hospital’s Patient Services sender and integration switches.
 - [Review inbound and webhook issues](webhooks.md) — Investigate incoming patient messages and delivery receipts.
 
+## Templates & Automation
+
+- [Build a conversation flow](conversation-flows.md) — Guide people through menus, collect a request and hand over to reception.
+
 ## Monitoring
 
 - [Check delivery and handle blocked sends](delivery.md) — Check whether patient messages were queued, blocked or delivered.
 - [Read messages and preserved history](history.md) — Refer to patient conversations, individual messages and preserved history.
 
-Updated 22 October 2026.
+Updated 24 October 2026.

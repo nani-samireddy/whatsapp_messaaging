@@ -70,7 +70,7 @@ def insert(doctype, **values):
 
 def lock(doctype, name):
     # Identifiers come only from the fixed application schemas, never RPC parameters.
-    if doctype not in {'WhatsApp Conversation', 'WhatsApp Peer', 'WhatsApp Outbox', 'WhatsApp Phone Number ID', 'WhatsApp Schedule', 'WhatsApp Automation Run', 'WhatsApp Webhook Event'}:
+    if doctype not in {'WhatsApp Conversation', 'WhatsApp Peer', 'WhatsApp Outbox', 'WhatsApp Phone Number ID', 'WhatsApp Schedule', 'WhatsApp Automation Run', 'WhatsApp Webhook Event', 'WhatsApp Conversation Flow'}:
         raise ValueError('Unsupported lock')
     rows = frappe.db.sql(f'SELECT name FROM `tab{doctype}` WHERE name=%s FOR UPDATE', name)
     if not rows:

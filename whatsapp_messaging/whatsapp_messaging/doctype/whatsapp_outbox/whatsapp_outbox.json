@@ -36,7 +36,12 @@
   "accepted_at",
   "deleted_source",
   "input_hash",
-  "rule_version"
+  "rule_version",
+  "conversation_flow",
+  "flow_version",
+  "flow_session",
+  "flow_generation",
+  "flow_step"
  ],
  "fields": [
   {
@@ -196,6 +201,36 @@
    "hidden": 1,
    "read_only": 1,
    "default": "WhatsApp Campaign"
+  },
+  {
+   "fieldname": "conversation_flow",
+   "label": "Conversation flow",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation Flow"
+  },
+  {
+   "fieldname": "flow_version",
+   "label": "Flow version",
+   "fieldtype": "Data",
+   "hidden": 1
+  },
+  {
+   "fieldname": "flow_session",
+   "label": "Flow session",
+   "fieldtype": "Link",
+   "options": "WhatsApp Flow Session"
+  },
+  {
+   "fieldname": "flow_generation",
+   "label": "Flow reply generation",
+   "fieldtype": "Int",
+   "hidden": 1
+  },
+  {
+   "fieldname": "flow_step",
+   "fieldtype": "Data",
+   "label": "Flow template step",
+   "read_only": 1
   }
  ],
  "permissions": [

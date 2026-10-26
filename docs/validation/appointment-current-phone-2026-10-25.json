@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-25",
+  "environment": "Mac-local hms.localhost",
+  "draft": "WA-FLOW-0002",
+  "status": "Draft",
+  "enabled": false,
+  "lookup": {
+    "doctype": "Patient Appointment",
+    "phone_field": "patient.patient_phone_number",
+    "filters": [
+      {
+        "field": "status",
+        "operator": "=",
+        "value": "Scheduled"
+      }
+    ],
+    "selection": "Most recently created",
+    "sort": "creation desc, name desc",
+    "date_question": false,
+    "date_filter": false
+  },
+  "number_policy": "Only show records for the current WhatsApp number. No asks for the registered number; a different entered number never triggers lookup and goes to registration help.",
+  "tests": {
+    "isolated_frappe_passed": 219,
+    "flow_integration_cases": 43,
+    "pure_engine_passed": 33,
+    "javascript_passed": 18,
+    "build": "passed",
+    "browser": [
+      "Yes shows fictional booking without a date question",
+      "No asks for registered phone",
+      "Matching entered number continues",
+      "Different entered number goes to help without lookup",
+      "No booked appointment goes to reception",
+      "Latest-selection setting saved through step dialog and form save"
+    ]
+  },
+  "draft_outbox_count": 0,
+  "active_flow_unchanged": true,
+  "external_messages_sent": 0,
+  "screenshots": [
+    "whatsapp_messaging/public/docs/screenshots/appointment-registered-phone-preview.jpg",
+    "whatsapp_messaging/public/docs/screenshots/conversation-flow-template-lookup.jpg",
+    "whatsapp_messaging/public/docs/screenshots/appointment-current-number-help.jpg"
+  ]
+}

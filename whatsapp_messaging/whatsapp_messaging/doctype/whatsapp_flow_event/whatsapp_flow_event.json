@@ -1,0 +1,92 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Flow Event",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "event_key",
+   "label": "Event key",
+   "fieldtype": "Data",
+   "unique": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "message",
+   "label": "Incoming message",
+   "fieldtype": "Link",
+   "options": "WhatsApp Message",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "conversation",
+   "label": "Conversation",
+   "fieldtype": "Link",
+   "options": "WhatsApp Conversation",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "session",
+   "label": "Session",
+   "fieldtype": "Link",
+   "options": "WhatsApp Flow Session"
+  },
+  {
+   "fieldname": "state",
+   "label": "Result",
+   "fieldtype": "Select",
+   "options": "Pending\nProcessed\nSkipped\nFailed",
+   "default": "Pending",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "reason",
+   "label": "Result details",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "answers_json",
+   "label": "Collected answers",
+   "fieldtype": "JSON"
+  },
+  {
+   "fieldname": "processed_at",
+   "label": "Processed on (UTC)",
+   "fieldtype": "Datetime"
+  }
+ ],
+ "field_order": [
+  "event_key",
+  "message",
+  "conversation",
+  "session",
+  "state",
+  "reason",
+  "answers_json",
+  "processed_at"
+ ],
+ "istable": 0,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "report": 1
+  },
+  {
+   "role": "Whatsapp Editor",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0,
+ "autoname": "WA-FLOW-EVENT-.######"
+}

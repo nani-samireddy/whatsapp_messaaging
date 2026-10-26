@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-24",
+  "environment": "Mac-local hms.localhost",
+  "passed": true,
+  "agreed_reminder_sequence": {
+    "daily_local_time": "09:00",
+    "timezone": "Asia/Calcutta",
+    "days_before": [
+      2,
+      1,
+      0
+    ],
+    "due_date_example": "2026-10-27",
+    "example_reminder_dates": [
+      "2026-10-25",
+      "2026-10-26",
+      "2026-10-27"
+    ]
+  },
+  "patient_create": {
+    "event_runs": 1,
+    "replayed_hook_added_no_run": true,
+    "later_update_sent_no_new_welcome": true,
+    "sends": [
+      {
+        "name": "WA-OUT-2026-000008",
+        "state": "Accepted",
+        "attempts": 1,
+        "status": "Read"
+      }
+    ],
+    "test_rule_disabled": true
+  },
+  "reminder_deliveries": {
+    "followup": {
+      "runs": [
+        {
+          "name": "WA-RUN-2026-000004",
+          "state": "Completed",
+          "messages_created": 1,
+          "records_excluded": 0
+        }
+      ],
+      "messages": [
+        {
+          "outbox": "WA-OUT-2026-000009",
+          "message": "WA-MSG-2026-000012",
+          "status": "Read",
+          "attempts": 1,
+          "outbox_state": "Accepted",
+          "error_code": null
+        }
+      ]
+    },
+    "op_expiry": {
+      "runs": [
+        {
+          "name": "WA-RUN-2026-000005",
+          "state": "Completed",
+          "messages_created": 1,
+          "records_excluded": 0
+        }
+      ],
+      "messages": [
+        {
+          "outbox": "WA-OUT-2026-000010",
+          "message": "WA-MSG-2026-000013",
+          "status": "Read",
+          "attempts": 1,
+          "outbox_state": "Accepted",
+          "error_code": null
+        }
+      ]
+    }
+  },
+  "checks": {
+    "changed_operational_date_blocks_stale_queued_send": true,
+    "repeated_scheduler_ticks_create_one_run": true,
+    "date_windows": {
+      "followup": [
+        {
+          "days_until_due": -1,
+          "selected": false
+        },
+        {
+          "days_until_due": 0,
+          "selected": true
+        },
+        {
+          "days_until_due": 1,
+          "selected": true
+        },
+        {
+          "days_until_due": 2,
+          "selected": true
+        },
+        {
+          "days_until_due": 3,
+          "selected": false
+        },
+        {
+          "days_until_due": null,
+          "selected": false
+        }
+      ],
+      "op_expiry": [
+        {
+          "days_until_due": -1,
+          "selected": false
+        },
+        {
+          "days_until_due": 0,
+          "selected": true
+        },
+        {
+          "days_until_due": 1,
+          "selected": true
+        },
+        {
+          "days_until_due": 2,
+          "selected": true
+        },
+        {
+          "days_until_due": 3,
+          "selected": false
+        },
+        {
+          "days_until_due": null,
+          "selected": false
+        }
+      ]
+    },
+    "non_date_fields_rejected": true
+  },
+  "final_configuration": {
+    "followup": {
+      "days_before": 2,
+      "daily_time": "9:00:00",
+      "timezone": "Asia/Calcutta",
+      "disabled": true,
+      "automation_active": false,
+      "schedule_state": "Paused",
+      "cron": "0 9 * * *"
+    },
+    "op_expiry": {
+      "days_before": 2,
+      "daily_time": "9:00:00",
+      "timezone": "Asia/Calcutta",
+      "disabled": true,
+      "automation_active": false,
+      "schedule_state": "Paused",
+      "cron": "0 9 * * *"
+    }
+  },
+  "active_test_schedules": 0,
+  "verification": {
+    "local_regression_tests_passed": 44,
+    "asset_build": "passed",
+    "git_diff_check": "passed",
+    "campaign_date_picker_and_time_verified_in_browser": true
+  },
+  "coverage_limits": [
+    "Live reminder transport was exercised at short temporary test times; calendar tests verify the agreed 9 AM three-day sequence.",
+    "Only a fictional Patient and its operational date fields were used. Visit and billing workflows were not exercised.",
+    "A task-scoped timer invoked the normal app scheduler tick. The global bench scheduler remains stopped.",
+    "The test messages used Local message content inside the recipient reply window. Approved Meta reminder content and recipient consent are required outside that window."
+  ],
+  "credentials_included": false
+}

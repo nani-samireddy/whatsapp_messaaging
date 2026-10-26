@@ -1,6 +1,8 @@
 """Readable record titles; provider identities and permanent names stay independent."""
 from pathlib import PurePosixPath
 from urllib.parse import unquote, urlsplit
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import frappe
 
@@ -45,6 +47,16 @@ def _filename(value):
     return unquote(PurePosixPath(urlsplit(value or '').path).name)
 
 
+def schedule_local_time(value, zone):
+    """Schedule due times are stored in UTC, independently of the site timezone."""
+    if not value:
+        return None
+    date = datetime.fromisoformat(str(value)) if not isinstance(value, datetime) else value
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=timezone.utc)
+    return date.astimezone(ZoneInfo(zone or 'UTC')).strftime('%Y-%m-%d %H:%M:%S')
+
+
 def record_title(doc):
     kind = doc.doctype
     if kind == 'WhatsApp Approved Template':
@@ -78,7 +90,7 @@ def record_title(doc):
     elif kind == 'WhatsApp Record Link':
         title = _join(doc.conversation, doc.reference_doctype, doc.reference_name)
     elif kind == 'WhatsApp Schedule':
-        recurrence = doc.next_due_at if doc.one_shot else doc.cron_expression
+        recurrence = schedule_local_time(doc.next_due_at, doc.timezone) if doc.one_shot else doc.cron_expression
         title = _join(doc.rule, 'Once' if doc.one_shot else 'Recurring', recurrence, doc.timezone)
     elif kind == 'WhatsApp Send Attempt':
         title = _join(doc.outbox, f'Attempt {doc.attempt_number or 1}')

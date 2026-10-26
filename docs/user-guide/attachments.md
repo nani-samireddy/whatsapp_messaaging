@@ -12,11 +12,11 @@ This lets you include a JPEG image, PNG image or PDF in a reply. The app checks 
 
 ## 1. Check the reply window
 
-Open the conversation and confirm Reply window open. Attachments use the normal reply path.
+Open the conversation and confirm You can reply now. Attachments use the normal reply path.
 
 ## 2. Choose a supported file
 
-Choose Attach image / PDF and upload the visit-instructions PDF (up to 20 MB), or one JPEG or PNG (up to 5 MB). The app checks the actual file type as well as size.
+Choose Attach image or PDF and upload the visit-instructions PDF (up to 20 MB), or one JPEG or PNG (up to 5 MB). The app checks the actual file type as well as size.
 
 ## 3. Review the attachment
 
@@ -24,7 +24,7 @@ The selected filename appears in the composer. Add an optional caption. Choose R
 
 ## 4. Queue and inspect
 
-Choose Queue reply. Open a received attachment from the timeline only when its download is ready.
+Choose Send reply. Open a received attachment from the timeline only when its download is ready.
 
 ## What to check
 
@@ -36,9 +36,9 @@ Uploading a file alone does not send it. If a file is rejected, use one of the s
 
 ## Screenshots
 
-![Private file uploader opened from Attach image / PDF.](../../whatsapp_messaging/public/docs/screenshots/attach-file.jpg)
+![Private file uploader opened from Attach image or PDF.](../../whatsapp_messaging/public/docs/screenshots/attach-file.jpg)
 
-Private file uploader opened from Attach image / PDF.
+Private file uploader opened from Attach image or PDF.
 
 ## Related workflows
 
@@ -46,4 +46,4 @@ Private file uploader opened from Attach image / PDF.
 - [Check delivery and handle blocked sends](delivery.md)
 - [Manage reusable media files](media-library.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

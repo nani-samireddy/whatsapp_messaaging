@@ -43,3 +43,13 @@ Edits to either campaign or template invalidate older prepared versions. Schedul
 ## Validation
 
 Run `tests/integration/run.sh` in the internal disposable Compose environment and `python3 -m unittest discover -s tests -v`. Provider requests are mocked. Browser guide fixtures are fictional Riverbend Hospital records. Local development migration and browser evidence are recorded in `docs/validation/templates-and-campaigns-2026-10-21.json`.
+
+## Patient creation and date reminders
+
+A Patient `Create` campaign queues a welcome after the new record is saved; later updates do not repeat that creation event. Configure Mobile as the recipient field and review the audience before activating.
+
+Use `Date Reminder` for a date becoming due. Choose Patient's `Follow Up` or `Validity Expiring On`, set **Start Reminders (Days Before) = 2**, **Daily Reminder Time = 09:00**, and the desired timezone. A due date of 27 October is selected on 25, 26 and 27 October. Past and missing dates are excluded. Additional audience filters still apply; filter out disabled patients.
+
+Saving an enabled, automation-active Date Reminder campaign creates its daily schedule. The scheduler and workers must be running. Each occurrence creates a durable run; repeated scheduler ticks reuse it. The app rechecks the date before sending, including changes made by HMS without changing the Patient's modified timestamp. A stale queued reminder is held for review.
+
+Patient's operational dates are maintained by HMS from visits and active fee-validity windows. The messaging app reads those fields; it does not create visits or financial records. Use Meta-approved content and recorded consent for reminders outside the 24-hour reply window. A local message remains subject to that window. Demo acceptance tests use only fictional records and the explicitly opted-in test number.

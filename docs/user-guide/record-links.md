@@ -14,9 +14,9 @@ This connects a conversation to a specific business record so users can move bet
 
 On desktop use the right-hand details panel. On a phone open the thread and choose Details.
 
-## 2. Choose Link business record
+## 2. Choose Link a record
 
-Choose Link business record, select the record type and the specific appointment or follow-up record, then choose Link. The walkthrough links Meera Rao’s OPD-1042 follow-up task.
+Choose Link a record, select the Record type and Choose a record, then choose Link record. The walkthrough links Meera Rao’s OPD-1042 follow-up task.
 
 ## 3. Open the linked record
 
@@ -24,7 +24,7 @@ Use its button under Linked records to return to the business document.
 
 ## 4. Review activity
 
-Check the activity entry to confirm which record was linked and by whom.
+Check Conversation history to see who linked a record and when.
 
 ## What to check
 
@@ -36,13 +36,13 @@ Linking does not grant access to the business record. A matching phone number al
 
 ## Screenshots
 
-![Link permitted business record dialog with Record type and Record fields.](../../whatsapp_messaging/public/docs/screenshots/record-link.jpg)
+![Link a record dialog with Record type and Record fields.](../../whatsapp_messaging/public/docs/screenshots/record-link.jpg)
 
-Link permitted business record dialog with Record type and Record fields.
+Link a record dialog with Record type and Record fields.
 
 ## Related workflows
 
 - [Send from a business record](record-send.md)
-- [Claim, assign and resolve](assignment.md)
+- [Assign conversations and track progress](assignment.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.

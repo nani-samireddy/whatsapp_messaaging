@@ -85,4 +85,4 @@ Local media changes Message Text to Caption and shows the attachment in Live Pre
 - [Configure and run a campaign](campaigns.md)
 - [Use an approved WhatsApp template](approved-templates.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 22 October 2026.
+Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
