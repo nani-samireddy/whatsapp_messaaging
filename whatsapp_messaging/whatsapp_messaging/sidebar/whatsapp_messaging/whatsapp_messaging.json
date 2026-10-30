@@ -18,7 +18,8 @@
    "link_type": "Workspace",
    "open_in_new_tab": 0,
    "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "icon": "messages-square"
   },
   {
    "added": 0,
@@ -33,7 +34,8 @@
    "link_type": "Workspace",
    "open_in_new_tab": 0,
    "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "icon": "workflow"
   },
   {
    "added": 0,
@@ -48,22 +50,8 @@
    "link_type": "Workspace",
    "open_in_new_tab": 0,
    "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "added": 0,
-   "child": 0,
-   "collapsible": 0,
-   "hidden": 0,
-   "indent": 0,
-   "is_default_module": 0,
-   "keep_closed": 0,
-   "label": "User guide",
-   "link_to": "whatsapp-guide",
-   "link_type": "Page",
-   "open_in_new_tab": 0,
-   "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "icon": "settings"
   },
   {
    "added": 0,
@@ -78,7 +66,8 @@
    "link_type": "DocType",
    "open_in_new_tab": 1,
    "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "icon": "file-cog"
   },
   {
    "added": 0,
@@ -93,10 +82,27 @@
    "link_type": "DocType",
    "open_in_new_tab": 1,
    "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "icon": "send"
+  },
+  {
+   "added": 0,
+   "child": 0,
+   "collapsible": 0,
+   "hidden": 0,
+   "indent": 0,
+   "is_default_module": 0,
+   "keep_closed": 0,
+   "label": "User guide",
+   "link_to": "whatsapp-guide",
+   "link_type": "Page",
+   "open_in_new_tab": 0,
+   "show_arrow": 0,
+   "type": "Link",
+   "icon": "book-open"
   }
  ],
- "modified": "2026-10-30 09:26:40.618062",
+ "modified": "2026-10-30 16:53:49.385792",
  "modified_by": "Administrator",
  "module": "Whatsapp Messaging",
  "name": "Whatsapp Messaging",
