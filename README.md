@@ -13,6 +13,8 @@ Templates define the message. Campaigns define its audience and sending rules. S
 
 Open **User guide** from a workspace or **Help → User guide** on supported forms for purpose, steps and hospital screenshots. Document rules and delivery logs link directly to the automatic document-delivery guide.
 
+The sidebar groups links under **Messaging**, **Templates**, **Automation**, **Document delivery**, **Delivery & logs**, and **Administration**. Expand a group to open its nested pages. **Overview** opens the messaging workspace; the automation and administration overviews remain inside their groups. **User guide** stays at the bottom. Standard Frappe permissions determine which links are visible.
+
 ## Local setup
 
 The current checkout is developed and tested against Frappe 16.52.0. With this app already checked out in the bench's `apps` directory, install it on a new site:

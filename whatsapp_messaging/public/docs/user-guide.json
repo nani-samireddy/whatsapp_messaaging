@@ -1,6 +1,6 @@
 {
   "title": "WhatsApp user guide",
-  "version": 11,
+  "version": 12,
   "updated": "30 October 2026",
   "screenshot_notice": "Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions.",
   "guides": [
@@ -29,8 +29,8 @@
           "detail": "Select WhatsApp Messaging in Desk’s app chooser. Riverbend Hospital’s reception team uses Messaging for patient conversations and appointment updates."
         },
         {
-          "title": "Choose a workspace",
-          "detail": "Templates & Automation contains rules, approved templates, schedules and runs. Administration contains sender accounts and diagnostics and is visible to Admin and System Manager."
+          "title": "Expand a sidebar group",
+          "detail": "Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Recipients. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible."
         },
         {
           "title": "Use the cards and guide",

@@ -18,9 +18,9 @@ Use your existing Frappe login. A System Manager assigns Whatsapp Editor or What
 
 Select WhatsApp Messaging in Desk’s app chooser. Riverbend Hospital’s reception team uses Messaging for patient conversations and appointment updates.
 
-## 3. Choose a workspace
+## 3. Expand a sidebar group
 
-Templates & Automation contains rules, approved templates, schedules and runs. Administration contains sender accounts and diagnostics and is visible to Admin and System Manager.
+Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Recipients. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible.
 
 ## 4. Use the cards and guide
 
