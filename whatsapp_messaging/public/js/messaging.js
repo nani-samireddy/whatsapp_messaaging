@@ -271,11 +271,11 @@ frappe.provide('whatsapp_messaging');
             toolbar.append(approved, emoji, attach, count); frame.append(picker, toolbar); box.append(notice, frame); this.thread.append(box); this.text = text; refreshInput();
         }
 
-        async send(template, parameters) {
+        async send(template, parameters, documentFile) {
             if (this.busy) return; this.busy = true; const name = this.selected; const draft = this.draft(name); this.composer();
             let submitted = false;
             try {
-                const result = await call('outbox.send', {conversation_name: name, request_id: draft.request_id, body: template ? '' : draft.body, template, parameters: JSON.stringify(parameters || []), file_id: template ? null : draft.file?.name, reply_to: draft.reply});
+                const result = await call('outbox.send', {conversation_name: name, request_id: draft.request_id, body: template ? '' : draft.body, template, parameters: JSON.stringify(parameters || []), file_id: template ? documentFile : draft.file?.name, reply_to: draft.reply});
                 submitted = true;
                 this.drafts.delete(name); frappe.show_alert({message: 'Message status: ' + messageStatus(result.state), indicator: 'blue'}); await this.open(name); await this.refresh();
                 return true;
@@ -292,9 +292,16 @@ frappe.provide('whatsapp_messaging');
         }
         parameterDialog(template) {
             const fields = [{fieldname: 'preview', fieldtype: 'HTML'}];
-            const params = JSON.parse(template.parameters_json || '[]'); params.forEach((_, i) => fields.push({fieldname: 'p' + i, fieldtype: 'Small Text', label: 'Message detail ' + (i + 1), description: 'Replaces {{' + (i + 1) + '}} in the template above.', reqd: 1}));
-            const d = new frappe.ui.Dialog({title: template.template_name + ' · ' + template.language, fields, primary_action_label: 'Send template', primary_action: values => this.perform(async () => { if (await this.send(template.name, params.map((_, i) => values['p' + i]))) d.hide(); })});
             const components = JSON.parse(template.components_json || '[]');
+            const needsDocument = components.some(c => c.type === 'HEADER' && c.format === 'DOCUMENT');
+            let documentFile = null;
+            if (needsDocument) fields.push({fieldname:'document_picker',fieldtype:'Button',label:'Choose private PDF'}, {fieldname:'document_name',fieldtype:'Data',label:'PDF document',read_only:1});
+            const params = JSON.parse(template.parameters_json || '[]'); params.forEach((_, i) => fields.push({fieldname: 'p' + i, fieldtype: 'Small Text', label: 'Message detail ' + (i + 1), description: 'Replaces {{' + (i + 1) + '}} in the template above.', reqd: 1}));
+            const d = new frappe.ui.Dialog({title: template.template_name + ' · ' + template.language, fields, primary_action_label: 'Send template', primary_action: values => this.perform(async () => {
+                if(needsDocument && !documentFile) return frappe.msgprint('Choose the private PDF for this recipient.');
+                if (await this.send(template.name, params.map((_, i) => values['p' + i]), documentFile)) d.hide();
+            })});
+            if(needsDocument) d.fields_dict.document_picker.$input.on('click', () => new frappe.ui.FileUploader({is_private:1,allow_multiple:false,restrictions:{allowed_file_types:['.pdf'],max_file_size:20*1024*1024},on_success:file=>{documentFile=file.name;d.set_value('document_name',file.file_name);}}));
             const header = components.find(c => c.type === 'HEADER')?.text;
             const footer = components.find(c => c.type === 'FOOTER')?.text;
             d.fields_dict.preview.$wrapper.css('white-space','pre-wrap').text([header,template.body,footer].filter(Boolean).join('\n\n')); d.show();

@@ -1,0 +1,234 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Document Rule",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "field_order": [
+  "rule_name",
+  "enabled",
+  "source_section",
+  "source_doctype",
+  "event_type",
+  "trigger_field",
+  "trigger_values_picker",
+  "trigger_values",
+  "text_match_operator",
+  "trigger_text",
+  "conditions",
+  "require_release",
+  "recipient_section",
+  "recipient_mode",
+  "recipient_link_field",
+  "phone_field",
+  "document_section",
+  "document_mode",
+  "print_format",
+  "file_field",
+  "message_section",
+  "sender",
+  "approved_template",
+  "parameters",
+  "run_as",
+  "help_text"
+ ],
+ "fields": [
+  {
+   "fieldname": "rule_name",
+   "label": "Rule name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "enabled",
+   "label": "Enabled",
+   "fieldtype": "Check",
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source_section",
+   "label": "When to send",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "source_doctype",
+   "label": "Record type",
+   "fieldtype": "Link",
+   "options": "DocType",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "event_type",
+   "label": "Trigger",
+   "fieldtype": "Select",
+   "options": "Record created\nField changes to a value\nDocument submitted",
+   "default": "Field changes to a value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trigger_field",
+   "label": "Trigger field",
+   "fieldtype": "Select",
+   "depends_on": "eval:doc.event_type===\"Field changes to a value\"",
+   "description": "Choose a field such as status. A change within the accepted values does not resend."
+  },
+  {
+   "fieldname": "trigger_values_picker",
+   "fieldtype": "HTML",
+   "depends_on": "eval:doc.event_type===\"Field changes to a value\""
+  },
+  {
+   "fieldname": "trigger_values",
+   "label": "Send when value is",
+   "fieldtype": "Small Text",
+   "depends_on": "eval:doc.event_type===\"Field changes to a value\"",
+   "description": "One accepted value per line."
+  },
+  {
+   "fieldname": "text_match_operator",
+   "label": "Text matching",
+   "fieldtype": "Select",
+   "options": "Equals\nContains",
+   "default": "Equals",
+   "hidden": 1
+  },
+  {
+   "fieldname": "trigger_text",
+   "label": "Comparison text",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "description": "Case-sensitive. Equals compares the entire text, including line breaks and spaces. Contains matches this exact phrase within the source text."
+  },
+  {
+   "fieldname": "require_release",
+   "label": "Require staff release before sending",
+   "fieldtype": "Check",
+   "default": "0",
+   "description": "Hold generated deliveries until a person with access to the source record releases them."
+  },
+  {
+   "fieldname": "recipient_section",
+   "label": "Who receives it",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "recipient_mode",
+   "label": "Find phone number on",
+   "fieldtype": "Select",
+   "options": "This record\nA linked record",
+   "default": "A linked record",
+   "reqd": 1
+  },
+  {
+   "fieldname": "recipient_link_field",
+   "label": "Linked record field",
+   "fieldtype": "Autocomplete",
+   "depends_on": "eval:doc.recipient_mode===\"A linked record\"",
+   "description": "For example patient, customer or contact. Linked record read permissions are checked."
+  },
+  {
+   "fieldname": "phone_field",
+   "label": "Phone field",
+   "fieldtype": "Autocomplete",
+   "reqd": 1,
+   "description": "Use a Phone field on the selected recipient record, including country code."
+  },
+  {
+   "fieldname": "document_section",
+   "label": "Document",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "document_mode",
+   "label": "Document source",
+   "fieldtype": "Select",
+   "options": "Generate PDF\nPrivate attachment",
+   "default": "Generate PDF",
+   "reqd": 1
+  },
+  {
+   "fieldname": "print_format",
+   "label": "Print format",
+   "fieldtype": "Link",
+   "options": "Print Format",
+   "depends_on": "eval:doc.document_mode===\"Generate PDF\""
+  },
+  {
+   "fieldname": "file_field",
+   "label": "Attachment field",
+   "fieldtype": "Autocomplete",
+   "depends_on": "eval:doc.document_mode===\"Private attachment\"",
+   "description": "Choose an Attach field containing the released private PDF."
+  },
+  {
+   "fieldname": "message_section",
+   "label": "WhatsApp message",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sender",
+   "label": "Sender",
+   "fieldtype": "Link",
+   "options": "WhatsApp Phone Number ID"
+  },
+  {
+   "fieldname": "approved_template",
+   "label": "Approved document template",
+   "fieldtype": "Link",
+   "options": "WhatsApp Approved Template",
+   "description": "Must be approved for this sender and have a DOCUMENT header."
+  },
+  {
+   "fieldname": "parameters",
+   "label": "Message variables",
+   "fieldtype": "Table",
+   "options": "WhatsApp Document Parameter"
+  },
+  {
+   "fieldname": "run_as",
+   "label": "Execution user",
+   "fieldtype": "Link",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "help_text",
+   "label": "Setup notes",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "conditions",
+   "label": "Only when",
+   "fieldtype": "Table",
+   "options": "WhatsApp Document Condition",
+   "description": "All conditions must match. For example Invoice Type equals Invoice, or Transaction Type equals Receive."
+  }
+ ],
+ "autoname": "field:rule_name",
+ "title_field": "rule_name",
+ "track_changes": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1
+  }
+ ],
+ "show_title_field_in_link": 1
+}

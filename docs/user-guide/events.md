@@ -49,5 +49,6 @@ Automation Active and Run As belong to the campaign.
 - [Create and review a message template](templates.md)
 - [Check delivery and handle blocked sends](delivery.md)
 - [Create or pause a schedule](schedules.md)
+- [Send documents automatically](document-delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

@@ -1,0 +1,160 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Document Delivery",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "field_order": [
+  "record_title",
+  "rule",
+  "source_doctype",
+  "source_name",
+  "source_modified",
+  "rule_modified",
+  "delivery_key",
+  "state",
+  "delivery_status",
+  "recipient",
+  "file",
+  "outbox",
+  "message",
+  "released_by",
+  "released_on",
+  "last_error"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_title",
+   "label": "Delivery",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "rule",
+   "label": "Document rule",
+   "fieldtype": "Link",
+   "options": "WhatsApp Document Rule",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source_doctype",
+   "label": "Record type",
+   "fieldtype": "Link",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_name",
+   "label": "Source record",
+   "fieldtype": "Dynamic Link",
+   "options": "source_doctype",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source_modified",
+   "label": "Record version",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rule_modified",
+   "label": "Rule version",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_key",
+   "label": "Delivery key",
+   "fieldtype": "Data",
+   "unique": 1,
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "state",
+   "label": "Preparation status",
+   "fieldtype": "Select",
+   "options": "Pending\nAwaiting release\nQueued\nHeld\nFailed\nSuperseded",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "recipient",
+   "label": "Recipient phone",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "file",
+   "label": "PDF",
+   "fieldtype": "Link",
+   "options": "File",
+   "read_only": 1
+  },
+  {
+   "fieldname": "outbox",
+   "label": "Message delivery",
+   "fieldtype": "Link",
+   "options": "WhatsApp Outbox",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message",
+   "label": "Message",
+   "fieldtype": "Link",
+   "options": "WhatsApp Message",
+   "read_only": 1
+  },
+  {
+   "fieldname": "released_by",
+   "label": "Released by",
+   "fieldtype": "Link",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "released_on",
+   "label": "Released on",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_error",
+   "label": "Action needed",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_status",
+   "label": "Message status",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_list_view": 1
+  }
+ ],
+ "autoname": "WA-DOC-.YYYY.-.######",
+ "title_field": "record_title",
+ "track_changes": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "Whatsapp Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1
+  }
+ ],
+ "show_title_field_in_link": 1
+}

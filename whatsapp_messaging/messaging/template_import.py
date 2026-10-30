@@ -26,7 +26,7 @@ def unavailable_reason(linked):
     if linked.approval_status in ('UNAVAILABLE', 'DELETED', 'PENDING_DELETION', 'ARCHIVED'):
         return 'This template is no longer available from Meta.'
     if not linked.supported or linked.category not in ('UTILITY', 'MARKETING'):
-        return 'Unsupported format. Use a text body with numbered variables and optional fixed text header and footer. Media headers, header variables, buttons and named variables are not supported.'
+        return 'Unsupported format. Use a text body with numbered variables and an optional fixed text header or PDF document header. Video/image headers, header variables, buttons and named variables are not supported.'
     return ''
 
 

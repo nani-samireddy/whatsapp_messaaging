@@ -6,11 +6,12 @@ A Frappe app for WhatsApp conversations, reusable message content, media and cam
 
 - **Messaging:** shared Inbox, replies, approved-template messages, private images/PDFs, assignment, business-record links and delivery history.
 - **Templates & Automation:** reusable content with shared field pickers, text headers/footers, live preview, selective Meta import, explicit submission/review, campaigns, document events and schedules.
+- **Document delivery:** generate a private PDF or select a record's private report attachment, match typed trigger values, map an approved DOCUMENT-header template and optionally require staff release.
 - **Administration:** sender credentials, integration switches, consent/suppression, Outbox, send attempts and signed webhook diagnostics.
 
 Templates define the message. Campaigns define its audience and sending rules. Saving content or uploading media does not send a message. Outbox acceptance and provider delivery receipts are shown separately.
 
-Open **User guide** from a workspace or **Help → User guide** on supported forms for purpose, steps and hospital screenshots. The training scenario uses fictional Riverbend Hospital records.
+Open **User guide** from a workspace or **Help → User guide** on supported forms for purpose, steps and hospital screenshots. Document rules and delivery logs link directly to the automatic document-delivery guide.
 
 ## Local setup
 
@@ -32,6 +33,8 @@ A System Manager configures the sender, WABA and encrypted access token. Outboun
 - [User guide](docs/user-guide/README.md)
 - [Roles and permissions](docs/ROLE-PERMISSIONS.md)
 - [Templates, campaigns and Meta review](docs/TEMPLATES-AND-CAMPAIGNS.md)
+- [Automatic document delivery: detailed setup and field matching](docs/DOCUMENT-DELIVERY.md)
+- [Reviewed laboratory-report workflow](docs/user-guide/laboratory-reports.md)
 - [Implementation and migration history](docs/IMPLEMENTATION-PROGRESS.md)
 
 ## Verification
@@ -40,7 +43,7 @@ A System Manager configures the sender, WABA and encrypted access token. Outboun
 python3 -m unittest discover -s tests -v
 ```
 
-The [isolated integration harness](tests/integration/README.md) verifies a fresh install, migrations, database/HTTP permissions, worker execution, messaging, webhooks, templates, media and automation using fictional fixtures and mocked provider transport. It uses its own internal Docker network, database and Redis.
+The [isolated integration harness](tests/integration/README.md) verifies a fresh install, migrations, database/HTTP permissions, worker execution, messaging, webhooks, templates, media and automation using isolated fixtures and mocked provider transport. It uses its own internal Docker network, database and Redis.
 
 Live Meta acceptance and public webhook delivery are tracked separately in the completion status; passing local tests does not establish provider delivery. The home server is outside the current development work.
 

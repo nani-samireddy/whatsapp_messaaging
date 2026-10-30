@@ -248,6 +248,7 @@ scheduler_events = {
 # Canonical inbox and automation services.
 after_install = "whatsapp_messaging.messaging.setup.install"
 after_migrate = "whatsapp_messaging.messaging.setup.install"
+whatsapp_validate_document_dispatch = ["whatsapp_messaging.messaging.document_delivery.validate_dispatch"]
 scheduler_events = {"cron": {"* * * * *": ["whatsapp_messaging.messaging.setup.tick"]}}
 permission_query_conditions = {
     "WhatsApp Automation Run": "whatsapp_messaging.messaging.api.run_query",

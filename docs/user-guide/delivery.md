@@ -45,5 +45,6 @@ Automation run results show each request’s state and a link to its conversatio
 - [Reply to a message](replies.md)
 - [Configure and run a campaign](campaigns.md)
 - [Review inbound and webhook issues](webhooks.md)
+- [Send documents automatically](document-delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

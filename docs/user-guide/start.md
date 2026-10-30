@@ -45,5 +45,6 @@ Messaging workspace: inbox shortcuts, summary cards and User guide.
 - [Find or start a conversation](conversations.md)
 - [Create and review a message template](templates.md)
 - [Configure a sender and integration](senders.md)
+- [Send documents automatically](document-delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

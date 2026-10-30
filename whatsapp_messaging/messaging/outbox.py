@@ -11,6 +11,7 @@ from whatsapp_messaging.send_security import require_outbound_enabled, require_s
 from whatsapp_messaging.utils.config import get_cloud_api_url, get_headers
 from .common import account, as_user, changed, conversation, digest, insert, lock, parsed, require_supervisor, utcnow, window_open
 from . import catalogue, media
+from .template_framing import document_header
 
 ELIGIBLE_STATES=('Ready','Retry wait')
 
@@ -44,7 +45,9 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
         template_data,template_hash,approved=catalogue.template_payload(template,sender,parameters)
         payload.update(type='template',template=template_data)
         rendered=catalogue.rendered_text(approved,parsed(parameters,[]))
-        if file_id:frappe.throw('Approved templates cannot be combined with a separate attachment')
+        needs_document = document_header(parsed(approved.components_json, []))
+        if needs_document and not file_id:frappe.throw('This approved template requires a private PDF document')
+        if file_id and not needs_document:frappe.throw('This approved template does not have a document header')
     else:
         if not window_open(doc):frappe.throw('The reply window is closed. Choose an approved template.')
         if not body.strip() and not file_id:frappe.throw('Enter a message or choose an attachment')
@@ -57,12 +60,16 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
         payload['context']={'message_id':reply_to}
     file_digest=None
     if file_id:
-        if len(body)>1024:frappe.throw('Attachment caption, including header and footer, exceeds 1024 characters')
+        if not template and len(body)>1024:frappe.throw('Attachment caption, including header and footer, exceeds 1024 characters')
         file,content=media.authorized_file(file_id)
         file_digest=hashlib.sha256(content).hexdigest()
-        payload['type']='image' if media.inspect(content).startswith('image/') else 'document'
-        payload.pop('text',None)
-        payload[payload['type']]={'caption':body}
+        if template:
+            if media.inspect(content) != 'application/pdf':frappe.throw('Document templates require a PDF attachment')
+            payload['template'].setdefault('components', []).append({'type':'header','parameters':[{'type':'document','document':{'filename':file.file_name}}]})
+        else:
+            payload['type']='image' if media.inspect(content).startswith('image/') else 'document'
+            payload.pop('text',None)
+            payload[payload['type']]={'caption':body}
     request_key=digest('origin',origin_key) if origin_key else digest(frappe.session.user,request_id)
     payload_hash=digest(payload,file_digest,template_hash,source_doctype,source_name)
     from .campaigns import version as rule_version
@@ -162,6 +169,8 @@ def validate_dispatch(intent):
         if not peer.consent_recorded or template.waba_id!=sender.waba_id or template.approval_status!='APPROVED' or not template.supported or template.schema_hash!=intent.template_hash:
             frappe.throw('The approved template or recipient eligibility changed')
     elif not window_open(doc):frappe.throw('The reply window has expired')
+    for handler in frappe.get_hooks('whatsapp_validate_document_dispatch'):
+        frappe.get_attr(handler)(intent)
     return sender,doc,payload
 
 
@@ -208,8 +217,12 @@ def dispatch(name):
                 attachment=frappe.get_doc('WhatsApp Attachment',attachment_name)
                 if attachment.state!='Ready':frappe.throw('Attachment is unavailable')
                 provider_media_id=media.upload(attachment,sender)
-                payload[payload['type']]['id']=provider_media_id
-                if payload['type']=='document':payload['document']['filename']=attachment.file_name
+                if payload['type']=='template':
+                    header=next(c for c in payload['template'].get('components',[]) if c.get('type')=='header')
+                    header['parameters'][0]['document'].update(id=provider_media_id,filename=attachment.file_name)
+                else:
+                    payload[payload['type']]['id']=provider_media_id
+                    if payload['type']=='document':payload['document']['filename']=attachment.file_name
             # Recheck the gate and window after media upload, immediately before sending.
             validate_dispatch(intent)
             url=get_cloud_api_url(sender.name)

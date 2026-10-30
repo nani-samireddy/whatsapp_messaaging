@@ -1,0 +1,50 @@
+{
+ "doctype": "DocType",
+ "name": "WhatsApp Document Parameter",
+ "module": "Whatsapp Messaging",
+ "engine": "InnoDB",
+ "field_order": [
+  "position",
+  "value_source",
+  "fieldname_value",
+  "fixed_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "position",
+   "label": "Variable",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "columns": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "value_source",
+   "label": "Value from",
+   "fieldtype": "Select",
+   "options": "Record\nRecipient\nFixed text",
+   "default": "Record",
+   "in_list_view": 1,
+   "columns": 2,
+   "reqd": 1
+  },
+  {
+   "fieldname": "fieldname_value",
+   "label": "Field name",
+   "fieldtype": "Autocomplete",
+   "in_list_view": 1,
+   "columns": 3,
+   "depends_on": "eval:doc.value_source!==\"Fixed text\""
+  },
+  {
+   "fieldname": "fixed_value",
+   "label": "Fixed text",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "columns": 4,
+   "depends_on": "eval:doc.value_source===\"Fixed text\""
+  }
+ ],
+ "istable": 1,
+ "editable_grid": 1
+}

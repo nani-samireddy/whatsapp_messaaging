@@ -16,6 +16,9 @@ def install():
         ('WhatsApp Webhook Event',['state','next_attempt_at']),
         ('WhatsApp Flow Event',['conversation','state']),
         ('WhatsApp Conversation Flow',['published_account','is_active']),
+        ('WhatsApp Document Rule',['source_doctype','enabled']),
+        ('WhatsApp Document Delivery',['state','creation']),
+        ('WhatsApp Document Delivery',['outbox']),
     ):
         frappe.db.add_index(doctype,fields)
     # Old encoded scheduler methods are deliberately left stopped, never run alongside the new dispatcher.
@@ -24,9 +27,10 @@ def install():
 
 
 def tick():
-    from . import automation,outbox,webhooks,media_cloud,flows
+    from . import automation,outbox,webhooks,media_cloud,flows,document_delivery
     automation.process_due()
     outbox.sweep()
     webhooks.sweep()
     media_cloud.sweep()
     flows.sweep()
+    document_delivery.recover()

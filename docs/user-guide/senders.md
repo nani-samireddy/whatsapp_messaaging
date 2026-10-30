@@ -58,4 +58,4 @@ Import dialog: select reusable content from the Meta catalogue; existing and uns
 - [Review inbound and webhook issues](webhooks.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

@@ -13,7 +13,9 @@ def resolve(media_name=None, approved_template_name=None):
             frappe.throw('Approved templates support a text body with optional text header and footer. Remove Media to use this approved template.')
         if not approved.supported:
             frappe.throw('This approved template has unsupported content. Choose a supported text-body template.')
-        return {'template_type': 'text', 'file_id': None}
+        from .template_framing import document_header
+        from .common import parsed
+        return {'template_type': 'document' if document_header(parsed(approved.components_json, [])) else 'text', 'file_id': None}
     if not media_name:
         return {'template_type': 'text', 'file_id': None}
 

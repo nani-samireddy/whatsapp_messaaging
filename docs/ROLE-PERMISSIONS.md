@@ -10,6 +10,8 @@ Authorized users can use the configured sender accounts through their role permi
 | Send a single message or reply through the messaging service | Yes | Yes | Yes |
 | Start a bulk campaign | No | Yes | Yes |
 | Activate event rules and schedules | Yes | Yes | Yes |
+| Configure document-delivery rules and preview readable source values | No | Yes, with source access | Yes, with source access |
+| Release a document for sending | No | With source write access | With source write access |
 | Claim/release and change status | Own or unassigned conversations | All conversations | All conversations |
 | Assign another agent | No | Yes | Yes |
 | Record consent or suppression | No | Yes | Yes |
@@ -17,7 +19,7 @@ Authorized users can use the configured sender accounts through their role permi
 | Read/change sender tokens or edit sender configuration | No | No | Yes |
 | Edit/delete canonical message history through generic document APIs | No | No | No |
 | Create/edit reusable message content and campaign configuration | Yes | Yes | Yes |
-| Select approved fields and enter fictional variable examples | Yes | Yes | Yes |
+| Select approved fields and enter variable review examples | Yes | Yes | Yes |
 | Approve shared source/settings fields | No | No | Yes |
 | Sync/import Meta templates and submit/check Meta review | No | Yes | Yes |
 | Static recipients | Read | Manage | Manage |

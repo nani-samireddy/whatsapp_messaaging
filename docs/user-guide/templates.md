@@ -28,7 +28,7 @@ Write the message next to Live Preview and use Insert field for patient name and
 
 ## 5. Prepare a Meta submission
 
-In Meta mode, enter a lowercase Meta Template Name, language code and Utility or Marketing category. Provide a fictional review example for each variable. Imported numbered variables also need a Source Field mapping. Save, then an Admin chooses Meta → Submit to Meta. Saving alone makes no Meta request.
+In Meta mode, enter a lowercase Meta Template Name, language code and Utility or Marketing category. Provide a realistic review example for each variable. Imported numbered variables also need a Source Field mapping. Save, then an Admin chooses Meta → Submit to Meta. Saving alone makes no Meta request.
 
 ## 6. Read the review outcome
 
@@ -44,7 +44,7 @@ The saved template contains the intended content. For Meta mode, its status appl
 
 ## If you need help
 
-Editors, Admins and System Managers can edit content. Only Admins and System Managers can submit to Meta or refresh Meta status. Meta authoring supports a text body, positional variables, and optional fixed text header and footer. Media headers, header variables, buttons, authentication templates and named parameters are not supported in Meta mode. Local messages can use private JPEG/PNG/PDF media and require an open reply window. Changing approved wording requires another Meta submission. Saving content does not activate campaigns. If a submission times out, check status before retrying. After ten minutes and a complete check finding no match, another explicit submission is permitted; nothing is resent automatically.
+Editors, Admins and System Managers can edit content. Only Admins and System Managers can submit to Meta or refresh Meta status. The local Meta authoring editor supports a text body, positional variables, and optional fixed text header and footer. DOCUMENT headers are managed in WhatsApp Manager. Other media headers, header variables, buttons, authentication templates and named parameters are not supported in the local Meta editor. Local messages can use private JPEG/PNG/PDF media and require an open reply window. Changing approved wording requires another Meta submission. Saving content does not activate campaigns. If a submission times out, check status before retrying. After ten minutes and a complete check finding no match, another explicit submission is permitted; nothing is resent automatically. Approved DOCUMENT-header templates created in WhatsApp Manager can be synced and used by Document delivery rules for a different private PDF per record.
 
 ## Screenshots
 
@@ -56,13 +56,13 @@ Reusable content: sender, source fields, message editor and Live Preview.
 
 Message Text and inserted fields appear beside the live message preview.
 
-![A fictional hospital welcome draft uses separate Header, Message Text and Footer fields with a live preview.](../../whatsapp_messaging/public/docs/screenshots/template-header-footer.png)
+![Hospital welcome draft with separate Header, Message Text and Footer fields beside the live preview.](../../whatsapp_messaging/public/docs/screenshots/template-header-footer.png)
 
-A fictional hospital welcome draft uses separate Header, Message Text and Footer fields with a live preview.
+Hospital welcome draft with separate Header, Message Text and Footer fields beside the live preview.
 
-![Meta review shows the simulated rejection reason, Meta recommendation and separate suggested fix. This is fictional training data.](../../whatsapp_messaging/public/docs/screenshots/template-meta-review.png)
+![Review screen with rejection reason, Meta recommendation and a suggested fix.](../../whatsapp_messaging/public/docs/screenshots/template-meta-review.png)
 
-Meta review shows the simulated rejection reason, Meta recommendation and separate suggested fix. This is fictional training data.
+Review screen with rejection reason, Meta recommendation and a suggested fix.
 
 ![A System Manager approves shared message fields once for all templates using that source DocType.](../../whatsapp_messaging/public/docs/screenshots/template-field-policy.jpg)
 
@@ -84,5 +84,6 @@ Local media changes Message Text to Caption and shows the attachment in Live Pre
 - [Create or pause a schedule](schedules.md)
 - [Configure and run a campaign](campaigns.md)
 - [Use an approved WhatsApp template](approved-templates.md)
+- [Send documents automatically](document-delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

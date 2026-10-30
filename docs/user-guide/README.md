@@ -2,7 +2,7 @@
 
 Open **User guide** in any WhatsApp workspace or use `/desk/whatsapp-guide` on your site.
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions.
 
 ## Getting started
 
@@ -22,7 +22,10 @@ Riverbend Hospital is a fictional training setting; no real patient data is show
 
 - [Send from a business record](record-send.md) — Send an appointment reminder from the related business record.
 - [Manage reusable media files](media-library.md) — Keep visit-instruction images and PDFs ready for templates.
+- [Build a conversation flow](conversation-flows.md) — Guide people through menus, collect a request and hand over to reception.
 - [Create and review a message template](templates.md) — Write reusable message content and manage its Meta review in one template.
+- [Send documents automatically](document-delivery.md) — Send generated invoice PDFs or private report attachments when a record matches your rule.
+- [Send a reviewed laboratory report](laboratory-reports.md) — Send the patient’s completed private PDF after clinical review and explicit staff release.
 - [Activate a campaign for document events](events.md) — Queue a patient update when an appointment-related record changes.
 - [Create or pause a schedule](schedules.md) — Run daily appointment reminders or schedule a one-time follow-up.
 - [Configure and run a campaign](campaigns.md) — Choose reusable content, recipients and the sending workflow.
@@ -33,13 +36,9 @@ Riverbend Hospital is a fictional training setting; no real patient data is show
 - [Configure a sender and integration](senders.md) — Configure the hospital’s Patient Services sender and integration switches.
 - [Review inbound and webhook issues](webhooks.md) — Investigate incoming patient messages and delivery receipts.
 
-## Templates & Automation
-
-- [Build a conversation flow](conversation-flows.md) — Guide people through menus, collect a request and hand over to reception.
-
 ## Monitoring
 
 - [Check delivery and handle blocked sends](delivery.md) — Check whether patient messages were queued, blocked or delivered.
 - [Read messages and preserved history](history.md) — Refer to patient conversations, individual messages and preserved history.
 
-Updated 24 October 2026.
+Updated 30 October 2026.

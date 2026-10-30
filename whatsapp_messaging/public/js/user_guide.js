@@ -61,7 +61,7 @@ frappe.provide('whatsapp_messaging');
         home() {
             this.page.set_title(__('WhatsApp User Guide'));
             const hero = node('section', undefined, 'wg-hero');
-            hero.append(node('div', 'WhatsApp Messaging · Hospital workflows', 'wg-eyebrow'), node('h2', 'What would you like to do?'), node('p', 'Follow Riverbend Hospital’s patient services team: reply to patients, confirm appointments, send visit instructions and manage reminders. Choose a workflow or search for a task, button or status.', 'wg-intro'));
+            hero.append(node('div', 'WhatsApp Messaging · Hospital workflows', 'wg-eyebrow'), node('h2', 'What would you like to do?'), node('p', 'Reply to patients, confirm appointments, send invoices and reviewed reports, and manage reminders. Choose a workflow or search for a task, button, field or status.', 'wg-intro'));
             const filters = node('div', undefined, 'wg-filters');
             const search = node('input', undefined, 'form-control'); search.type = 'search'; search.placeholder = 'Search workflows, e.g. reply, schedule, Unknown'; search.setAttribute('aria-label', 'Search user guide');
             const category = node('select', undefined, 'form-control'); category.setAttribute('aria-label', 'Workflow category');

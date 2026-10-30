@@ -4,7 +4,7 @@ Templates own reusable content, source-field mappings, optional local media and 
 
 ## Authoring and review
 
-Saving never submits to Meta or sends a message. Choose Local message or Meta-approved template. Meta mode supports text bodies, positional variables, fictional review examples, Utility/Marketing category and optional fixed text header and footer. Import existing supported Meta content into the same editor; map numbered variables using the shared field picker. Local media remains private and uses the existing media workflow. Meta media headers, header variables, buttons, authentication templates and named parameters is outside this implementation.
+Saving never submits to Meta or sends a message. Choose Local message or Meta-approved template. Local Meta authoring supports text bodies, positional variables, review examples, Utility/Marketing category and optional fixed text header and footer. Import existing supported Meta content into the same editor; map numbered variables using the shared field picker. Local media remains private and uses the existing media workflow. Approved DOCUMENT-header templates can be synchronized/imported for document delivery; create and change their wording in WhatsApp Manager, then synchronize again. Other media headers, header variables, buttons, authentication templates and named parameters are outside this implementation.
 
 Admins and System Managers can explicitly submit saved content, edit a rejected template and check status. Editors can draft content and configure campaigns. Provider approval, content identity, WABA, field approvals, source access and recipient eligibility remain authoritative at send time.
 
@@ -22,7 +22,13 @@ Imports create inactive content records only, preserving fixed headers, bodies, 
 
 Header and Footer are optional fixed text fields in Compose Message, each limited to 60 characters on one line. Body variables remain supported through the shared field picker. The live preview, campaign summary, bulk preview, Inbox template dialog and saved message history include the framing. Meta submissions use separate HEADER (TEXT), BODY and FOOTER components. Static headers and footers need no send-time parameters.
 
-Local text messages and media captions include the sections as paragraphs. The complete local message must fit 4,096 characters; a media caption including framing must fit 1,024. Changing a saved header or footer invalidates prepared versions and requires Meta approval again. Imports preserve supported fixed text components; media headers, header variables and buttons remain unavailable.
+Local text messages and media captions include the sections as paragraphs. The complete local message must fit 4,096 characters; a media caption including framing must fit 1,024. Changing a saved header or footer invalidates prepared versions and requires Meta approval again. Imports preserve supported fixed text components and DOCUMENT headers; other media headers, header variables and buttons remain unavailable.
+
+## Automatic PDFs and report attachments
+
+Use **WhatsApp Document Rule** to connect a source DocType, event, recipient, PDF and approved DOCUMENT-header template. **Generate PDF** renders the chosen Print Format for the triggering record; **Private attachment** uses a private PDF Attach field on that same record. Rules can require staff release, and each matching event is recorded in **WhatsApp Document Delivery** before using the canonical outbox.
+
+Select and Data triggers use one chip input. `/` opens defined Select options or permission-filtered existing Data values. Data also accepts typed custom values; Text/Small Text/Long Text use Equals or Contains. These comparisons never modify source records or source-field options. See the [detailed setup](DOCUMENT-DELIVERY.md) and [reviewed laboratory-report workflow](user-guide/laboratory-reports.md).
 
 ## Campaigns and existing work
 

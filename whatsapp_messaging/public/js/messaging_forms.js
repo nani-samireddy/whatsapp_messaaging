@@ -8,6 +8,11 @@ import {syncTemplatesDialog} from './template_import.js';
             frm.add_custom_button(__('User guide'), () => frappe.set_route('whatsapp-guide', guide), __('Help'));
         }});
     }
+    for (const doctype of ['WhatsApp Document Rule','WhatsApp Document Delivery']) {
+        frappe.ui.form.on(doctype, {refresh(frm) {
+            frm.add_custom_button(__('User guide'), () => frappe.set_route('whatsapp-guide','document-delivery'), __('Help'));
+        }});
+    }
     frappe.ui.form.on('WhatsApp Campaign', {
         refresh(frm) {
             if (frm.is_new()) return;

@@ -82,6 +82,10 @@ def sync_variables(doc):
 
 
 def compile_content(doc, *, check_permissions=True, examples=False):
+    if examples and doc.approved_template:
+        linked = linked_template(doc)
+        if linked and framing.document_header(parsed(linked.components_json, [])):
+            raise ValueError('Manage document-header wording in WhatsApp Manager, then sync the Sender. Use Document Delivery Rules to map each record and PDF.')
     body = doc.message_preview or ''
     if not body.strip():
         raise ValueError('Write the message before submitting it to Meta.')

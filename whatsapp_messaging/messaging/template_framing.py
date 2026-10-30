@@ -20,6 +20,10 @@ def texts(components):
     return header, footer
 
 
+def document_header(components):
+    return any(c.get('type') == 'HEADER' and c.get('format') == 'DOCUMENT' for c in components)
+
+
 def compose(body, header=None, footer=None):
     header, footer = validate(header, footer)
     return '\n\n'.join(value for value in (header, body, footer) if value)
@@ -33,10 +37,10 @@ def supported(components):
         return False
     if any(kind not in ('HEADER', 'BODY', 'FOOTER') for kind in kinds):
         return False
-    if any(c.get('type') == 'HEADER' and c.get('format') != 'TEXT' for c in components):
+    if any(c.get('type') == 'HEADER' and c.get('format') not in ('TEXT', 'DOCUMENT') for c in components):
         return False
     try:
         validate(*texts(components))
     except ValueError:
         return False
-    return all(c.get('text', '').strip() for c in components)
+    return all(c.get('text', '').strip() or (c.get('type') == 'HEADER' and c.get('format') == 'DOCUMENT') for c in components)

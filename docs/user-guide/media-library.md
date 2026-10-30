@@ -58,4 +58,4 @@ The saved form shows file details and the separate WhatsApp Cloud upload result.
 - [Send an image or PDF](attachments.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Riverbend Hospital is a fictional training setting; no real patient data is shown. Updated 24 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.

@@ -1,8 +1,8 @@
 {
   "title": "WhatsApp user guide",
-  "version": 10,
-  "updated": "24 October 2026",
-  "screenshot_notice": "Riverbend Hospital is a fictional training setting; no real patient data is shown.",
+  "version": 11,
+  "updated": "30 October 2026",
+  "screenshot_notice": "Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions.",
   "guides": [
     {
       "id": "start",
@@ -42,7 +42,8 @@
       "related": [
         "conversations",
         "templates",
-        "senders"
+        "senders",
+        "document-delivery"
       ],
       "description": "This explains how the app is organized so you can find the tools you need. Messaging contains conversations and message history, Templates & Automation contains message rules and scheduled work, and Administration contains connection settings and troubleshooting tools."
     },
@@ -214,7 +215,8 @@
       "related": [
         "consent",
         "templates",
-        "senders"
+        "senders",
+        "document-delivery"
       ],
       "description": "This lets you send a message using wording already approved by WhatsApp, including when the normal reply window is closed. You select the template and language, fill in its required values and queue the message. The app checks that the template belongs to the sender’s account and that the recipient is eligible to receive it."
     },
@@ -443,7 +445,7 @@
       "id": "conversation-flows",
       "title": "Build a conversation flow",
       "summary": "Guide people through menus, collect a request and hand over to reception.",
-      "category": "Templates & Automation",
+      "category": "Templates & automation",
       "audience": "Admin · System Manager; Editors can preview and handle conversations",
       "route": [
         "List",
@@ -528,11 +530,11 @@
         },
         {
           "file": "template-header-footer.png",
-          "caption": "A fictional hospital welcome draft uses separate Header, Message Text and Footer fields with a live preview."
+          "caption": "Hospital welcome draft with separate Header, Message Text and Footer fields beside the live preview."
         },
         {
           "file": "template-meta-review.png",
-          "caption": "Meta review shows the simulated rejection reason, Meta recommendation and separate suggested fix. This is fictional training data."
+          "caption": "Review screen with rejection reason, Meta recommendation and a suggested fix."
         },
         {
           "file": "template-field-policy.jpg",
@@ -566,7 +568,7 @@
         },
         {
           "title": "Prepare a Meta submission",
-          "detail": "In Meta mode, enter a lowercase Meta Template Name, language code and Utility or Marketing category. Provide a fictional review example for each variable. Imported numbered variables also need a Source Field mapping. Save, then an Admin chooses Meta → Submit to Meta. Saving alone makes no Meta request."
+          "detail": "In Meta mode, enter a lowercase Meta Template Name, language code and Utility or Marketing category. Provide a realistic review example for each variable. Imported numbered variables also need a Source Field mapping. Save, then an Admin chooses Meta → Submit to Meta. Saving alone makes no Meta request."
         },
         {
           "title": "Read the review outcome",
@@ -578,16 +580,175 @@
         }
       ],
       "check": "The saved template contains the intended content. For Meta mode, its status applies to the exact submitted wording and sender account.",
-      "note": "Editors, Admins and System Managers can edit content. Only Admins and System Managers can submit to Meta or refresh Meta status. Meta authoring supports a text body, positional variables, and optional fixed text header and footer. Media headers, header variables, buttons, authentication templates and named parameters are not supported in Meta mode. Local messages can use private JPEG/PNG/PDF media and require an open reply window. Changing approved wording requires another Meta submission. Saving content does not activate campaigns. If a submission times out, check status before retrying. After ten minutes and a complete check finding no match, another explicit submission is permitted; nothing is resent automatically.",
+      "note": "Editors, Admins and System Managers can edit content. Only Admins and System Managers can submit to Meta or refresh Meta status. The local Meta authoring editor supports a text body, positional variables, and optional fixed text header and footer. DOCUMENT headers are managed in WhatsApp Manager. Other media headers, header variables, buttons, authentication templates and named parameters are not supported in the local Meta editor. Local messages can use private JPEG/PNG/PDF media and require an open reply window. Changing approved wording requires another Meta submission. Saving content does not activate campaigns. If a submission times out, check status before retrying. After ten minutes and a complete check finding no match, another explicit submission is permitted; nothing is resent automatically. Approved DOCUMENT-header templates created in WhatsApp Manager can be synced and used by Document delivery rules for a different private PDF per record.",
       "related": [
         "media-library",
         "record-send",
         "events",
         "schedules",
         "campaigns",
-        "approved-templates"
+        "approved-templates",
+        "document-delivery"
       ],
       "description": "This defines the message itself: its text, optional media, reusable fields and Meta review details. Saving a draft does not submit it to Meta or send a message. Campaigns select this content and separately control recipients, sending times and automation."
+    },
+    {
+      "id": "document-delivery",
+      "title": "Send documents automatically",
+      "summary": "Send generated invoice PDFs or private report attachments when a record matches your rule.",
+      "category": "Templates & automation",
+      "audience": "Admin · System Manager, with source-record access",
+      "route": [
+        "List",
+        "WhatsApp Document Rule"
+      ],
+      "description": "WhatsApp Document Rule connects a business record, trigger, recipient, PDF and approved WhatsApp document template. Matching saved changes create a WhatsApp Document Delivery entry and use the normal outbox. Select and Data fields share a chip input; Text fields offer Equals or Contains. Comparison values belong only to the rule: they never change source records or field options.",
+      "screenshots": [
+        {
+          "file": "document-value-chips.png",
+          "caption": "Invoice Status uses removable chips. Typing / opens the remaining defined options."
+        },
+        {
+          "file": "document-data-chips.png",
+          "caption": "An unsaved rule edit demonstrates a Data field with an existing value and a newly typed custom value."
+        },
+        {
+          "file": "document-text-matching.png",
+          "caption": "An unsaved rule edit demonstrates Contains and Comparison text for a Small Text field."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Prepare the sender and document template",
+          "detail": "A System Manager configures the sender and integration switches. Create a Utility template with a Document header in WhatsApp Manager, obtain approval, then open WhatsApp Phone Number ID and choose Sync approved templates. The local message editor does not author Document headers. Record recipient consent in Inbox → Details → Messaging permissions."
+        },
+        {
+          "title": "Open the rule DocType",
+          "detail": "Open Document delivery rules in the WhatsApp sidebar, or search for WhatsApp Document Rule. Create a rule or open HMS - Invoice PDF after issue. Keep Enabled unchecked while configuring. On rule and delivery forms, Help → User guide returns here."
+        },
+        {
+          "title": "Choose the source and event",
+          "detail": "Set Record type to the source business DocType, such as HMS Invoice. Choose Record created, Field changes to a value, or Document submitted. Submission is available only for submittable sources. For a field-change trigger, choose Trigger field from its dropdown."
+        },
+        {
+          "title": "Choose values for a dropdown or Check field",
+          "detail": "In Send when value is, type / to open defined source options, or type /Refund to filter them. Select an option to add its chip; repeat for several. For the invoice preset, keep Issued, Partly Paid, Paid and Refund Due. A Check field offers Checked and Unchecked. Remove a chip with × or Backspace in an empty input. This input does not create new source options."
+        },
+        {
+          "title": "Add custom Data values",
+          "detail": "Use the same chip input for a Data field. Type / to search up to 20 distinct existing values on records you can read; add text after / to narrow the results. To add a new comparison, type it without / and press Enter. For example, Ready for collection and Courier requested can be two accepted values. Matching is exact and case-sensitive. Saving commits a custom value still being typed; a slash search is never stored as a comparison."
+        },
+        {
+          "title": "Match Text, Small Text or Long Text",
+          "detail": "Choose Text matching → Equals or Contains, then fill Comparison text. Equals compares the entire text, preserving spaces and line breaks; Contains matches the exact phrase anywhere in the source text. Both are case-sensitive. Blank or whitespace-only comparisons are rejected. Changing Trigger field clears the old comparison. An Int field keeps one accepted number per line."
+        },
+        {
+          "title": "Add any extra conditions",
+          "detail": "Every Only when row must match. For invoices, add Invoice Type equals Invoice so credit notes do not use the invoice rule. The selected trigger values form one group: entering the matching group creates a delivery; changing within that group does not resend."
+        },
+        {
+          "title": "Choose the patient phone",
+          "detail": "Set Find phone number on to A linked record, Linked record field to Patient, and Phone field to Mobile. Use This record when the source itself holds the phone. Numbers need a country code. The execution user must retain access to the source and linked recipient."
+        },
+        {
+          "title": "Choose the document source",
+          "detail": "For invoices, choose Generate PDF and HMS - Itemized invoice. The worker renders the triggering record and saves its PDF privately. For a completed laboratory PDF, choose Private attachment and Report file. The attachment must be a private PDF belonging to that source record."
+        },
+        {
+          "title": "Map the approved message",
+          "detail": "Choose Sender and an Approved document template with a DOCUMENT header for that sender. Map every body variable from Record, Recipient or Fixed text. For Hello {{1}}, your invoice dated {{2}} is attached, map variable 1 to Recipient → Name and variable 2 to Record → Invoice Date."
+        },
+        {
+          "title": "Save and preview",
+          "detail": "Save the disabled rule and choose Preview. Select a source record and check recipient, document, message and whether the trigger matches. Preview creates no PDF, outbox entry or send. Use the source record’s normal Print screen to inspect the generated layout."
+        },
+        {
+          "title": "Enable the configured workflow",
+          "detail": "After checking approval, consent and mappings, enable the rule and save. The configuring user becomes Execution user. Enable Outbound Requests and Enable Automation in WhatsApp Settings, and run the worker and scheduler. Issue a new invoice or complete the configured source transition. Existing matching records are not backfilled automatically."
+        },
+        {
+          "title": "Release, monitor or resolve a held delivery",
+          "detail": "Open Delivery history or WhatsApp Document Delivery. If Require staff release before sending is checked, a supervisor with source write access must choose Release document. Preparation status and Message status are separate: Queued is not Delivered. Read Action needed for Held or Failed. Retry preparation only fixes preparation; inspect the outbox for a send already created. Unknown outcomes are not automatically resent. Prepare current document explicitly handles an eligible current source/rule version."
+        }
+      ],
+      "check": "The rule uses the right source field and comparison, recipient phone, private PDF and approved document template. Source records and source-field definitions stay unchanged. Check the actual WhatsApp delivery status rather than treating a queued or accepted request as delivered.",
+      "note": "Only Whatsapp Admin and System Manager can configure these rules, and source/recipient permissions still apply. Data suggestions respect record query permissions; selected dropdown values come from the source field. Local presets remain disabled until configured with approved DOCUMENT-header templates. Meta approval and actual recipient delivery require separate verification.",
+      "related": [
+        "laboratory-reports",
+        "approved-templates",
+        "consent",
+        "senders",
+        "delivery"
+      ]
+    },
+    {
+      "id": "laboratory-reports",
+      "title": "Send a reviewed laboratory report",
+      "summary": "Send the patient’s completed private PDF after clinical review and explicit staff release.",
+      "category": "Templates & automation",
+      "audience": "Clinical staff for review · Admin or System Manager for messaging release",
+      "route": [
+        "Form",
+        "WhatsApp Document Rule",
+        "HMS - Released laboratory report"
+      ],
+      "description": "The HMS - Released laboratory report preset watches Lab Report → Status = Reviewed, resolves the linked patient’s Mobile number, and uses the private PDF in Report file. It requires an additional messaging release. A reviewed status alone does not send the report.",
+      "screenshots": [
+        {
+          "file": "document-lab-trigger.png",
+          "caption": "The laboratory preset matches Reviewed and requires staff release before sending."
+        },
+        {
+          "file": "document-lab-attachment.png",
+          "caption": "The linked Patient supplies Mobile, while Private attachment uses Report file."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Prepare the hospital sender and consent",
+          "detail": "Configure the sender, obtain approval for a report-notification template with a Document header, and Sync approved templates on the sender. Check the patient’s country-code phone number and recorded messaging consent. Keep the preset disabled during setup."
+        },
+        {
+          "title": "Open the laboratory preset",
+          "detail": "Open WhatsApp Document Rule → HMS - Released laboratory report. Set Record type to Lab Report, Trigger to Field changes to a value, and Trigger field to Status."
+        },
+        {
+          "title": "Select Reviewed and keep the release step",
+          "detail": "In Send when value is, type /Reviewed and choose Reviewed as a chip. Keep Require staff release before sending checked. For the existing preset these values are already selected. Only when conditions can further narrow the rule; every added row must match."
+        },
+        {
+          "title": "Map the linked patient and actual PDF",
+          "detail": "Choose A linked record → Patient → Mobile. Set Document source to Private attachment and Attachment field to Report file. Select the configured Sender and Approved document template, then map each body variable. Use the actual completed result PDF attached to this Lab Report."
+        },
+        {
+          "title": "Save, preview and enable the rule",
+          "detail": "Save and Preview a readable source report. The preview checks configuration without creating a PDF or sending. Complete template approval and mappings, then enable the rule and required WhatsApp integration switches. A worker must be available."
+        },
+        {
+          "title": "Complete the source report and clinical review",
+          "detail": "In Lab Report, attach the completed private PDF to Report file and fill Received On. HMS requires both the received date and private file for Received or Reviewed reports. Clinical staff review the results and save Status = Reviewed. Configure the rule before this transition; previously reviewed reports are not automatically backfilled."
+        },
+        {
+          "title": "Release the matching delivery",
+          "detail": "Open the rule’s Delivery history, then the matching WhatsApp Document Delivery in Awaiting release. A Whatsapp Admin or System Manager with write access to the source report checks the patient, current report and PDF, then chooses Release document. The worker prepares the attachment and queues the approved message."
+        },
+        {
+          "title": "Check the patient delivery outcome",
+          "detail": "Check Message status or View message delivery for accepted, delivered, read, failed, held or unknown outcomes. Preparation status alone is not proof of patient delivery. If held, correct the stated issue before using the appropriate retry action."
+        },
+        {
+          "title": "Handle existing or changed reports deliberately",
+          "detail": "An enabled rule’s Prepare current document action can create a delivery for an eligible existing source version, subject to the same release requirement. HMS protects reviewed report status, file and review details. Do not alter them to force a send. Changed source/rule versions and uncertain provider outcomes require review; do not repeatedly create new messages."
+        }
+      ],
+      "check": "The source Lab Report is clinically reviewed, its completed PDF is private and belongs to that report, the linked patient’s phone is correct, and staff release is recorded before sending. Verify the actual delivery outcome in the message log.",
+      "note": "Clinical authorization to review a result and WhatsApp authority to release a document are separate permissions. The preset’s Test number sender label is local configuration; choose the hospital’s configured sender and approved document template before enabling. A blank laboratory worksheet is not a completed result report.",
+      "related": [
+        "document-delivery",
+        "consent",
+        "senders",
+        "delivery"
+      ]
     },
     {
       "id": "events",
@@ -632,7 +793,8 @@
       "related": [
         "templates",
         "delivery",
-        "schedules"
+        "schedules",
+        "document-delivery"
       ],
       "description": "This automatically starts a message run when a business record undergoes a selected change, such as creation, update or submission. The app applies the saved campaign to that record and prepares messages for its recipients. The campaign must be active, and the user it runs as must still have the required access."
     },
@@ -771,7 +933,8 @@
       "related": [
         "replies",
         "campaigns",
-        "webhooks"
+        "webhooks",
+        "document-delivery"
       ],
       "description": "This shows what happened to messages after they were queued, helping you find delays and failures. You can check whether a request is waiting, blocked, accepted by the provider or delivered, and review any available reason for a problem. The available controls let you cancel eligible unsent requests or retry confirmed unaccepted failures."
     },

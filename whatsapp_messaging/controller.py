@@ -53,6 +53,11 @@ def wm_handle_on_custom_trigger(template_name, doctype, docname, request_id=None
 	return process_template_and_send(doc, template_doc, raise_on_error=True, request_id=request_id)
 
 def handle_doc_events(doc, event=[]):
+    from whatsapp_messaging.messaging.document_delivery import on_event
+    trigger = {'Create':'after_insert', 'Update':'on_update', 'Submit':'on_submit'}
+    for value in event:
+        if value in trigger:
+            on_event(doc, trigger[value])
     from whatsapp_messaging.messaging.automation import event_rules
     return event_rules(doc, event)
 
