@@ -164,7 +164,7 @@ def preview_rows(run,rule,start=0):
             recipients,body,values,file_id=render(rule,source)
             if rule.approved_template:
                 from .catalogue import rendered_text
-                approved=frappe.get_doc('WhatsApp Approved Template',rule.approved_template)
+                approved=frappe.get_doc('WhatsApp Meta Template',rule.approved_template)
                 approved.check_permission('read')
                 body=rendered_text(approved,values)
             items.append({'source':source.name,'recipients':len(recipients),'body':body,'parameters':values,'attachment':bool(file_id)})

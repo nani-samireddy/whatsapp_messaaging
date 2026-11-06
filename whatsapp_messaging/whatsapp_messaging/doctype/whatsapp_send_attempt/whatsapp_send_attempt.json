@@ -10,21 +10,22 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "attempt_key",
   "outbox",
   "attempt_number",
   "started_at",
   "finished_at",
-  "payload_hash",
   "outcome",
-  "http_status",
   "error_code",
-  "provider_message_id"
+  "provider_message_id",
+  "technical_details_section",
+  "attempt_key",
+  "payload_hash",
+  "http_status"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -39,7 +40,7 @@
   },
   {
    "fieldname": "outbox",
-   "label": "Outbox",
+   "label": "Sending Request",
    "fieldtype": "Link",
    "options": "WhatsApp Outbox"
   },
@@ -50,12 +51,12 @@
   },
   {
    "fieldname": "started_at",
-   "label": "Started At",
+   "label": "Started On",
    "fieldtype": "Datetime"
   },
   {
    "fieldname": "finished_at",
-   "label": "Finished At",
+   "label": "Finished On",
    "fieldtype": "Datetime"
   },
   {
@@ -65,12 +66,12 @@
   },
   {
    "fieldname": "outcome",
-   "label": "Outcome",
+   "label": "Result",
    "fieldtype": "Data"
   },
   {
    "fieldname": "http_status",
-   "label": "Http Status",
+   "label": "Connection Response Code",
    "fieldtype": "Int"
   },
   {
@@ -80,9 +81,16 @@
   },
   {
    "fieldname": "provider_message_id",
-   "label": "Provider Message Id",
+   "label": "WhatsApp Message ID",
    "fieldtype": "Data",
    "length": 255
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

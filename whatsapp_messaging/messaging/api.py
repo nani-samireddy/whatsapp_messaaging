@@ -13,7 +13,7 @@ def count(doctype,filters=None):
 @frappe.whitelist()
 def bootstrap():
     require_send_role()
-    accounts=frappe.get_list('WhatsApp Phone Number ID',fields=['name','label','display_phone'],order_by='label asc',limit_page_length=200)
+    accounts=frappe.get_list('WhatsApp Sender',fields=['name','label','display_phone'],order_by='label asc',limit_page_length=200)
     return {'accounts':accounts,'user':frappe.session.user,'supervisor':supervisor(),'manager':'System Manager' in frappe.get_roles(),'outbound_enabled':bool(frappe.db.get_single_value('WhatsApp Settings','enable_outbound_messages',cache=False)),'automation_enabled':bool(frappe.db.get_single_value('WhatsApp Settings','enable_automation',cache=False)),'inbound_enabled':bool(frappe.db.get_single_value('WhatsApp Settings','enable_inbound',cache=False)),'timezone':frappe.utils.get_system_timezone()}
 
 
@@ -30,20 +30,20 @@ def overview(section='messaging'):
         query=DatabaseQuery('WhatsApp Conversation').execute(fields=['name'],filters={'account':['is','set']},run=False)
         rows=frappe.db.sql(f"SELECT COUNT(DISTINCT m.conversation) FROM `tabWhatsApp Message` m LEFT JOIN `tabWhatsApp Conversation Read` r ON r.conversation=m.conversation AND r.user=%s WHERE m.direction='Inbound' AND m.sequence>COALESCE(r.last_read_sequence,0) AND m.conversation IN ({query.replace('%','%%')})",frappe.session.user)
         cards.append({'label':'My unread','value':int(rows[0][0]),'route':['whatsapp-inbox'],'route_options':{'assignment':'Unread'}})
-        card('Failed outgoing','WhatsApp Message',{'direction':'Outbound','status':'Failed'})
+        card('Messages that could not be sent','WhatsApp Message',{'direction':'Outbound','status':'Failed'})
     elif section=='automation':
         card('Templates','WhatsApp Message Template')
         card('Conversation Flows','WhatsApp Conversation Flow')
         if frappe.db.has_table('WhatsApp Campaign'):card('Campaigns','WhatsApp Campaign')
         card('Active schedules','WhatsApp Schedule',{'state':'Active'})
-        card('Failed runs','WhatsApp Automation Run',{'state':'Failed'})
+        card('Sending tasks needing attention','WhatsApp Automation Run',{'state':'Failed'})
         if supervisor():card('Active campaigns','WhatsApp Automation Run',{'kind':'Campaign','state':['in',['Ready','Expanding','Paused']]},['whatsapp-automations'],{'kind':'Campaign'})
     elif section=='administration':
         require_supervisor()
-        card('Configured senders','WhatsApp Phone Number ID')
-        card('Unknown outcomes','WhatsApp Outbox',{'state':'Unknown'})
-        card('Failed webhook events','WhatsApp Webhook Event',{'state':['in',['Failed','Quarantined']]})
-        card('Held sends','WhatsApp Outbox',{'state':'Held'})
+        card('Business WhatsApp numbers','WhatsApp Sender')
+        card('Unconfirmed sends','WhatsApp Outbox',{'state':'Unknown'})
+        card('Incoming updates needing attention','WhatsApp Webhook Event',{'state':['in',['Failed','Quarantined']]})
+        card('Sends needing attention','WhatsApp Outbox',{'state':'Held'})
     else:frappe.throw('Unknown workspace section')
     return {**info,'cards':cards}
 

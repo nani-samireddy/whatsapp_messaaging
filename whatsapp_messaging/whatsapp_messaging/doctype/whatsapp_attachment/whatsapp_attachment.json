@@ -17,15 +17,16 @@
   "mime_type",
   "file_name",
   "size",
-  "content_hash",
-  "provider_hash",
   "state",
-  "error_reason"
+  "error_reason",
+  "technical_details_section",
+  "content_hash",
+  "provider_hash"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -40,9 +41,9 @@
   },
   {
    "fieldname": "account",
-   "label": "Account",
+   "label": "Sender",
    "fieldtype": "Link",
-   "options": "WhatsApp Phone Number ID"
+   "options": "WhatsApp Sender"
   },
   {
    "fieldname": "file",
@@ -52,12 +53,12 @@
   },
   {
    "fieldname": "provider_media_id",
-   "label": "Provider Media Id",
+   "label": "WhatsApp File ID",
    "fieldtype": "Data"
   },
   {
    "fieldname": "mime_type",
-   "label": "Mime Type",
+   "label": "File Type",
    "fieldtype": "Data"
   },
   {
@@ -82,15 +83,22 @@
   },
   {
    "fieldname": "state",
-   "label": "State",
+   "label": "Status",
    "fieldtype": "Select",
    "default": "Pending",
    "options": "Pending\nReady\nDownloading\nFailed\nBlocked"
   },
   {
    "fieldname": "error_reason",
-   "label": "Error Reason",
+   "label": "What Went Wrong",
    "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

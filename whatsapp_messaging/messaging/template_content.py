@@ -7,7 +7,7 @@ from .media import authorized_file, inspect
 
 def resolve(media_name=None, approved_template_name=None):
     if approved_template_name:
-        approved = frappe.get_doc('WhatsApp Approved Template', approved_template_name)
+        approved = frappe.get_doc('WhatsApp Meta Template', approved_template_name)
         approved.check_permission('read')
         if media_name:
             frappe.throw('Approved templates support a text body with optional text header and footer. Remove Media to use this approved template.')

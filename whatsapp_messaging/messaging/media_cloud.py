@@ -61,7 +61,7 @@ def prepare(doc, previous):
         return
     if not doc.phone_number_id:
         if doc.is_new():
-            frappe.throw('Choose the Sender account for the WhatsApp cloud upload.')
+            frappe.throw('Choose the business WhatsApp number that will use this file.')
         doc.cloud_status = 'Needs Sender'
         doc.cloud_error = 'Choose a Sender and save to upload this file to WhatsApp.'
         return

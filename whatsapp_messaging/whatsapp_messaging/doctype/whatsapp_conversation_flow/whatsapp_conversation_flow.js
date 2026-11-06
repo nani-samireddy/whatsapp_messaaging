@@ -64,7 +64,7 @@
             const destinations=[['','Choose a step…'],...names(frm).map(k=>[k,k.replaceAll('_',' ')])];
             root.append(node('label','If no record matches'),choose('No matching record step',destinations,lookupNoMatch,v=>lookupNoMatch=v),node('label','If more than one record matches'),choose('Multiple matching records step',destinations,lookupMultiple,v=>lookupMultiple=v));
             for(const label of root.querySelectorAll('label'))label.style.cssText='display:block;margin:14px 0 6px';
-            root.append(node('p','Use reception handoff for unmatched or ambiguous requests. The selected matching rule applies only to this contact’s records. The flow does not create an appointment.','text-muted'));
+            root.append(node('p','Pass the conversation to reception if no record or more than one record matches. The selected matching rule applies only to this contact’s records. The flow does not create an appointment.','text-muted'));
         }
         async function loadTemplate(){
             if(!d?.fields_dict?.template_parameters)return;
@@ -92,10 +92,10 @@
         const targets = [...new Set([...names(frm), row.step_key])].join('\n');
         d = new frappe.ui.Dialog({title: existing ? 'Edit step' : 'Add a step', size:'large', fields:[
             {fieldname:'step_key', fieldtype:'Data', label:'Step name', default:row.step_key, reqd:1, read_only:existing, description:'A unique short name, such as main_menu. Use lowercase letters and underscores.'},
-            {fieldname:'step_type', fieldtype:'Select', label:'What should happen?', options:'Menu\nQuestion\nMessage\nTemplate\nHandoff\nEnd', default:row.step_type, reqd:1},
+            {fieldname:'step_type', fieldtype:'Select', label:'What should happen?', options:[{value:'Menu',label:'Show a menu'},{value:'Question',label:'Ask a question'},{value:'Message',label:'Send a message'},{value:'Template',label:'Send a template'},{value:'Handoff',label:'Pass to reception'},{value:'End',label:'Finish the flow'}], default:row.step_type, reqd:1},
             {fieldname:'prompt', fieldtype:'Small Text', label:'Message to send', default:row.prompt, mandatory_depends_on:'eval:doc.step_type!=="Template"', depends_on:'eval:doc.step_type!=="Template"', description:'Use {{answers.name}} to include an answer collected earlier. Maximum 1,024 characters.'},
             {fieldname:'message_template',fieldtype:'Link',options:'WhatsApp Message Template',label:'Message template',default:row.message_template,depends_on:'eval:doc.step_type==="Template"',mandatory_depends_on:'eval:doc.step_type==="Template"',onchange:()=>loadTemplate(),description:'Reuse a saved text template. Meta templates must be approved before publishing the flow.'},
-            {fieldname:'template_data_source',fieldtype:'Select',label:'Template data',options:'Flow values\nRecord lookup',default:row.template_data_source||'Flow values',depends_on:'eval:doc.step_type==="Template"',onchange:()=>loadTemplate()},
+            {fieldname:'template_data_source',fieldtype:'Select',label:'Template data',options:[{value:'Flow values',label:'Answers from this conversation'},{value:'Record lookup',label:'Find a matching record'}],default:row.template_data_source||'Flow values',depends_on:'eval:doc.step_type==="Template"',onchange:()=>loadTemplate()},
             {fieldname:'template_parameters',fieldtype:'HTML',depends_on:'eval:doc.step_type==="Template"'},
             {fieldname:'next_step', fieldtype:'Select', label:'Then go to', options:'\n'+targets, default:row.next_step, depends_on:'eval:["Question","Message","Template"].includes(doc.step_type)'},
             {fieldname:'answer_key', fieldtype:'Data', label:'Save answer as', default:row.answer_key, depends_on:'eval:["Question","Menu"].includes(doc.step_type)', description:'For questions, enter a name such as preferred_date. For menus, optionally save the selected option, such as department.'},
@@ -124,7 +124,7 @@
                 prepared.push({from_step:v.step_key,choice_key:key,label,next_step:c.next_step});
             }
             if(v.step_type==='Template' && (!templateReady || (v.template_data_source!=='Record lookup' && Object.values(bindings).some(value=>!value.trim())))){frappe.msgprint('Choose a template and fill in every template field.');return;}
-            if(v.step_type==='Template' && v.template_data_source==='Record lookup' && (!lookupPhone||!lookupNoMatch||!lookupMultiple||lookupFilters.some(f=>!f.field||!f.value))){frappe.msgprint('Choose a contact phone field, fill in every filter and select both fallback steps.');return;}
+            if(v.step_type==='Template' && v.template_data_source==='Record lookup' && (!lookupPhone||!lookupNoMatch||!lookupMultiple||lookupFilters.some(f=>!f.field||!f.value))){frappe.msgprint('Choose a contact phone field, fill in every filter and choose what happens when no record or several records match.');return;}
             remember(frm);
             const target = existing ? row : frm.add_child('steps');
             for (const key of ['step_key','step_type','prompt','next_step','answer_key','answer_type','phone_mismatch_step']) target[key] = v[key] || '';

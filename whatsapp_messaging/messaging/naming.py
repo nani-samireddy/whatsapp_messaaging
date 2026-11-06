@@ -10,7 +10,7 @@ import frappe
 # Only these fields can affect a generated title. Service updates to counters,
 # payloads and leases need no extra title query.
 TITLE_INPUTS = {
-    'WhatsApp Approved Template': ('template_name', 'language'),
+    'WhatsApp Meta Template': ('template_name', 'language'),
     'WhatsApp Attachment': ('file_name', 'file', 'mime_type', 'message'),
     'WhatsApp Automation Run': ('rule', 'kind', 'due_at'),
     'WhatsApp Conversation': ('account', 'peer', 'recipient'),
@@ -21,7 +21,7 @@ TITLE_INPUTS = {
     'WhatsApp Message': ('direction', 'peer', 'conversation', 'status'),
     'WhatsApp Message Log': ('recipient', 'type', 'timestamp', 'status'),
     'WhatsApp Outbox': ('message', 'state'),
-    'WhatsApp Peer': ('display_name', 'phone_number', 'provider_identity'),
+    'WhatsApp Contact': ('display_name', 'phone_number', 'provider_identity'),
     'WhatsApp Record Link': ('conversation', 'reference_doctype', 'reference_name'),
     'WhatsApp Schedule': ('rule', 'one_shot', 'next_due_at', 'cron_expression', 'timezone'),
     'WhatsApp Send Attempt': ('outbox', 'attempt_number'),
@@ -38,7 +38,7 @@ def _join(*values):
 def _peer(name):
     if not name:
         return None
-    row = frappe.db.get_value('WhatsApp Peer', name,
+    row = frappe.db.get_value('WhatsApp Contact', name,
         ['display_name', 'phone_number', 'provider_identity'], as_dict=True)
     return (row.display_name or row.phone_number or row.provider_identity) if row else name
 
@@ -59,7 +59,7 @@ def schedule_local_time(value, zone):
 
 def record_title(doc):
     kind = doc.doctype
-    if kind == 'WhatsApp Approved Template':
+    if kind == 'WhatsApp Meta Template':
         title = _join(doc.template_name, doc.language)
     elif kind == 'WhatsApp Attachment':
         title = _join(doc.file_name or _filename(doc.file), doc.message)
@@ -85,7 +85,7 @@ def record_title(doc):
         title = _join(doc.recipient, doc.type, doc.timestamp, doc.status)
     elif kind == 'WhatsApp Outbox':
         title = _join(doc.message, doc.state)
-    elif kind == 'WhatsApp Peer':
+    elif kind == 'WhatsApp Contact':
         title = _join(doc.display_name or doc.phone_number or doc.provider_identity)
     elif kind == 'WhatsApp Record Link':
         title = _join(doc.conversation, doc.reference_doctype, doc.reference_name)
@@ -130,7 +130,7 @@ def set_record_values(doctype, name, fieldname, value=None, **kwargs):
 
 def refresh_peer_titles(doc, method=None):
     """A corrected contact name also updates existing conversation/message titles."""
-    if doc.doctype != 'WhatsApp Peer' or not doc.has_value_changed('display_name'):
+    if doc.doctype != 'WhatsApp Contact' or not doc.has_value_changed('display_name'):
         return
     for doctype in ('WhatsApp Conversation', 'WhatsApp Message', 'WhatsApp Identity Alias'):
         for name in frappe.get_all(doctype, filters={'peer': doc.name}, pluck='name'):

@@ -53,7 +53,7 @@ def validate_flow(doc):
 def publish(name):
     require_supervisor()
     draft = frappe.get_doc('WhatsApp Conversation Flow', name); draft.check_permission('write')
-    sender = lock('WhatsApp Phone Number ID', draft.account); account(sender.name, enabled=True)
+    sender = lock('WhatsApp Sender', draft.account); account(sender.name, enabled=True)
     doc = lock('WhatsApp Conversation Flow', name)
     if doc.account != sender.name: frappe.throw('The business number changed. Reload the flow and publish again.')
     other = frappe.db.sql('SELECT name FROM `tabWhatsApp Conversation Flow` WHERE published_account=%s AND is_active=1 AND name!=%s FOR UPDATE', (sender.name, name))
@@ -162,7 +162,7 @@ def process_turn(event, doc, message):
         return finish_event(event, 'Skipped', 'This message was already handled.', session)
     if session and session.last_provider_at and get_datetime(message.provider_at) < get_datetime(session.last_provider_at):
         return finish_event(event, 'Skipped', 'Older message arrived after a newer response.', session)
-    peer = frappe.get_doc('WhatsApp Peer', doc.peer)
+    peer = frappe.get_doc('WhatsApp Contact', doc.peer)
     if peer.suppressed or not window_open(doc) or doc.assigned_to:
         return finish_event(event, 'Skipped', 'Sending is blocked, the reply window is closed or staff are handling this conversation.', session)
     if session and session.state in ('Paused', 'Waiting for staff'):

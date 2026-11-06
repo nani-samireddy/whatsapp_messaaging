@@ -29,7 +29,7 @@ function sendWhatsAppMessage(frm, template) {
     frappe.call({method:'whatsapp_messaging.controller.wm_handle_on_custom_trigger',args:{template_name:template.name,doctype:frm.doctype,docname:frm.doc.name,request_id:frm.whatsapp_requests[template.name]},freeze:true,freeze_message:__('Queuing message…')}).then(response=>{
         if (response.message) {
             delete frm.whatsapp_requests[template.name];
-            frappe.msgprint({title:__('Queued'),message:__('Messages queued. Check Automation runs for acceptance and delivery results.'),indicator:'blue'});
+            frappe.msgprint({title:__('Queued'),message:__('Messages queued. Check Sending history for acceptance and delivery results.'),indicator:'blue'});
         }
     });
 }

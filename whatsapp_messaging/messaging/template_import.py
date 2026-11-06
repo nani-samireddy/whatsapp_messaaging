@@ -9,7 +9,7 @@ from .common import account, digest, parsed, require_supervisor
 
 def existing_templates(sender):
     # A second Sender in the same WABA must not duplicate the same content.
-    senders = frappe.get_all('WhatsApp Phone Number ID', filters={'waba_id':sender.waba_id}, pluck='name')
+    senders = frappe.get_all('WhatsApp Sender', filters={'waba_id':sender.waba_id}, pluck='name')
     return frappe.get_all(editor.DOCT, filters={
         'phone_number_id': ['in', senders], 'delivery_mode': editor.META},
         fields=['name', 'approved_template', 'meta_template_name', 'meta_language'],
@@ -36,7 +36,7 @@ def options(account_name):
     sender = account(account_name, enabled=True)
     rows = []
     templates = existing_templates(sender)
-    for linked in frappe.get_list('WhatsApp Approved Template', filters={'waba_id':sender.waba_id},
+    for linked in frappe.get_list('WhatsApp Meta Template', filters={'waba_id':sender.waba_id},
             fields=['name', 'template_name', 'language', 'approval_status', 'category', 'supported',
                 'body', 'components_json', 'parameters_json'], order_by='template_name asc, language asc', limit_page_length=0):
         local_name = existing(sender, linked, templates)
@@ -63,7 +63,7 @@ def import_selected(account_name, source_doctype, catalogue_names):
     if not frappe.has_permission(editor.DOCT, 'create'):
         frappe.throw('You cannot create message templates.', frappe.PermissionError)
     if not isinstance(source_doctype, str) or not frappe.db.exists('DocType', source_doctype):
-        frappe.throw('Choose a Source DocType for the imported templates.')
+        frappe.throw('Choose the record type used to personalize the imported templates.')
     from whatsapp_messaging.utils import _check_metadata_permission
     _check_metadata_permission(source_doctype)
     try:
@@ -75,10 +75,10 @@ def import_selected(account_name, source_doctype, catalogue_names):
     # Stable lock order makes concurrent imports idempotent across Senders.
     linked_docs = []
     for name in sorted(set(names)):
-        linked = frappe.get_doc('WhatsApp Approved Template', name, for_update=True)
+        linked = frappe.get_doc('WhatsApp Meta Template', name, for_update=True)
         linked.check_permission('read')
         if linked.waba_id != sender.waba_id:
-            frappe.throw('Choose templates belonging to this Sender’s WABA.')
+            frappe.throw('Choose templates from this sender’s WhatsApp Business Account.')
         if not existing(sender, linked) and unavailable_reason(linked):
             frappe.throw(unavailable_reason(linked))
         linked_docs.append(linked)

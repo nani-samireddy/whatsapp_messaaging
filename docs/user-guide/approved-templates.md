@@ -47,4 +47,4 @@ Approved template parameter dialog: review the body and fill each numbered param
 - [Configure a sender and integration](senders.md)
 - [Send documents automatically](document-delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

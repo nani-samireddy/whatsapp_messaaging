@@ -22,7 +22,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         p=patch('frappe.enqueue');self.queue=p.start();self.addCleanup(p.stop)
         for flag in ('enable_outbound_messages','enable_automation','enable_inbound'):
             frappe.db.set_single_value('WhatsApp Settings',flag,1)
-        frappe.db.set_value('WhatsApp Phone Number ID',fixtures.ACCOUNT,dict(enabled=1,waba_id='123456'))
+        frappe.db.set_value('WhatsApp Sender',fixtures.ACCOUNT,dict(enabled=1,waba_id='123456'))
         frappe.db.commit()
 
     def cleanup(self):
@@ -35,12 +35,12 @@ class TestTemplatesCampaigns(unittest.TestCase):
         for dt in ('WhatsApp Outbox','WhatsApp Automation Run','WhatsApp Schedule'):
             for name in self.campaigns:frappe.db.delete(dt,{'rule':name})
         for name in self.campaigns:
-            frappe.db.delete('Static Recipient Link',{'parent':name,'parenttype':'WhatsApp Campaign'})
+            frappe.db.delete('Additional Number Entry',{'parent':name,'parenttype':'WhatsApp Campaign'})
             frappe.db.delete('WhatsApp Campaign',{'name':name})
         for name in self.templates:
             frappe.db.delete('WhatsApp Template Variable',{'parent':name})
             frappe.db.delete('WhatsApp Message Template',{'name':name})
-        for name in self.catalogues:frappe.db.delete('WhatsApp Approved Template',{'name':name})
+        for name in self.catalogues:frappe.db.delete('WhatsApp Meta Template',{'name':name})
         for flag in ('enable_outbound_messages','enable_automation','enable_inbound'):
             frappe.db.set_single_value('WhatsApp Settings',flag,0)
         frappe.db.commit()
@@ -104,7 +104,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         self.assertEqual(doc.approved_template,chosen);self.assertEqual(doc.template_doctype,'ToDo')
         self.assertEqual(doc.meta_header,'Riverbend Hospital');self.assertEqual(doc.meta_footer,'Patient Support')
         self.assertTrue(doc.disable);self.assertFalse(doc.automation_active)
-        self.assertTrue(editor.matches(doc,frappe.get_doc('WhatsApp Approved Template',chosen)))
+        self.assertTrue(editor.matches(doc,frappe.get_doc('WhatsApp Meta Template',chosen)))
         self.assertFalse(frappe.db.exists(editor.DOCT,{'approved_template':other}))
         self.assertEqual(counts,{dt:frappe.db.count(dt) for dt in counts})
         self.queue.assert_not_called();self.transport.assert_not_called()
@@ -142,10 +142,10 @@ class TestTemplatesCampaigns(unittest.TestCase):
 
     def test_import_rechecks_waba_support_and_missing_source_before_any_insert(self):
         valid=self.import_entry();changed=self.import_entry()
-        frappe.db.set_value('WhatsApp Approved Template',changed,'supported',0)
+        frappe.db.set_value('WhatsApp Meta Template',changed,'supported',0)
         with self.assertRaises(frappe.ValidationError):self.import_selection([valid,changed])
         self.assertFalse(frappe.db.exists(editor.DOCT,{'approved_template':valid}))
-        frappe.db.set_value('WhatsApp Approved Template',changed,dict(supported=1,waba_id='different'))
+        frappe.db.set_value('WhatsApp Meta Template',changed,dict(supported=1,waba_id='different'))
         with self.assertRaises(frappe.ValidationError):self.import_selection([valid,changed])
         with self.assertRaises(frappe.ValidationError):template_import.import_selected(fixtures.ACCOUNT,'',[valid])
         for names in ([],{},'invalid json',[valid]*101,[123]):
@@ -157,12 +157,12 @@ class TestTemplatesCampaigns(unittest.TestCase):
         for action in (lambda:template_import.options(fixtures.ACCOUNT),lambda:self.import_selection([entry]),
                 lambda:template_import.sync_options(fixtures.ACCOUNT)):
             with self.assertRaises(frappe.PermissionError):action()
-        frappe.set_user('Administrator');frappe.db.set_value('WhatsApp Phone Number ID',fixtures.ACCOUNT,'enabled',0)
+        frappe.set_user('Administrator');frappe.db.set_value('WhatsApp Sender',fixtures.ACCOUNT,'enabled',0)
         with self.assertRaises(frappe.ValidationError):self.import_selection([entry])
         self.transport.assert_not_called()
 
     def test_same_meta_name_in_two_languages_imports_as_distinct_records(self):
-        one=self.import_entry();linked=frappe.get_doc('WhatsApp Approved Template',one)
+        one=self.import_entry();linked=frappe.get_doc('WhatsApp Meta Template',one)
         two=self.import_entry(name=linked.template_name,language='te')
         result=self.import_selection([one,two]);self.assertEqual(len(result['imported']),2)
         self.assertEqual({frappe.get_doc(editor.DOCT,row['name']).meta_language for row in result['imported']},{'en_US','te'})
@@ -254,7 +254,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         c=self.campaign(t,is_single=1,query_filters=json.dumps({'filters':[['ToDo','name','=',fixtures.SOURCE]]}))
         source=frappe.get_doc('ToDo',fixtures.SOURCE)
         frappe.db.set_value(source.doctype,source.name,'wm_test_phone','919000000001');source.reload()
-        sender=frappe.get_doc('WhatsApp Phone Number ID',fixtures.ACCOUNT)
+        sender=frappe.get_doc('WhatsApp Sender',fixtures.ACCOUNT)
         peer=inbox.ensure_peer(source.wm_test_phone,sender);frappe.db.set_value(peer.doctype,peer.name,'consent_recorded',1)
         conv=inbox.ensure_conversation(sender,peer)
         result=outbox.create_intent(conv.name,'framed-'+frappe.generate_hash(length=10),template=t.approved_template,parameters=[source.status],rule=c.name)
@@ -279,7 +279,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         self.addCleanup(remove_files)
         t=self.template(meta=False,meta_header='Welcome',meta_footer='Patient Support',media=asset.name)
         c=self.campaign(t);source=frappe.get_doc('ToDo',fixtures.SOURCE);source.wm_test_phone='919000000001'
-        sender=frappe.get_doc('WhatsApp Phone Number ID',fixtures.ACCOUNT)
+        sender=frappe.get_doc('WhatsApp Sender',fixtures.ACCOUNT)
         conv=inbox.ensure_conversation(sender,inbox.ensure_peer(source.wm_test_phone,sender))
         frappe.db.set_value(conv.doctype,conv.name,'window_expires_at',utcnow()+timedelta(hours=1))
         run=insert('WhatsApp Automation Run',run_key=frappe.generate_hash(length=20),rule=c.name,kind='Manual',state='Completed',run_as='Administrator')
@@ -294,9 +294,9 @@ class TestTemplatesCampaigns(unittest.TestCase):
         from whatsapp_messaging.patches.v1_0.template_framing import execute
         t=self.template(meta_header='Welcome',meta_footer='Patient Support');name=self.meta_item(t)
         before=str(t.modified);body=t.message_preview
-        frappe.db.set_value('WhatsApp Approved Template',name,'supported',0)
+        frappe.db.set_value('WhatsApp Meta Template',name,'supported',0)
         execute();execute();t.reload()
-        self.assertTrue(frappe.db.get_value('WhatsApp Approved Template',name,'supported'))
+        self.assertTrue(frappe.db.get_value('WhatsApp Meta Template',name,'supported'))
         self.assertEqual(str(t.modified),before);self.assertEqual(t.message_preview,body)
         self.assertEqual(t.meta_status,'Approved');self.transport.assert_not_called()
 
@@ -306,7 +306,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         frappe.set_user('Administrator');frappe.db.set_single_value('WhatsApp Settings','enable_outbound_messages',0)
         with self.assertRaises(frappe.ValidationError):editor.submit(t.name)
         frappe.db.set_single_value('WhatsApp Settings','enable_outbound_messages',1)
-        frappe.db.set_value('WhatsApp Phone Number ID',fixtures.ACCOUNT,'enabled',0)
+        frappe.db.set_value('WhatsApp Sender',fixtures.ACCOUNT,'enabled',0)
         with self.assertRaises(frappe.ValidationError):editor.submit(t.name)
         self.transport.assert_not_called()
 
@@ -389,7 +389,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
         with self.assertRaises(frappe.ValidationError):editor.ensure_sendable(t)
         # A late event must not replace the newer rejection.
         catalogue.review_update('123456',dict(event='APPROVED',message_template_id=991234567890),now-1)
-        self.assertEqual(frappe.db.get_value('WhatsApp Approved Template',name,'approval_status'),'REJECTED')
+        self.assertEqual(frappe.db.get_value('WhatsApp Meta Template',name,'approval_status'),'REJECTED')
 
     def test_unknown_rejection_does_not_invent_a_specific_reason(self):
         t=self.template();self.meta_item(t,'REJECTED',rejected_reason=None)
@@ -451,7 +451,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
             meta_examples=[dict(position=1,source_path='static.website_settings.app_name',sample_value='Riverbend Hospital')])
         self.meta_item(t);c=self.campaign(t,is_single=1)
         source=frappe.get_doc('ToDo',fixtures.SOURCE);source.wm_test_phone='919000000001'
-        sender=frappe.get_doc('WhatsApp Phone Number ID',fixtures.ACCOUNT)
+        sender=frappe.get_doc('WhatsApp Sender',fixtures.ACCOUNT)
         peer=inbox.ensure_peer(source.wm_test_phone,sender)
         frappe.db.set_value(peer.doctype,peer.name,'consent_recorded',1)
         run=insert('WhatsApp Automation Run',run_key=frappe.generate_hash(length=20),rule=c.name,kind='Manual',state='Completed',run_as='Administrator')
@@ -493,7 +493,7 @@ class TestTemplatesCampaigns(unittest.TestCase):
     def test_campaign_event_has_correct_history_and_content_edit_holds_queued_send(self):
         t=self.template(meta=False);c=self.campaign(t,template_event='Update',automation_active=1)
         source=frappe.get_doc('ToDo',fixtures.SOURCE);source.wm_test_phone='919000000001'
-        sender=frappe.get_doc('WhatsApp Phone Number ID',fixtures.ACCOUNT)
+        sender=frappe.get_doc('WhatsApp Sender',fixtures.ACCOUNT)
         peer=inbox.ensure_peer(source.wm_test_phone,sender)
         conv=inbox.ensure_conversation(sender,peer)
         frappe.db.set_value(conv.doctype,conv.name,'window_expires_at',utcnow()+timedelta(hours=1))

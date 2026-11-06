@@ -12,11 +12,11 @@ The HMS - Released laboratory report preset watches Lab Report → Status = Revi
 
 ## 1. Prepare the hospital sender and consent
 
-Configure the sender, obtain approval for a report-notification template with a Document header, and Sync approved templates on the sender. Check the patient’s country-code phone number and recorded messaging consent. Keep the preset disabled during setup.
+Configure the sender, obtain approval for a report-notification template with a Document header, and Import templates from Meta on the sender. Check the patient’s country-code phone number and recorded messaging consent. Keep the preset disabled during setup.
 
 ## 2. Open the laboratory preset
 
-Open WhatsApp Document Rule → HMS - Released laboratory report. Set Record type to Lab Report, Trigger to Field changes to a value, and Trigger field to Status.
+Open WhatsApp Document Delivery Rule → HMS - Released laboratory report. Set Record type to Lab Report, Trigger to Field changes to a value, and Trigger field to Status.
 
 ## 3. Select Reviewed and keep the release step
 
@@ -71,4 +71,4 @@ The linked Patient supplies Mobile, while Private attachment uses Report file.
 - [Configure a sender and integration](senders.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

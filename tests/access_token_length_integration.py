@@ -23,13 +23,13 @@ class AccessTokenLengthTests(unittest.TestCase):
         self.addCleanup(queue.stop)
 
     def check_round_trip(self, length):
-        field = frappe.get_meta('WhatsApp Phone Number ID').get_field('access_token')
+        field = frappe.get_meta('WhatsApp Sender').get_field('access_token')
         self.assertEqual(field.fieldtype, 'Password')
         self.assertEqual(field.permlevel, 1)
         self.assertEqual(field.length, 1000)
         token = ('fictional-long-token-' * 60)[:length]
         self.assertEqual(len(token), length)
-        doc = frappe.get_doc(dict(doctype='WhatsApp Phone Number ID',
+        doc = frappe.get_doc(dict(doctype='WhatsApp Sender',
             label='Long token regression fixture', phone_number_id='99887766554433001234',
             access_token=token, enabled=0)).insert()
         doc.reload()
@@ -65,12 +65,12 @@ if __name__ == '__main__':
     if site == 'whatsapp-test.localhost':
         assert frappe.conf.db_host == 'db', 'Disposable test database required'
     frappe.set_user('Administrator')
-    count = frappe.db.count('WhatsApp Phone Number ID')
+    count = frappe.db.count('WhatsApp Sender')
     try:
         result = unittest.TextTestRunner(verbosity=2).run(
             unittest.defaultTestLoader.loadTestsFromTestCase(AccessTokenLengthTests))
         frappe.db.rollback()
-        assert frappe.db.count('WhatsApp Phone Number ID') == count
+        assert frappe.db.count('WhatsApp Sender') == count
         print('All fictional sender/token fixtures rolled back; no provider requests sent.')
         if not result.wasSuccessful():
             raise SystemExit(1)

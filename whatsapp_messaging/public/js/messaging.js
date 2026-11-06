@@ -12,13 +12,20 @@ frappe.provide('whatsapp_messaging');
     const input = (placeholder, type = 'text') => { const n = el('input'); n.type = type; n.className = 'form-control'; n.placeholder = placeholder; n.setAttribute('aria-label', placeholder); return n; };
     const select = (label, values) => { const n = el('select', undefined, 'form-control'); n.setAttribute('aria-label', label); for (const [value, text] of values) { const o = el('option', text); o.value = value; n.append(o); } return n; };
     const localStamp = value => value ? frappe.datetime.str_to_user(value) : '';
-    const stamp = value => value ? new Date(String(value).replace(' ', 'T').replace(/Z?$/, 'Z')).toLocaleString() : '';
+    const utcDate = value => new Date(String(value).replace(' ', 'T').replace(/Z?$/, 'Z'));
+    const stamp = value => value ? utcDate(value).toLocaleString() : '';
+    const chatDate = message => utcDate(message.provider_at || message.received_at);
+    const chatDay = date => Number.isNaN(date.getTime()) ? '' : date.toDateString();
+    const contactLabel = (name, number) => name && name !== number ? name : /^\d{7,15}$/.test(number || '') ? '+' + number : number;
+    const messageTime = value => value ? utcDate(value).toLocaleString(undefined, {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
     // Keep API values unchanged; explain them in the language used by the team.
     const conversationStatus = value => ({Open: 'Open', Pending: 'Waiting', Resolved: 'Resolved'}[value] || value);
     const messageStatus = value => ({Ready: 'Waiting to send', Claimed: 'Waiting to send', 'Retry wait': 'Waiting to try again', Queued: 'Waiting to send', Accepted: 'Accepted by WhatsApp', Held: 'Needs attention', Unknown: 'Send status not confirmed', Failed: 'Failed', Sent: 'Sent', Delivered: 'Delivered', Read: 'Read', Received: 'Received', Cancelled: 'Cancelled'}[value] || value);
+    const runStatus = value => ({Ready: 'Waiting to start', Expanding: 'Preparing messages', Preview: 'Ready for review', Completed: 'Preparation complete', Paused: 'Paused', Failed: 'Needs attention', Skipped: 'Skipped', Cancelled: 'Cancelled'}[value] || value);
+    const runKind = value => ({Event: 'Record change', Schedule: 'Scheduled send', Manual: 'Staff send', Campaign: 'Campaign'}[value] || value);
     const statusHelp = {
         Accepted: 'WhatsApp accepted this message. Delivery has not been confirmed yet.',
-        Held: 'Sending is on hold. Ask an administrator to check the reason in the Outbound Queue.',
+        Held: 'Sending is on hold. Ask an administrator to check the reason in the Sending queue.',
         Unknown: 'We could not confirm whether this message was sent. Check its status before sending it again.',
         Failed: 'This message could not be sent or delivered. Ask an administrator to check the reason.',
     };
@@ -28,10 +35,19 @@ frappe.provide('whatsapp_messaging');
 .wm-error{color:var(--red-600,#a72020);padding:10px;flex-shrink:0}
 .wm-error:empty{display:none}
 .wm-inbox-shell{height:calc(100dvh - var(--page-head-height,48px) - 1px);min-height:0;display:flex;flex-direction:column;overflow:hidden;container:whatsapp-inbox / inline-size}
-.wm-inbox{display:grid;grid-template-columns:clamp(240px,23%,320px) minmax(0,1fr) 260px;gap:12px;flex:1;min-height:0;position:relative}
+.wm-inbox{display:grid;grid-template-columns:clamp(260px,25%,320px) minmax(0,1fr);gap:12px;flex:1;min-height:0;position:relative}
 .wm-list,.wm-thread,.wm-details{min-width:0;min-height:0;border:1px solid var(--border-color,#ddd);border-radius:10px;overflow:hidden;background:var(--card-bg,#fff)}
 .wm-list,.wm-thread{display:flex;flex-direction:column}
 .wm-filters{display:grid;gap:8px;padding:12px;flex-shrink:0}
+.wm-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.wm-list-head h3{margin:0;font-size:15px;font-weight:600}
+.wm-list-head .wm-icon-button{width:36px;height:36px;border-radius:8px}
+.wm-list-views{display:flex;gap:6px;flex-wrap:wrap}
+.wm-list-views .btn{border-radius:16px;padding:4px 12px;background:transparent}
+.wm-list-views .btn[aria-pressed=true]{background:var(--control-bg);font-weight:600}
+.wm-list-filters summary{cursor:pointer;font-size:12px;color:var(--text-muted);width:fit-content;padding:4px 0}
+.wm-list-filter-fields{display:grid;gap:10px;padding-top:8px}
+.wm-list-filter-fields label{display:grid;gap:4px;margin:0;font-size:12px;color:var(--text-muted)}
 .wm-conversations{overflow:auto;min-height:0;flex:1;overscroll-behavior:contain}
 .wm-conversation{display:block;width:100%;padding:12px;text-align:left;border:0;border-top:1px solid var(--border-color,#ddd);background:transparent;color:inherit;overflow-wrap:anywhere}
 .wm-conversation[aria-current=true]{background:var(--control-bg,#eee)}
@@ -41,43 +57,103 @@ frappe.provide('whatsapp_messaging');
 .wm-thread-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-color,#ddd);flex-shrink:0}
 .wm-thread-identity{flex:1;min-width:0;overflow-wrap:anywhere}
 .wm-thread-identity h4{margin:0 0 4px;font-size:16px}
-.wm-back,.wm-details-toggle,.wm-details-close{display:none}
-.wm-timeline{padding:14px;overflow:auto;min-height:0;flex:1;overscroll-behavior:contain;scrollbar-gutter:stable}
-.wm-message{width:fit-content;max-width:min(88%,680px);padding:10px 12px;border-radius:10px;margin:0 0 12px;background:var(--subtle-fg,#f5f6f8);white-space:pre-wrap;overflow-wrap:anywhere}
-.wm-message.outbound{margin-left:auto;background:var(--blue-50,#eef5ff)}
-.wm-message .wm-meta{margin-top:6px}
-.wm-message img{max-width:min(220px,100%);max-height:180px;display:block;margin:8px 0}
-.wm-message a{overflow-wrap:anywhere}
-.wm-composer{padding:12px;border-top:1px solid var(--border-color,#ddd);display:grid;gap:8px;flex-shrink:0}
+.wm-inbox .wm-back{display:none}
+.wm-details-toggle,.wm-details-close{display:inline-flex}
+.wm-thread{
+ --wm-chat-bg:#f4f7f6;
+ --wm-chat-in:#fff;
+ --wm-chat-out:#dff3e9;
+ --wm-chat-line:#dbe6e0;
+ --wm-chat-accent:#13694f;
+ --wm-chat-send:#147458;
+}
+[data-theme=dark] .wm-thread{
+ --wm-chat-bg:#181e1c;
+ --wm-chat-in:#262d2a;
+ --wm-chat-out:#1e3e34;
+ --wm-chat-line:#35473f;
+ --wm-chat-accent:#92dabc;
+ --wm-chat-send:#147458;
+}
+.wm-thread-avatar{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--wm-chat-out);color:var(--wm-chat-accent)}
+.wm-thread-avatar .icon{width:18px;height:18px;stroke:currentColor}
+.wm-timeline{padding:16px clamp(12px,3%,32px);background:var(--wm-chat-bg);overflow:auto;min-height:0;flex:1;overscroll-behavior:contain;scrollbar-gutter:stable;overflow-anchor:none}
+.wm-load-older.btn{display:block;margin:0 auto 14px;border-radius:20px}
+.wm-load-older[hidden]{display:none}
+.wm-chat-date{display:table;margin:12px auto;padding:4px 12px;border:1px solid var(--wm-chat-line);border-radius:20px;background:var(--wm-chat-in);color:var(--text-muted,#666);font-size:12px}
+.wm-message{position:relative;width:fit-content;min-width:min(112px,100%);max-width:min(84%,620px);padding:8px 12px;margin:0 0 8px;border:1px solid var(--wm-chat-line);border-radius:4px 14px 14px 14px;background:var(--wm-chat-in);overflow-wrap:anywhere}
+.wm-message.outbound{margin-inline-start:auto;border-radius:14px 4px 14px 14px;background:var(--wm-chat-out)}
+.wm-message-body{white-space:pre-wrap;color:var(--text-color,#333);line-height:1.5}
+.wm-message:has(.wm-message-reply) .wm-message-body{padding-inline-end:24px}
+.wm-message-meta{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;column-gap:8px;margin-top:4px;font-size:11px}
+.wm-message-status{font-weight:600}
+.wm-message-status.is-confirmed{color:var(--wm-chat-accent)}
+.wm-message-help{max-width:44ch;margin-top:4px}
+.wm-message img{max-width:min(220px,100%);max-height:180px;display:block;border-radius:8px;margin:6px 0}
+.wm-message-file{display:block;width:fit-content;margin-block:4px;text-decoration:underline;color:var(--wm-chat-accent);font-size:12px}
+.wm-message .wm-message-reply{position:absolute;inset-inline-end:4px;top:4px;width:28px;height:28px;border-radius:6px;opacity:0;background:transparent;box-shadow:none;color:var(--wm-chat-accent)}
+.wm-message .wm-message-reply .icon{width:14px;height:14px;stroke:currentColor}
+.wm-message .wm-message-reply:hover{background:var(--wm-chat-line)}
+.wm-message:hover .wm-message-reply,.wm-message:focus-within .wm-message-reply{opacity:1}
+@media(hover:none){.wm-message .wm-message-reply{opacity:1}}
+.wm-composer{padding:10px 12px;border-top:1px solid var(--border-color,#ddd);display:grid;gap:8px;flex-shrink:0}
 .wm-composer .wm-meta{margin:0}
-.wm-compose-frame{border:1px solid var(--border-color,#ddd);border-radius:12px;overflow:hidden;background:var(--card-bg,#fff);position:relative}
-.wm-compose-frame:focus-within{border-color:var(--primary,#249b91);box-shadow:0 0 0 1px var(--primary,#249b91)}
+.wm-compose-notice{padding:8px 10px;border-radius:8px;background:var(--wm-chat-bg)}
+.wm-compose-frame{border:1px solid var(--border-color,#ddd);border-radius:14px;overflow:hidden;background:var(--card-bg,#fff);position:relative}
+.wm-compose-frame:focus-within{border-color:var(--wm-chat-accent);box-shadow:0 0 0 1px var(--wm-chat-accent)}
 .wm-compose-input{position:relative}
-.wm-composer textarea.form-control{height:88px;min-height:72px;max-height:180px;resize:vertical;border:0!important;border-radius:0;box-shadow:none!important;background:transparent;padding:12px 56px 12px 12px;line-height:1.5}
-.wm-compose-send.btn{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:8px;background:transparent;color:var(--primary,#178c83);border:0;box-shadow:none}
-.wm-compose-send.btn:hover:not(:disabled){background:var(--control-bg,#f1f4f5)}
+.wm-composer textarea.form-control{height:68px;min-height:56px;max-height:180px;resize:vertical;border:0!important;border-radius:0;box-shadow:none!important;background:transparent;padding:12px 56px 12px 12px;line-height:1.5}
+.wm-compose-send.btn{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:50%;background:var(--wm-chat-send);color:#fff;border:0;box-shadow:none}
+.wm-compose-send.btn .icon{stroke:currentColor}
+.wm-compose-send.btn:hover:not(:disabled){filter:brightness(1.12)}
 .wm-compose-send.btn:disabled{opacity:.4}
 .wm-compose-toolbar{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:6px 8px;background:var(--subtle-fg,#f5f6f8);border-top:1px solid var(--border-color,#eee)}
 .wm-compose-tool.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;min-height:30px;background:transparent;border:0;box-shadow:none;color:var(--text-color,#333);font-size:12px;border-radius:6px}
 .wm-compose-tool.btn:hover:not(:disabled){background:var(--control-bg,#e9edef)}
+.wm-compose-tool.btn.wm-template-needed{background:var(--wm-chat-send);color:#fff}
+.wm-compose-tool.btn.wm-template-needed:hover:not(:disabled){background:var(--wm-chat-send);filter:brightness(1.12)}
+.wm-compose-tool.wm-template-needed .icon{stroke:currentColor}
 .wm-compose-tool .icon{width:14px;height:14px}
 .wm-compose-count{margin-left:auto;padding:0 4px;color:var(--text-muted,#666);font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wm-compose-template-only .wm-compose-input,.wm-compose-template-only .wm-compose-tool:disabled,.wm-compose-template-only .wm-compose-count{display:none}
+.wm-compose-template-only .wm-compose-toolbar{padding:0;border:0;background:transparent}
+.wm-compose-frame.wm-compose-template-only{border:0;border-radius:0;box-shadow:none}
 .wm-compose-count.is-over{color:var(--red-600,#a72020)}
 .wm-compose-attachment,.wm-compose-quote{display:flex;align-items:center;gap:8px;padding:8px 12px;overflow-wrap:anywhere;border-top:1px solid var(--border-color,#eee);font-size:12px}
-.wm-compose-attachment span,.wm-compose-quote span{flex:1;min-width:0}
+.wm-compose-attachment span,.wm-compose-quote > div{flex:1;min-width:0}
+.wm-compose-quote{margin:8px 8px 0;border:0;border-inline-start:3px solid var(--wm-chat-accent);border-radius:6px;background:var(--wm-chat-bg)}
+.wm-quote-preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wm-compose-attachment .wm-icon-button,.wm-compose-quote .wm-icon-button{width:28px;height:28px;flex-shrink:0}
 .wm-emoji-picker{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:8px;border-top:1px solid var(--border-color,#eee)}
 .wm-emoji-picker[hidden]{display:none}
 .wm-emoji-picker button{background:transparent;border:0;border-radius:6px;font-size:20px;min-width:28px;min-height:32px}
 .wm-emoji-picker button:hover,.wm-emoji-picker button:focus-visible{background:var(--control-bg,#eee)}
 .wm-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.wm-automation-shell{width:100%;max-width:calc(var(--page-max-width,900px) + 32px);margin-inline:auto;container:whatsapp-automation / inline-size}
+.wm-automation-shell .wm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.wm-automation-shell .wm-stat{min-width:0;overflow-wrap:anywhere}
+.wm-automation-toolbar{display:grid;gap:12px;margin:16px 0}
+.wm-automation-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.wm-automation-filter{display:grid;gap:6px;flex:0 1 220px;min-width:0;max-width:100%;margin:0;font-size:12px;color:var(--text-muted,#666)}
+.wm-automation-filter .form-control{width:100%;min-width:0}
+.wm-automation-filters > .btn{flex:none}
+.wm-automation-shell .wm-run{overflow-wrap:anywhere}
+.wm-automation-shell .wm-run h4{line-height:1.4}
+@container whatsapp-automation (max-width:620px){.wm-automation-shell .wm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container whatsapp-automation (max-width:480px){.wm-automation-filter{flex-basis:100%}}
 .wm-icon-button{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border-radius:10px}
 .wm-icon-button .icon{width:20px;height:20px}
 .wm-icon-button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .wm-icon-button[aria-busy=true] .icon{animation:wm-spin 1s linear infinite}
 @keyframes wm-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.wm-icon-button[aria-busy=true] .icon{animation:none}}
-.wm-details{padding:16px;overflow:auto;overflow-wrap:anywhere;overscroll-behavior:contain}
+.wm-details{display:none;position:absolute;inset:0 0 0 auto;width:min(340px,100%);padding:16px;overflow:auto;overflow-wrap:anywhere;overscroll-behavior:contain;z-index:5;box-shadow:-8px 0 24px #0002}
+.wm-inbox.show-details .wm-details{display:block}
+.wm-details-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:20px}
+.wm-details-head h3{font-size:15px;margin:0}
+.wm-details-head .wm-details-close{width:32px;height:32px;margin:0!important}
+.wm-details-history{margin-top:20px}
+.wm-details-history summary{cursor:pointer;font-weight:500;margin-bottom:12px}
 .wm-details h4{margin:20px 0 12px;font-size:15px}
 .wm-details h4:first-of-type{margin-top:0}
 .wm-details > .btn{margin:0 4px 6px 0;max-width:100%;white-space:normal}
@@ -90,19 +166,16 @@ frappe.provide('whatsapp_messaging');
 .wm-preview-item{padding:12px;border-bottom:1px solid var(--border-color,#ddd);white-space:pre-wrap}
 @container whatsapp-inbox (max-width:1000px){
  .wm-inbox{grid-template-columns:240px minmax(0,1fr)}
- .wm-details{display:none}
- .wm-details-toggle,.wm-details-close{display:inline-block}
- .wm-inbox.show-details .wm-details{display:block;position:absolute;inset:0 0 0 auto;width:min(320px,100%);z-index:5;box-shadow:-8px 0 24px #0002}
- .wm-details-close{margin-bottom:16px!important}
 }
 @container whatsapp-inbox (max-width:640px){
  .wm-inbox{grid-template-columns:minmax(0,1fr)}
  .wm-thread{display:none}
  .wm-inbox.mobile-thread .wm-list{display:none}
  .wm-inbox.mobile-thread .wm-thread{display:flex}
- .wm-back{display:inline-block}
- .wm-thread-head{padding:10px;gap:8px;flex-wrap:wrap}
- .wm-thread-identity{flex-basis:calc(100% - 130px)}
+ .wm-inbox .wm-back{display:inline-flex;flex-shrink:0;width:32px;height:32px}
+ .wm-thread-head{padding:10px;gap:8px;flex-wrap:nowrap}
+ .wm-thread-identity{flex-basis:auto}
+ .wm-thread-avatar{display:none}
  .wm-composer{padding:10px}
  .wm-timeline{padding:10px}
  .wm-message{max-width:94%}
@@ -138,25 +211,47 @@ frappe.provide('whatsapp_messaging');
         }
         async start() {
             await this.init();
+            this.banner.hidden = !!this.boot.outbound_enabled;
             this.grid = el('div', undefined, 'wm-inbox'); this.root.append(this.grid);
             this.list = el('section', undefined, 'wm-list'); this.list.setAttribute('aria-label', 'Conversations');
             const filters = el('div', undefined, 'wm-filters');
+            const listHead = el('div', undefined, 'wm-list-head');
+            listHead.append(el('h3', 'Conversations'), iconButton('New conversation', 'plus', () => this.newConversation()));
             this.sender = select('Business WhatsApp number', [['', 'All business numbers'], ...this.boot.accounts.map(a => [a.name, a.label])]);
             this.search = input('Search name or number'); this.search.setAttribute('aria-label', 'Search by name or phone number');
             this.status = select('Conversation status', [['', 'All statuses'], ...['Open', 'Pending', 'Resolved'].map(v => [v, conversationStatus(v)])]);
             this.assignment = select('Filter conversations', [['', 'All conversations'], ['Mine', 'Assigned to me'], ['Unassigned', 'Unassigned'], ['Unread', 'Unread messages']]);
             const options = frappe.route_options || {}; this.status.value = options.status || ''; this.assignment.value = options.assignment || ''; frappe.route_options = null;
-            for (const n of [this.sender, this.status, this.assignment]) n.onchange = () => this.perform(() => this.refresh());
+            const views = el('div', undefined, 'wm-list-views'); views.setAttribute('role', 'group'); views.setAttribute('aria-label', 'Conversation views');
+            const viewButtons = [];
+            for (const [value, label] of [['','All'],['Unread','Unread'],['Mine','Mine']]) {
+                const tab = button(label, () => { this.assignment.value = value; updateFilters(); this.perform(() => this.refresh()); });
+                viewButtons.push([value, tab]); views.append(tab);
+            }
+            const advanced = el('details', undefined, 'wm-list-filters'); const summary = el('summary', 'Filters');
+            const fields = el('div', undefined, 'wm-list-filter-fields');
+            for (const [label, control] of [['Business number',this.sender],['Status',this.status],['Assigned to',this.assignment]]) {
+                const field = el('label', label); field.append(control); fields.append(field);
+            }
+            const updateFilters = () => {
+                const count = [this.sender.value,this.status.value,this.assignment.value].filter(Boolean).length;
+                summary.textContent = count ? 'Filters (' + count + ')' : 'Filters';
+                for (const [value, tab] of viewButtons) tab.setAttribute('aria-pressed', String(this.assignment.value === value));
+            };
+            this.updateFilters = updateFilters;
+            fields.append(button('Clear filters', () => { this.sender.value = ''; this.status.value = ''; this.assignment.value = ''; updateFilters(); this.perform(() => this.refresh()); }));
+            advanced.append(summary, fields);
+            for (const n of [this.sender, this.status, this.assignment]) n.onchange = () => { updateFilters(); this.perform(() => this.refresh()); };
             let debounce; this.search.oninput = () => { clearTimeout(debounce); debounce = setTimeout(() => this.perform(() => this.refresh()), 250); };
-            filters.append(this.sender, this.search, this.status, this.assignment, button('New conversation', () => this.newConversation()));
+            updateFilters(); filters.append(listHead, this.search, views, advanced);
             this.rows = el('div', undefined, 'wm-conversations'); this.more = button('Load more conversations', () => this.perform(() => this.loadMore())); this.more.hidden = true;
             this.list.append(filters, this.rows, this.more);
             this.thread = el('section', undefined, 'wm-thread'); this.thread.setAttribute('aria-label', 'Message thread'); this.thread.append(el('p', 'Choose a conversation', 'wm-empty'));
             this.details = el('aside', undefined, 'wm-details'); this.details.setAttribute('aria-label', 'Conversation details');
             this.details.id = 'whatsapp-conversation-details';
-            this.details.addEventListener('keydown', event => { if (event.key === 'Escape') this.toggleDetails(false); });
+            this.details.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); this.toggleDetails(false); } });
             this.grid.append(this.list, this.thread, this.details);
-            this.changed = () => { clearTimeout(this.changeTimer); this.changeTimer = setTimeout(() => { if (!this.root.isConnected || this.wrapper.style.display === 'none') return; this.perform(async () => { await this.refresh(); if (this.selected && !this.busy && document.activeElement !== this.text) await this.open(this.selected, true); }, 'We couldn’t check for new messages. We’ll try again automatically. Your draft is still here; keep this page open.'); }, 400); };
+            this.changed = () => { clearTimeout(this.changeTimer); this.changeTimer = setTimeout(() => { if (!this.root.isConnected || this.wrapper.style.display === 'none') return; this.perform(async () => { await this.refresh(); const timeline = this.timeline; if (this.selected && timeline && !this.busy && !this.thread.contains(document.activeElement) && !this.details.contains(document.activeElement) && timeline.scrollHeight - timeline.clientHeight - timeline.scrollTop < 48) await this.open(this.selected, true); }, 'We couldn’t check for new messages. We’ll try again automatically. Your draft is still here; keep this page open.'); }, 400); };
             frappe.realtime.on('whatsapp_changed', this.changed);
             // A bounded poll also recovers missed socket events after reconnect.
             this.poll = setInterval(this.changed, 30000);
@@ -168,6 +263,7 @@ frappe.provide('whatsapp_messaging');
             const options = frappe.route_options || {}; frappe.route_options = null;
             if (options.status !== undefined) this.status.value = options.status;
             if (options.assignment !== undefined) this.assignment.value = options.assignment;
+            this.updateFilters?.();
             await this.refresh(); if (options.conversation) await this.open(options.conversation);
         }
         async refresh() { this.cursor = null; this.items = []; await this.loadMore(); }
@@ -179,7 +275,7 @@ frappe.provide('whatsapp_messaging');
             for (const row of this.items) {
                 const b = button('', () => this.perform(() => this.open(row.name)), 'wm-conversation');
                 b.setAttribute('aria-current', String(row.name === this.selected)); b.dataset.conversation = row.name;
-                b.append(el('strong', row.display_name || row.recipient, 'wm-person'), el('span', row.account + ' · ' + conversationStatus(row.workflow_status) + (row.unread ? ' · ' + row.unread + ' unread' : ''), 'wm-meta'), el('span', row.last_message || 'No messages yet', 'wm-snippet'), el('time', stamp(row.activity_at), 'wm-meta')); this.rows.append(b);
+                b.append(el('strong', contactLabel(row.display_name,row.recipient), 'wm-person'), el('span', conversationStatus(row.workflow_status) + (row.unread ? ' · ' + row.unread + ' unread' : ''), 'wm-meta'), el('span', row.last_message || 'No messages yet', 'wm-snippet'), el('time', messageTime(row.activity_at), 'wm-meta')); this.rows.append(b);
             }
         }
         draft(name) { if (!this.drafts.has(name)) this.drafts.set(name, {body: '', request_id: crypto.randomUUID(), file: null, reply: null}); return this.drafts.get(name); }
@@ -191,40 +287,103 @@ frappe.provide('whatsapp_messaging');
             if (!refreshing) this.grid.classList.add('mobile-thread');
             this.thread.replaceChildren();
             const head = el('div', undefined, 'wm-thread-head');
+            const avatar = el('span', undefined, 'wm-thread-avatar');
+            avatar.setAttribute('aria-hidden', 'true');
+            avatar.innerHTML = frappe.utils.icon('user', 'sm');
             const identity = el('div', undefined, 'wm-thread-identity');
-            identity.append(el('h4', data.peer.display_name || data.conversation.recipient), el('span', 'From: ' + data.conversation.account + ' · ' + conversationStatus(data.conversation.workflow_status), 'wm-meta'));
-            this.detailsToggle = button('Details', () => this.toggleDetails(), 'btn btn-default btn-sm wm-details-toggle');
+            identity.append(el('h4', contactLabel(data.peer.display_name,data.conversation.recipient)), el('span', data.conversation.account + ' · ' + conversationStatus(data.conversation.workflow_status), 'wm-meta'));
+            this.detailsToggle = button('Contact details', () => this.toggleDetails(), 'btn btn-default btn-sm wm-details-toggle');
             this.detailsToggle.setAttribute('aria-controls', this.details.id);
             this.detailsToggle.setAttribute('aria-expanded', String(this.grid.classList.contains('show-details')));
-            head.append(button('Back to conversations', () => { this.grid.classList.remove('mobile-thread', 'show-details'); }, 'btn btn-default btn-sm wm-back'), identity, this.detailsToggle);
-            this.timeline = el('div', undefined, 'wm-timeline'); this.timeline.setAttribute('aria-live', 'polite');
-            this.older = button('Load older messages', () => this.perform(() => this.loadOlder())); this.timeline.append(this.older);
+            head.append(iconButton('Back to conversations', 'arrow-left', () => { this.grid.classList.remove('mobile-thread', 'show-details'); this.rows.querySelector('[aria-current="true"]')?.focus(); }, 'btn btn-default btn-sm wm-back'), avatar, identity, this.detailsToggle);
+            this.timeline = el('div', undefined, 'wm-timeline');
+            this.timeline.setAttribute('role', 'log');
+            this.timeline.setAttribute('aria-label', 'Conversation messages');
+            this.older = button('Load earlier messages', () => this.perform(() => this.loadOlder()), 'btn btn-default btn-sm wm-load-older');
+            this.timeline.append(this.older);
             const messages = data.messages; this.oldest = messages[0]?.sequence; this.older.hidden = messages.length < 40;
-            for (const message of messages) this.renderMessage(message, this.timeline);
+            this.timeline.append(this.renderMessages(messages));
+            if (!messages.length) this.timeline.append(el('p', 'No messages yet', 'wm-empty'));
             this.thread.append(head, this.timeline); await this.composer(); this.renderDetails();
             this.timeline.scrollTop = this.timeline.scrollHeight;
             const inbound = messages.filter(m => m.direction === 'Inbound').map(m => m.sequence);
             if (inbound.length && document.visibilityState === 'visible') await call('inbox.mark_read', {name, sequence: Math.max(...inbound)});
         }
         async loadOlder() {
-            const data = await call('inbox.get_conversation', {name: this.selected, before: this.oldest});
-            const holder = el('div'); for (const row of data.messages) this.renderMessage(row, holder);
-            this.timeline.insertBefore(holder, this.older.nextSibling); this.oldest = data.messages[0]?.sequence || this.oldest; this.older.hidden = data.messages.length < 40;
+            const timeline = this.timeline, button = this.older, name = this.selected;
+            if (button.disabled || !this.oldest) return;
+            button.disabled = true;
+            try {
+                const data = await call('inbox.get_conversation', {name, before: this.oldest});
+                if (this.selected !== name || this.timeline !== timeline) return;
+                const previousHeight = timeline.scrollHeight;
+                const previousTop = timeline.scrollTop;
+                const first = button.nextElementSibling;
+                const lastDay = chatDay(chatDate(data.messages.at(-1) || {}));
+                if (lastDay && first?.dataset.day === lastDay) first.remove();
+                timeline.insertBefore(this.renderMessages(data.messages), button.nextSibling);
+                this.oldest = data.messages[0]?.sequence || this.oldest;
+                button.hidden = data.messages.length < 40;
+                timeline.scrollTop = previousTop + timeline.scrollHeight - previousHeight;
+            } finally {
+                button.disabled = false;
+            }
         }
-        renderMessage(message, parent) {
-            const node = el('article', undefined, 'wm-message ' + (message.direction === 'Outbound' ? 'outbound' : 'inbound'));
-            node.append(el('div', message.message || (message.message_type === 'text' ? '' : 'Attachment')));
+        renderMessages(messages) {
+            const fragment = document.createDocumentFragment();
+            let previousDay = '';
+            for (const message of messages) {
+                const date = chatDate(message);
+                const day = chatDay(date);
+                if (day && day !== previousDay) {
+                    const divider = el('div', date.toLocaleDateString(undefined, {day:'numeric',month:'short',year:'numeric'}), 'wm-chat-date');
+                    divider.dataset.day = day;
+                    fragment.append(divider);
+                }
+                previousDay = day;
+                this.renderMessage(message, date, fragment);
+            }
+            return fragment;
+        }
+        renderMessage(message, date, parent) {
+            const outgoing = message.direction === 'Outbound';
+            const node = el('article', undefined, 'wm-message ' + (outgoing ? 'outbound' : 'inbound'));
+            const sender = outgoing ? message.agent || 'Team' : 'Contact';
+            node.setAttribute('aria-label', 'Message from ' + sender);
+            const body = message.message || (message.message_type === 'text' ? '' : 'Attachment');
+            if (body) node.append(el('div', body, 'wm-message-body'));
             for (const attachment of message.attachments || []) {
                 const label = attachment.file_name || attachment.mime_type || 'Attachment';
                 if (attachment.state === 'Ready') {
                     const url = '/api/method/whatsapp_messaging.messaging.media.download?name=' + encodeURIComponent(attachment.name);
                     if (attachment.mime_type?.startsWith('image/')) { const img = el('img'); img.src = url; img.alt = label; img.loading = 'lazy'; node.append(img); }
-                    const a = el('a', 'Download ' + label); a.href = url; a.target = '_blank'; a.rel = 'noopener'; node.append(a);
+                    const a = el('a', 'Download ' + label, 'wm-message-file'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; node.append(a);
                 } else node.append(el('span', label + ' · ' + ({Pending: 'Waiting for download', Downloading: 'Downloading…', Failed: 'Download failed', Blocked: 'File blocked — ask an administrator for help'}[attachment.state] || 'File unavailable'), 'wm-meta'));
             }
-            node.append(el('span', (message.agent || (message.direction === 'Inbound' ? 'Contact' : 'Team member')) + ' · ' + messageStatus(message.status) + ' · ' + stamp(message.provider_at || message.received_at), 'wm-meta'));
-            if (statusHelp[message.status]) node.append(el('span', statusHelp[message.status], 'wm-meta'));
-            if (message.provider_message_id) { const reply = button('Reply', () => { this.draft(this.selected).reply = message.provider_message_id; this.composer(); }); reply.setAttribute('aria-label', 'Reply to this message'); node.append(reply); }
+            const meta = el('div', undefined, 'wm-meta wm-message-meta');
+            if (outgoing) meta.append(el('span', sender));
+            if (chatDay(date)) {
+                const time = el('time', date.toLocaleTimeString(undefined, {hour:'numeric',minute:'2-digit'}));
+                time.dateTime = date.toISOString();
+                time.title = date.toLocaleString();
+                meta.append(time);
+            }
+            if (outgoing && message.status) {
+                const confirmed = ['Delivered', 'Read'].includes(message.status);
+                meta.append(el('span', messageStatus(message.status), 'wm-message-status' + (confirmed ? ' is-confirmed' : '')));
+            }
+            node.append(meta);
+            if (statusHelp[message.status]) node.append(el('span', statusHelp[message.status], 'wm-meta wm-message-help'));
+            if (message.provider_message_id && this.boot.outbound_enabled && this.data.window_open && !this.data.peer.suppressed) {
+                node.append(iconButton('Reply to this message', 'reply', () => {
+                    if (this.busy) return;
+                    const draft = this.draft(this.selected);
+                    draft.reply = message.provider_message_id;
+                    draft.replyPreview = {sender, body: body || 'Message'};
+                    this.composer();
+                    this.text.focus();
+                }, 'btn wm-message-reply'));
+            }
             parent.append(node);
         }
         async composer() {
@@ -232,9 +391,12 @@ frappe.provide('whatsapp_messaging');
             const box = el('div', undefined, 'wm-composer'); const draft = this.draft(this.selected);
             const limit = draft.file ? 1024 : 4096;
             const text = el('textarea', undefined, 'form-control'); text.value = draft.body; text.maxLength = limit;
-            text.setAttribute('aria-label', draft.file ? 'Attachment caption' : 'Message text'); text.placeholder = draft.file ? 'Add a caption…' : 'Write your message…';
+            text.setAttribute('aria-label', draft.file ? 'Attachment caption' : 'Message text'); text.placeholder = draft.file ? 'Add a caption…' : 'Write a reply…';
             text.setAttribute('aria-describedby', 'wm-compose-help wm-compose-count');
-            const notice = el('p', !this.boot.outbound_enabled ? 'Sending is off. Ask an administrator to enable it in WhatsApp Settings.' : this.data.peer.suppressed ? 'Messages to this number are blocked. An administrator can review Messaging permissions in Details.' : this.data.window_open ? 'You can reply now. Use a template after 24 hours without a message from this contact.' : 'To message this contact now, choose Template. Direct replies are available for 24 hours after their last message.', 'wm-meta');
+            const notice = el('p', !this.boot.outbound_enabled ? 'Sending is off. Ask an administrator to enable it in WhatsApp Settings.' : this.data.peer.suppressed ? 'Messages to this number are blocked. Check Contact details for messaging permissions.' : this.data.window_open ? 'You can reply to this contact.' : 'Choose a template to send a message. The 24-hour reply window has ended.', 'wm-meta wm-compose-notice');
+            notice.hidden = !!this.boot.outbound_enabled && !this.data.peer.suppressed && !!this.data.window_open;
+            text.readOnly = this.busy || !this.boot.outbound_enabled || !!this.data.peer.suppressed || !this.data.window_open;
+            if (text.readOnly && !draft.body) text.placeholder = this.busy ? 'Sending…' : !this.boot.outbound_enabled || this.data.peer.suppressed ? 'Sending is unavailable' : 'Choose Template below to message this contact';
             notice.id = 'wm-compose-help';
             const frame = el('div', undefined, 'wm-compose-frame'), inputRow = el('div', undefined, 'wm-compose-input');
             const toolbar = el('div', undefined, 'wm-compose-toolbar'); toolbar.setAttribute('role', 'group'); toolbar.setAttribute('aria-label', 'Message tools');
@@ -254,19 +416,38 @@ frappe.provide('whatsapp_messaging');
             text.onkeydown = event => { if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && !event.isComposing) { event.preventDefault(); send.click(); } };
             const approved = tool('Template', 'layout-template', () => this.perform(() => this.chooseTemplate()), 'Choose a message template approved by WhatsApp.');
             approved.setAttribute('aria-label', 'Send a template'); approved.disabled = !this.boot.outbound_enabled || !!this.data.peer.suppressed || this.busy;
+            if (!this.data.window_open && !approved.disabled) {
+                approved.classList.add('wm-template-needed');
+                if (!draft.body && !draft.file && !draft.reply) frame.classList.add('wm-compose-template-only');
+            }
             if (approved.disabled) approved.title = notice.textContent;
             const picker = el('div', undefined, 'wm-emoji-picker'); picker.hidden = true; picker.setAttribute('role', 'group'); picker.setAttribute('aria-label', 'Choose an emoji');
             const emoji = tool('Emoji', 'smile', () => { picker.hidden = !picker.hidden; emoji.setAttribute('aria-expanded', String(!picker.hidden)); if (!picker.hidden) picker.querySelector('button')?.focus(); }, 'Add an emoji');
             emoji.setAttribute('aria-expanded', 'false');
+            emoji.disabled = text.readOnly;
+            if (emoji.disabled) emoji.title = notice.textContent;
             for (const [symbol, label] of [['😊','Smiling face'],['👋','Waving hand'],['🙏','Thank you'],['👍','Thumbs up'],['✅','Check mark'],['❤️','Heart'],['📅','Calendar'],['📍','Location'],['🏥','Hospital'],['☎️','Telephone'],['🕘','Nine o’clock'],['ℹ️','Information'],['🎉','Celebration'],['🙂','Slight smile'],['💬','Message'],['⭐','Star']]) {
                 const choice = button(symbol, () => { const start = text.selectionStart, end = text.selectionEnd; const value = text.value.slice(0, start) + symbol + text.value.slice(end); if (value.length <= limit) { text.value = value; refreshInput(); text.focus(); text.setSelectionRange(start + symbol.length, start + symbol.length); } picker.hidden = true; emoji.setAttribute('aria-expanded', 'false'); }, '');
                 choice.setAttribute('aria-label', label); picker.append(choice);
             }
             picker.onkeydown = event => { if (event.key === 'Escape') { event.stopPropagation(); picker.hidden = true; emoji.setAttribute('aria-expanded', 'false'); emoji.focus(); } };
             const attach = tool('Attach', 'paperclip', () => new frappe.ui.FileUploader({is_private: 1, allow_multiple: false, restrictions: {allowed_file_types: ['.jpg', '.jpeg', '.png', '.pdf'], max_file_size: 20 * 1024 * 1024}, on_success: file => { draft.file = file; this.composer(); }}), 'Attach an image or PDF');
-            attach.setAttribute('aria-label', 'Attach image or PDF'); attach.disabled = this.busy;
+            attach.setAttribute('aria-label', 'Attach image or PDF'); attach.disabled = text.readOnly;
+            if (attach.disabled) attach.title = notice.textContent;
+            if (draft.reply) {
+                const quote = el('div', undefined, 'wm-compose-quote');
+                const preview = el('div');
+                preview.append(el('strong', draft.replyPreview ? 'Replying to ' + draft.replyPreview.sender : 'Replying to a message'));
+                if (draft.replyPreview) preview.append(el('div', draft.replyPreview.body, 'wm-meta wm-quote-preview'));
+                quote.append(preview, iconButton('Remove quote', 'x', () => {
+                    draft.reply = null;
+                    draft.replyPreview = null;
+                    this.composer();
+                    this.text.focus();
+                }));
+                frame.append(quote);
+            }
             inputRow.append(text, send); frame.append(inputRow);
-            if (draft.reply) { const quote = el('div', undefined, 'wm-compose-quote'); quote.append(el('span', 'Replying to a specific message'), iconButton('Remove quote', 'x', () => { draft.reply = null; this.composer(); })); frame.append(quote); }
             if (draft.file) { const file = el('div', undefined, 'wm-compose-attachment'); file.append(el('span', draft.file.file_name), iconButton('Remove attachment', 'x', () => { draft.file = null; this.composer(); })); frame.append(file); }
             toolbar.append(approved, emoji, attach, count); frame.append(picker, toolbar); box.append(notice, frame); this.thread.append(box); this.text = text; refreshInput();
         }
@@ -309,18 +490,18 @@ frappe.provide('whatsapp_messaging');
         renderDetails() {
             for (const row of this.rows.children) row.setAttribute('aria-current', String(row.dataset.conversation === this.selected));
             const data = this.data; const doc = data.conversation; this.details.replaceChildren();
-            this.details.append(button('Close details', () => this.toggleDetails(false), 'btn btn-default btn-sm wm-details-close'), el('h4', 'Assigned to'), el('p', doc.assigned_to || 'Not assigned'));
+            const head = el('div', undefined, 'wm-details-head'); head.append(el('h3', 'Contact details'), iconButton('Close details', 'x', () => this.toggleDetails(false), 'btn btn-default wm-details-close'));
+            this.details.append(head, el('h4', 'Assigned to'), el('p', doc.assigned_to || 'Not assigned'));
             if (!doc.assigned_to || doc.assigned_to === this.boot.user || this.boot.supervisor) this.details.append(button(doc.assigned_to === this.boot.user ? 'Remove assignment' : 'Assign to me', () => this.perform(async () => { await call('inbox.assign', {name: doc.name, version: doc.version, user: doc.assigned_to === this.boot.user ? '' : this.boot.user}); await this.open(doc.name); })));
             if (this.boot.supervisor) this.details.append(button('Assign to someone', () => this.perform(async () => {
                 const agents = await call('api.agents'); const d = new frappe.ui.Dialog({title: 'Assign conversation', fields: [{fieldname: 'user', fieldtype: 'Select', label: 'Team member', description: 'Choose who will handle this conversation.', options: [{label: 'Not assigned', value: ''}, ...agents.map(a => ({label: a.full_name + ' (' + a.name + ')', value: a.name}))]}], primary_action_label: 'Save assignment', primary_action: values => this.perform(async () => { await call('inbox.assign', {name: doc.name, version: doc.version, user: values.user}); d.hide(); await this.open(doc.name); })}); d.show();
             })));
             this.details.append(el('h4', 'Status'));
             const statuses = select('Conversation status', ['Open', 'Pending', 'Resolved'].map(v => [v, conversationStatus(v)])); statuses.value = doc.workflow_status; statuses.disabled = !this.boot.supervisor && doc.assigned_to !== this.boot.user; statuses.title = statuses.disabled ? 'Assign this conversation to yourself to change its status.' : 'Open: needs attention. Waiting: awaiting a response. Resolved: finished.'; statuses.onchange = () => this.perform(async () => { await call('inbox.set_status', {name: doc.name, version: doc.version, status: statuses.value}); await this.open(doc.name); }); this.details.append(statuses);
-            this.details.append(el('h4', 'Contact'), el('p', doc.recipient), el('span', data.peer.suppressed ? 'Messages to this number are blocked.' : data.peer.consent_recorded ? 'Permission to receive messages recorded. Source: ' + data.peer.consent_source : 'Permission to receive template messages has not been recorded.', 'wm-meta'));
+            this.details.append(el('h4', 'Contact'), el('p', contactLabel(null,doc.recipient)), el('span', data.peer.suppressed ? 'Messages to this number are blocked.' : data.peer.consent_recorded ? 'Permission to receive messages recorded. Source: ' + data.peer.consent_source : 'Permission to receive template messages has not been recorded.', 'wm-meta'));
             if (this.boot.supervisor) this.details.append(button('Messaging permissions', () => {
                 const d = new frappe.ui.Dialog({title: 'Messaging permissions', fields: [{fieldname: 'suppressed', fieldtype: 'Check', label: 'Block messages to this number', description: 'Stops all outgoing messages, including replies and templates.', default: data.peer.suppressed}, {fieldname: 'consent_recorded', fieldtype: 'Check', label: 'This contact has agreed to receive messages', description: 'Select only if the contact has given permission. Required for template messages.', default: data.peer.consent_recorded}, {fieldname: 'consent_source', fieldtype: 'Data', label: 'How was permission received?', description: 'For example: appointment booking form or a signed consent form.', default: data.peer.consent_source}], primary_action_label: 'Save permissions', primary_action: v => this.perform(async () => { await call('inbox.set_eligibility', {...v, peer: data.peer.name}); d.hide(); await this.open(doc.name); })}); d.show();
             }));
-            this.details.append(el('h4', 'Linked records'));
             if (data.flow_session) {
                 const session = data.flow_session;
                 this.details.append(el('h4', 'Automatic replies'), el('p', session.state === 'Waiting for staff' ? 'Reception requested' : session.state));
@@ -335,11 +516,14 @@ frappe.provide('whatsapp_messaging');
                     await call('flows.control', {conversation_name:doc.name,action:session.state === 'Active' ? 'Pause' : 'Resume'}); await this.open(doc.name);
                 })));
             }
+            this.details.append(el('h4', 'Linked records'));
             for (const link of data.links) this.details.append(button(link.reference_doctype + ': ' + link.reference_name, () => route(['Form', link.reference_doctype, link.reference_name])));
             this.details.append(button('Link a record', () => {
                 const d = new frappe.ui.Dialog({title: 'Link a record', fields: [{fieldname: 'doctype', fieldtype: 'Link', options: 'DocType', label: 'Record type', description: 'For example: Patient or Appointment. You can only link records you have access to.', reqd: 1}, {fieldname: 'docname', fieldtype: 'Dynamic Link', options: 'doctype', label: 'Choose a record', reqd: 1}], primary_action_label: 'Link record', primary_action: v => this.perform(async () => { await call('inbox.link_record', {name: doc.name, ...v}); d.hide(); await this.open(doc.name); })}); d.show();
             }));
-            this.details.append(el('h4', 'Conversation history')); for (const item of data.activity) this.details.append(el('p', ({Assignment: 'Assignment changed', Status: 'Status changed', Link: 'Record linked', Eligibility: 'Messaging permissions updated', Cancel: 'Message cancelled', Retry: 'Message queued again'}[item.action] || item.action) + ' · ' + item.actor + ' · ' + localStamp(item.creation), 'wm-meta'));
+            const history = el('details', undefined, 'wm-details-history'); history.append(el('summary', 'Activity history'));
+            for (const item of data.activity) history.append(el('p', ({Assignment: 'Assignment changed', Status: 'Status changed', Link: 'Record linked', Eligibility: 'Messaging permissions updated', Cancel: 'Message cancelled', Retry: 'Message queued again'}[item.action] || item.action) + ' · ' + item.actor + ' · ' + localStamp(item.creation), 'wm-meta'));
+            this.details.append(history);
         }
         toggleDetails(show = !this.grid.classList.contains('show-details')) {
             this.grid.classList.toggle('show-details', show);
@@ -354,40 +538,45 @@ frappe.provide('whatsapp_messaging');
     };
 
     whatsapp_messaging.Automation = class extends Base {
-        constructor(wrapper) { super(wrapper, __('WhatsApp Automation')); this.start().catch(e => this.fail(e)); }
+        constructor(wrapper) { super(wrapper, __('WhatsApp Automation')); this.root.classList.add('wm-automation-shell'); this.start().catch(e => this.fail(e)); }
         async start() {
             await this.init(); const summary = await call('api.overview', {section: 'automation'}); const cards = el('div', undefined, 'wm-grid');
             for (const card of summary.cards) { const b = button('', () => route(card.route, card.route_options), 'wm-stat'); b.append(el('strong', card.value), el('span', card.label)); cards.append(b); } this.root.append(cards);
-            const tools = el('div', undefined, 'wm-actions');
-            this.kind = select('Run kind', [['', 'All runs'], ['Schedule', 'Schedules'], ['Event', 'Document events'], ['Manual', 'Manual sends'], ...(this.boot.supervisor ? [['Campaign', 'Campaigns']] : [])]);
-            this.state = select('Run state', [['', 'All states'], ...['Ready', 'Completed', 'Paused', 'Failed', 'Skipped', 'Cancelled'].map(v => [v, v])]);
+            const tools = el('div', undefined, 'wm-automation-toolbar');
+            const filters = el('div', undefined, 'wm-automation-filters');
+            const actions = el('div', undefined, 'wm-actions');
+            this.kind = select('Sending type', [['', 'All sending history'], ['Schedule', 'Schedules'], ['Event', 'Record changes'], ['Manual', 'Manual sends'], ...(this.boot.supervisor ? [['Campaign', 'Campaigns']] : [])]);
+            this.state = select('Sending status', [['', 'All statuses'], ...['Ready', 'Completed', 'Paused', 'Failed', 'Skipped', 'Cancelled'].map(v => [v, runStatus(v)])]);
             const opts = frappe.route_options || {}; this.kind.value = opts.kind || ''; this.ruleFilter = opts.rule || null; frappe.route_options = null;
             this.kind.onchange = () => this.perform(() => this.refresh()); this.state.onchange = () => this.perform(() => this.refresh());
-            tools.append(this.kind, this.state, button('New schedule', () => whatsapp_messaging.scheduleDialog(this.boot)), button('Conversation Flows', () => route(['List', 'WhatsApp Conversation Flow'])), button('Campaigns', () => route(['List', 'WhatsApp Campaign'])), button('Templates', () => route(['List', 'WhatsApp Message Template'])));
-            if (this.boot.supervisor) tools.append(button('Preview campaign', () => this.campaignDialog()));
-            this.ruleLabel = el('p', this.ruleFilter ? 'Rule: ' + this.ruleFilter : '', 'wm-meta'); tools.append(button('Clear filters', () => { this.ruleFilter = null; this.kind.value = ''; this.state.value = ''; this.ruleLabel.textContent = ''; this.perform(() => this.refresh()); })); this.root.append(tools, this.ruleLabel); this.rows = el('div'); this.root.append(this.rows); this.loadMore = button('Load more runs', () => this.perform(() => this.refresh(true))); this.root.append(this.loadMore);
+            for (const [label, control] of [['Sending type', this.kind], ['Sending status', this.state]]) {
+                const field = el('label', label, 'wm-automation-filter'); field.append(control); filters.append(field);
+            }
+            actions.append(button('New schedule', () => whatsapp_messaging.scheduleDialog(this.boot)), button('Conversation Flows', () => route(['List', 'WhatsApp Conversation Flow'])), button('Campaigns', () => route(['List', 'WhatsApp Campaign'])), button('Templates', () => route(['List', 'WhatsApp Message Template'])));
+            if (this.boot.supervisor) actions.append(button('Preview campaign', () => this.campaignDialog()));
+            this.ruleLabel = el('p', this.ruleFilter ? 'Campaign: ' + this.ruleFilter : '', 'wm-meta'); filters.append(button('Clear filters', () => { this.ruleFilter = null; this.kind.value = ''; this.state.value = ''; this.ruleLabel.textContent = ''; this.perform(() => this.refresh()); })); tools.append(filters, actions); this.root.append(tools, this.ruleLabel); this.rows = el('div'); this.root.append(this.rows); this.loadMore = button('Load more history', () => this.perform(() => this.refresh(true))); this.root.append(this.loadMore);
             await this.refresh();
         }
         async onShow() {
             if (!this.boot || !this.kind) return;
             const opts = frappe.route_options || {}; frappe.route_options = null;
-            this.kind.value = opts.kind || ''; this.ruleFilter = opts.rule || null; this.ruleLabel.textContent = this.ruleFilter ? 'Rule: ' + this.ruleFilter : '';
+            this.kind.value = opts.kind || ''; this.ruleFilter = opts.rule || null; this.ruleLabel.textContent = this.ruleFilter ? 'Campaign: ' + this.ruleFilter : '';
             await this.refresh();
         }
         async refresh(append = false) {
             if (!append) { this.offset = 0; this.rows.replaceChildren(); }
             const runs = await call('api.runs', {kind: this.kind.value || null, state: this.state.value || null, rule: this.ruleFilter, start: this.offset}); this.offset += runs.length; this.loadMore.hidden = runs.length < 40;
-            if (!runs.length && !append) this.rows.append(el('p', 'No automation runs yet. Configure a campaign, then create a schedule or preview a bulk run.', 'wm-empty'));
+            if (!runs.length && !append) this.rows.append(el('p', 'No automatic messages yet. Create a campaign, then add a schedule or preview the selected records.', 'wm-empty'));
             for (const run of runs) {
-                const box = el('article', undefined, 'wm-run'); box.append(el('h4', run.rule + ' · ' + run.kind + ' · ' + run.state), el('span', (run.due_at ? stamp(run.due_at) : localStamp(run.creation)) + ' · ' + run.run_as, 'wm-meta'), el('p', run.records_processed + '/' + run.records_selected + ' records processed · ' + run.messages_created + ' messages queued · ' + run.records_excluded + ' excluded'));
-                const states = Object.entries(run.delivery).filter(([, n]) => n).map(([s, n]) => s + ': ' + n).join(' · '); if (states) box.append(el('p', states, 'wm-meta'));
+                const box = el('article', undefined, 'wm-run'); box.append(el('h4', run.rule + ' · ' + runKind(run.kind) + ' · ' + runStatus(run.state)), el('span', (run.due_at ? stamp(run.due_at) : localStamp(run.creation)) + ' · ' + run.run_as, 'wm-meta'), el('p', run.records_processed + '/' + run.records_selected + ' records checked · ' + run.messages_created + ' messages prepared · ' + run.records_excluded + ' skipped'));
+                const states = Object.entries(run.delivery).filter(([, n]) => n).map(([s, n]) => messageStatus(s) + ': ' + n).join(' · '); if (states) box.append(el('p', states, 'wm-meta'));
                 if (run.last_error) box.append(el('p', run.last_error, 'wm-meta'));
                 const actions = el('div', undefined, 'wm-actions'); actions.append(button('View details', () => this.perform(() => this.details(run))));
                 if (run.state === 'Preview' && this.boot.supervisor) actions.append(button('Review preview', () => this.perform(() => this.showPreview(run.name))));
                 if (['Ready', 'Expanding', 'Completed'].includes(run.state)) actions.append(button('Pause', () => this.control(run, 'Pause')));
                 if (run.state === 'Paused') actions.append(button('Resume', () => this.control(run, 'Resume')));
                 if (!['Cancelled', 'Skipped', 'Failed', 'Preview'].includes(run.state)) actions.append(button('Cancel remaining', () => this.control(run, 'Cancel')));
-                if (run.kind !== 'Manual' && ['Failed', 'Skipped', 'Completed'].includes(run.state)) { const b = button('Create new run', () => frappe.confirm('Create a new run with a fresh source snapshot? This is a deliberate new send.', () => this.perform(async () => { await call('automation.rerun', {name: run.name}); await this.refresh(); }))); b.disabled = !this.boot.outbound_enabled; actions.append(b); }
+                if (run.kind !== 'Manual' && ['Failed', 'Skipped', 'Completed'].includes(run.state)) { const b = button('Prepare messages again', () => frappe.confirm('Prepare these messages again using the latest records? This starts a new send and may send messages to the same people again.', () => this.perform(async () => { await call('automation.rerun', {name: run.name}); await this.refresh(); }))); b.disabled = !this.boot.outbound_enabled; actions.append(b); }
                 box.append(actions); this.rows.append(box);
             }
         }
@@ -396,7 +585,7 @@ frappe.provide('whatsapp_messaging');
             const result = await call('api.run_detail', {name: run.name}); const d = new frappe.ui.Dialog({title: run.rule + ' · Send results', size: 'large', fields: [{fieldname: 'results', fieldtype: 'HTML'}]}); const root = d.fields_dict.results.$wrapper[0];
             if (!result.intents.length) root.append(el('p', 'No send intents were created.'));
             for (const row of result.intents) { const item = el('div', undefined, 'wm-preview-item'); item.append(el('p', row.state + ' · attempt ' + row.attempt_count), el('p', row.error_reason || '', 'wm-meta'), button('View conversation', () => { d.hide(); route(['whatsapp-inbox'], {conversation: row.conversation}); }));
-                if (row.state === 'Failed') item.append(button('Retry confirmed failure', () => this.perform(async () => { await call('outbox.retry', {name: row.name}); d.hide(); await this.refresh(); })));
+                if (row.state === 'Failed') item.append(button('Try sending again', () => this.perform(async () => { await call('outbox.retry', {name: row.name}); d.hide(); await this.refresh(); })));
                 if (['Ready', 'Retry wait', 'Held'].includes(row.state)) item.append(button('Cancel', () => this.perform(async () => { await call('outbox.cancel', {name: row.name, reason: 'Cancelled from run details'}); d.hide(); await this.refresh(); })));
                 root.append(item);
             } d.show();
@@ -411,12 +600,12 @@ frappe.provide('whatsapp_messaging');
             const render = page => { for (const item of page.items) { const row = el('div', undefined, 'wm-preview-item'); row.append(el('strong', item.source || 'Excluded record'), el('p', item.excluded ? item.reason : item.recipients + ' recipient(s)\n' + (item.body || item.parameters.join(' · ')) + (item.attachment ? '\nAttachment included' : ''))); rows.append(row); } };
             render(data); let next = data.next_start;
             const more = button('Load more preview records', () => this.perform(async () => { const page = await call('automation.preview_page', {name, start: next}); render(page); next = page.next_start; more.hidden = next === null; })); more.hidden = next === null; root.append(more);
-            d.show(); d.get_primary_btn().prop('disabled', !this.boot.outbound_enabled); if (!this.boot.outbound_enabled) root.prepend(el('p', 'Starting campaigns is disabled by the outbound setting.'));
+            d.show(); d.get_primary_btn().prop('disabled', !this.boot.outbound_enabled); if (!this.boot.outbound_enabled) root.prepend(el('p', 'Sending is off. An administrator can turn it on in WhatsApp Settings.'));
         }
     };
 
     whatsapp_messaging.scheduleDialog = async function(boot, ruleName, onSaved) {
         boot = boot || await call('api.bootstrap');
-        const d = new frappe.ui.Dialog({title: 'Create or update schedule', fields: [{fieldname: 'rule_name', fieldtype: 'Link', options: 'WhatsApp Campaign', label: 'Campaign', reqd: 1, default: ruleName}, {fieldname: 'when', fieldtype: 'Datetime', label: 'First occurrence (local time)'}, {fieldname: 'cron_expression', fieldtype: 'Data', label: 'Recurrence (cron; leave blank for one-time)'}, {fieldname: 'timezone_name', fieldtype: 'Data', label: 'Timezone', reqd: 1, default: boot.timezone}], primary_action_label: 'Save schedule', primary_action: async values => { try { await call('automation.save_schedule', values); d.hide(); if (onSaved) await onSaved(values.rule_name); frappe.show_alert('Schedule saved. Dispatch still follows the integration switches.'); } catch { /* Frappe shows the server validation error. */ } }}); d.show();
+        const d = new frappe.ui.Dialog({title: 'Create or update schedule', fields: [{fieldname: 'rule_name', fieldtype: 'Link', options: 'WhatsApp Campaign', label: 'Campaign', reqd: 1, default: ruleName}, {fieldname: 'when', fieldtype: 'Datetime', label: 'First send (local time)'}, {fieldname: 'cron_expression', fieldtype: 'Data', label: 'Repeat schedule (advanced; leave blank to send once)'}, {fieldname: 'timezone_name', fieldtype: 'Data', label: 'Timezone', reqd: 1, default: boot.timezone}], primary_action_label: 'Save schedule', primary_action: async values => { try { await call('automation.save_schedule', values); d.hide(); if (onSaved) await onSaved(values.rule_name); frappe.show_alert('Schedule saved. Messages will send only when sending and automatic messages are enabled in WhatsApp Settings.'); } catch { /* Frappe shows the server validation error. */ } }}); d.show();
     };
 })();

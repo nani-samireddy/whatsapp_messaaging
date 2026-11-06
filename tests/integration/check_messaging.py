@@ -23,13 +23,13 @@ class TestMessaging(unittest.TestCase):
         self.post=patch('requests.post',side_effect=AssertionError('External transport forbidden')).start()
         self.get=patch('requests.get',side_effect=AssertionError('External transport forbidden')).start()
         frappe.db.set_value('WhatsApp Message Template',fixtures.TEMPLATE,{'schedule_record':None,'automation_active':0,'run_as':None,'is_single':0,'template_event':'Custom','disable':0,'media':None,'approved_template':None,'parameter_fields':None,'query_filters':None})
-        self.tables=['WhatsApp Status Event','WhatsApp Webhook Event','WhatsApp Attachment','WhatsApp Record Link','WhatsApp Conversation Activity','WhatsApp Conversation Read','WhatsApp Send Attempt','WhatsApp Outbox','WhatsApp Automation Run','WhatsApp Schedule','WhatsApp Approved Template','WhatsApp Identity Alias']
+        self.tables=['WhatsApp Status Event','WhatsApp Webhook Event','WhatsApp Attachment','WhatsApp Record Link','WhatsApp Conversation Activity','WhatsApp Conversation Read','WhatsApp Send Attempt','WhatsApp Outbox','WhatsApp Automation Run','WhatsApp Schedule','WhatsApp Meta Template','WhatsApp Identity Alias']
         for doctype in self.tables:frappe.db.delete(doctype)
         frappe.db.delete('WhatsApp Message',{'conversation':['is','set']})
         frappe.db.delete('WhatsApp Conversation',{'identity_key':['is','set']})
-        frappe.db.delete('WhatsApp Peer')
-        frappe.db.set_value('WhatsApp Phone Number ID',ACCOUNT,{'enabled':1,'waba_id':'123456','portfolio_id':'test-portfolio','dispatch_lease_until':None,'last_dispatch_at':None})
-        self.sender=frappe.get_doc('WhatsApp Phone Number ID',ACCOUNT)
+        frappe.db.delete('WhatsApp Contact')
+        frappe.db.set_value('WhatsApp Sender',ACCOUNT,{'enabled':1,'waba_id':'123456','portfolio_id':'test-portfolio','dispatch_lease_until':None,'last_dispatch_at':None})
+        self.sender=frappe.get_doc('WhatsApp Sender',ACCOUNT)
         settings=frappe.get_doc('WhatsApp Settings');settings.update({'enable_outbound_messages':1,'enable_automation':1,'enable_inbound':1,'meta_app_id':'dummy-app','app_secret':'dummy-app-secret','verify_token':'dummy-verify'});settings.save()
         self.peer=inbox.ensure_peer('919000000001',self.sender,'Fixture peer')
         self.conv=inbox.ensure_conversation(self.sender,self.peer)
@@ -74,10 +74,10 @@ class TestMessaging(unittest.TestCase):
         self.assertEqual(frappe.db.count('WhatsApp Outbox'),0)
 
     def test_disabled_account_and_suppression_block(self):
-        frappe.db.set_value('WhatsApp Phone Number ID',ACCOUNT,'enabled',0)
+        frappe.db.set_value('WhatsApp Sender',ACCOUNT,'enabled',0)
         with self.assertRaises(frappe.ValidationError):self.intent()
-        frappe.db.set_value('WhatsApp Phone Number ID',ACCOUNT,'enabled',1)
-        frappe.db.set_value('WhatsApp Peer',self.peer.name,'suppressed',1)
+        frappe.db.set_value('WhatsApp Sender',ACCOUNT,'enabled',1)
+        frappe.db.set_value('WhatsApp Contact',self.peer.name,'suppressed',1)
         with self.assertRaises(frappe.ValidationError):self.intent()
 
     def test_closed_window_requires_approved_template(self):
@@ -86,10 +86,10 @@ class TestMessaging(unittest.TestCase):
 
     def test_approved_template_eligibility_and_schema_change(self):
         frappe.set_user('Administrator')
-        doc=insert('WhatsApp Approved Template',catalogue_key='test',waba_id='123456',template_name='hello',language='en',approval_status='APPROVED',body='Hello {{1}}',parameters_json='["1"]',supported=1,schema_hash='v1')
+        doc=insert('WhatsApp Meta Template',catalogue_key='test',waba_id='123456',template_name='hello',language='en',approval_status='APPROVED',body='Hello {{1}}',parameters_json='["1"]',supported=1,schema_hash='v1')
         frappe.set_user(EDITOR)
         with self.assertRaises(frappe.ValidationError):outbox.send(self.conv.name,'template',template=doc.name,parameters='["World"]')
-        frappe.db.set_value('WhatsApp Peer',self.peer.name,'consent_recorded',1)
+        frappe.db.set_value('WhatsApp Contact',self.peer.name,'consent_recorded',1)
         intent=outbox.send(self.conv.name,'template',template=doc.name,parameters='["World"]')
         frappe.db.set_value(doc.doctype,doc.name,'schema_hash','v2');frappe.db.commit()
         outbox.dispatch(intent['outbox']);self.post.assert_not_called()
@@ -192,7 +192,7 @@ class TestMessaging(unittest.TestCase):
 
     def test_same_peer_has_distinct_sender_conversations(self):
         frappe.set_user('Administrator')
-        sender=frappe.get_doc({'doctype':'WhatsApp Phone Number ID','label':'Second sender','phone_number_id':'9999999','access_token':'dummy','enabled':1,'waba_id':'123456','portfolio_id':'test-portfolio'}).insert()
+        sender=frappe.get_doc({'doctype':'WhatsApp Sender','label':'Second sender','phone_number_id':'9999999','access_token':'dummy','enabled':1,'waba_id':'123456','portfolio_id':'test-portfolio'}).insert()
         peer=inbox.ensure_peer('919000000001',sender)
         other=inbox.ensure_conversation(sender,peer)
         self.assertEqual(peer.name,self.peer.name);self.assertNotEqual(other.name,self.conv.name)
@@ -410,7 +410,7 @@ class TestMessaging(unittest.TestCase):
         writer=PdfWriter();writer.add_blank_page(width=72,height=72);buffer=BytesIO();writer.write(buffer)
         file=save_file('worker.pdf',buffer.getvalue(),None,None,is_private=1)
         result=outbox.send(self.conv.name,'pdf-worker',body='Document',file_id=file.name);frappe.db.commit()
-        upload=Mock(json=Mock(return_value={'id':'123456'}));upload.raise_for_status=Mock()
+        upload=Mock(status_code=200,json=Mock(return_value={'id':'123456'}));upload.raise_for_status=Mock()
         self.post.side_effect=[upload,self.accepted()]
         outbox.dispatch(result['outbox'])
         self.assertEqual(frappe.db.get_value('WhatsApp Outbox',result['outbox'],'state'),'Accepted')

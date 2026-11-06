@@ -16,7 +16,7 @@ def install():
         ('WhatsApp Webhook Event',['state','next_attempt_at']),
         ('WhatsApp Flow Event',['conversation','state']),
         ('WhatsApp Conversation Flow',['published_account','is_active']),
-        ('WhatsApp Document Rule',['source_doctype','enabled']),
+        ('WhatsApp Document Delivery Rule',['source_doctype','enabled']),
         ('WhatsApp Document Delivery',['state','creation']),
         ('WhatsApp Document Delivery',['outbox']),
     ):

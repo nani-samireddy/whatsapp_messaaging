@@ -41,13 +41,13 @@ def seed():
 			frappe.get_doc({"doctype": "User", "email": email, "first_name": "Integration",
 				"send_welcome_email": 0, "user_type": "System User", "roles": [{"role": role} for role in roles],
 				"new_password": "integration-only-user-password"}).insert()
-	account = frappe.get_doc("WhatsApp Phone Number ID", ACCOUNT) if frappe.db.exists("WhatsApp Phone Number ID", ACCOUNT) else frappe.new_doc("WhatsApp Phone Number ID")
+	account = frappe.get_doc("WhatsApp Sender", ACCOUNT) if frappe.db.exists("WhatsApp Sender", ACCOUNT) else frappe.new_doc("WhatsApp Sender")
 	account.update({"label": ACCOUNT, "phone_number_id": "1234567890", "access_token": DUMMY_TOKEN})
 	account.save()
-	if not frappe.db.exists("WhatsApp Template Field Policy", "ToDo"):
-		frappe.get_doc({"doctype":"WhatsApp Template Field Policy", "source_doctype":"ToDo", "allowed_fields":'["status"]'}).insert()
+	if not frappe.db.exists("WhatsApp Template Fields", "ToDo"):
+		frappe.get_doc({"doctype":"WhatsApp Template Fields", "source_doctype":"ToDo", "allowed_fields":'["status"]'}).insert()
 	else:
-		policy = frappe.get_doc("WhatsApp Template Field Policy", "ToDo")
+		policy = frappe.get_doc("WhatsApp Template Fields", "ToDo")
 		policy.allowed_fields = '["status"]'
 		policy.save()
 	template = frappe.get_doc("WhatsApp Message Template", TEMPLATE) if frappe.db.exists("WhatsApp Message Template", TEMPLATE) else frappe.new_doc("WhatsApp Message Template")
@@ -80,7 +80,7 @@ class TestDatabaseSecurity(unittest.TestCase):
 		frappe.clear_document_cache("WhatsApp Settings", "WhatsApp Settings")
 
 	def test_password_is_encrypted_and_row_is_masked(self):
-		account = frappe.get_doc("WhatsApp Phone Number ID", ACCOUNT)
+		account = frappe.get_doc("WhatsApp Sender", ACCOUNT)
 		self.assertEqual(account.get_password("access_token"), DUMMY_TOKEN)
 		self.assertNotEqual(frappe.db.get_value(account.doctype, account.name, "access_token"), DUMMY_TOKEN)
 		self.assertNotIn(DUMMY_TOKEN, frappe.as_json(account.as_dict()))
@@ -90,17 +90,17 @@ class TestDatabaseSecurity(unittest.TestCase):
 	def test_legacy_migration_is_idempotent(self):
 		from frappe.utils.password import get_decrypted_password, remove_encrypted_password
 		from whatsapp_messaging.patches.v1_0.encrypt_access_tokens import execute
-		remove_encrypted_password("WhatsApp Phone Number ID", ACCOUNT, "access_token")
-		frappe.db.set_value("WhatsApp Phone Number ID", ACCOUNT, "access_token", DUMMY_TOKEN)
+		remove_encrypted_password("WhatsApp Sender", ACCOUNT, "access_token")
+		frappe.db.set_value("WhatsApp Sender", ACCOUNT, "access_token", DUMMY_TOKEN)
 		execute()
 		execute()
-		self.assertEqual(get_decrypted_password("WhatsApp Phone Number ID", ACCOUNT, "access_token"), DUMMY_TOKEN)
-		self.assertEqual(frappe.db.get_value("WhatsApp Phone Number ID", ACCOUNT, "access_token"), "********")
+		self.assertEqual(get_decrypted_password("WhatsApp Sender", ACCOUNT, "access_token"), DUMMY_TOKEN)
+		self.assertEqual(frappe.db.get_value("WhatsApp Sender", ACCOUNT, "access_token"), "********")
 
 	def test_missing_encrypted_value_is_not_replaced_by_mask(self):
 		from frappe.utils.password import remove_encrypted_password
 		from whatsapp_messaging.patches.v1_0.encrypt_access_tokens import execute
-		remove_encrypted_password("WhatsApp Phone Number ID", ACCOUNT, "access_token")
+		remove_encrypted_password("WhatsApp Sender", ACCOUNT, "access_token")
 		with self.assertRaises(frappe.ValidationError): execute()
 
 	def test_headers_use_decrypted_value(self):
@@ -110,13 +110,13 @@ class TestDatabaseSecurity(unittest.TestCase):
 	def test_migration_uses_the_callers_transaction(self):
 		from frappe.utils.password import get_decrypted_password, remove_encrypted_password
 		from whatsapp_messaging.patches.v1_0.encrypt_access_tokens import execute
-		remove_encrypted_password("WhatsApp Phone Number ID", ACCOUNT, "access_token")
-		frappe.db.set_value("WhatsApp Phone Number ID", ACCOUNT, "access_token", DUMMY_TOKEN)
+		remove_encrypted_password("WhatsApp Sender", ACCOUNT, "access_token")
+		frappe.db.set_value("WhatsApp Sender", ACCOUNT, "access_token", DUMMY_TOKEN)
 		frappe.db.savepoint("before_migration")
 		execute()
 		frappe.db.rollback(save_point="before_migration")
-		self.assertEqual(frappe.db.get_value("WhatsApp Phone Number ID", ACCOUNT, "access_token"), DUMMY_TOKEN)
-		self.assertIsNone(get_decrypted_password("WhatsApp Phone Number ID", ACCOUNT, "access_token", raise_exception=False))
+		self.assertEqual(frappe.db.get_value("WhatsApp Sender", ACCOUNT, "access_token"), DUMMY_TOKEN)
+		self.assertIsNone(get_decrypted_password("WhatsApp Sender", ACCOUNT, "access_token", raise_exception=False))
 
 	def test_default_gate_stops_send_before_transport(self):
 		from whatsapp_messaging.utils.message_controller import send_message
@@ -277,20 +277,20 @@ class TestHTTP(unittest.TestCase):
 		self.assertEqual(response.json().get("exc_type"), "PermissionError")
 
 	def test_account_resource_never_returns_plaintext_token(self):
-		response = self.session("Administrator").get(self.base + "/api/resource/WhatsApp%20Phone%20Number%20ID/" + ACCOUNT, timeout=10)
+		response = self.session("Administrator").get(self.base + "/api/resource/WhatsApp%20Sender/" + ACCOUNT, timeout=10)
 		self.assertEqual(response.status_code, 200)
 		self.assertNotIn(DUMMY_TOKEN, response.text)
 
 	def test_app_roles_can_read_sender_metadata_without_the_token(self):
 		for user in (EDITOR, SUPERVISOR):
-			response = self.session(user).get(self.base + "/api/resource/WhatsApp%20Phone%20Number%20ID/" + ACCOUNT, timeout=10)
+			response = self.session(user).get(self.base + "/api/resource/WhatsApp%20Sender/" + ACCOUNT, timeout=10)
 			self.assertEqual(response.status_code, 200)
 			self.assertEqual(response.json()["data"]["phone_number_id"], "1234567890")
 			self.assertFalse(response.json()["data"].get("access_token"))
 			self.assertNotIn(DUMMY_TOKEN, response.text)
 
 	def test_editor_cannot_select_a_secret_field_in_a_list_query(self):
-		response = self.session(EDITOR).get(self.base + "/api/resource/WhatsApp%20Phone%20Number%20ID", params={"fields": '["name","access_token"]'}, timeout=10)
+		response = self.session(EDITOR).get(self.base + "/api/resource/WhatsApp%20Sender", params={"fields": '["name","access_token"]'}, timeout=10)
 		# Frappe 16 removes fields above the caller's read permission level.
 		self.assertEqual(response.status_code, 200)
 		for row in response.json()["data"]:
@@ -325,7 +325,7 @@ class TestHTTP(unittest.TestCase):
 	def test_editor_send_reaches_the_disabled_gate(self):
 		response = self.session(EDITOR).post(self.base + "/api/method/whatsapp_messaging.controller.wm_handle_on_custom_trigger", data={"template_name": TEMPLATE, "doctype": "ToDo", "docname": SOURCE}, timeout=10)
 		self.assertEqual(response.status_code, 417)
-		self.assertIn("Outbound WhatsApp requests are disabled", response.text)
+		self.assertIn("Sending is off.", response.text)
 
 	def test_generic_api_preserves_admin_only_field_configuration(self):
 		response = self.session(EDITOR).post(self.base + "/api/method/frappe.client.set_value", data={
@@ -339,7 +339,7 @@ class TestHTTP(unittest.TestCase):
 		response = self.session("Administrator").post(self.base + "/api/method/whatsapp_messaging.controller.wm_handle_on_custom_trigger", data={"template_name": TEMPLATE, "doctype": "ToDo", "docname": SOURCE}, timeout=10)
 		self.assertEqual(response.status_code, 417)
 		self.assertEqual(response.json().get("exc_type"), "ValidationError")
-		self.assertIn("Outbound WhatsApp requests are disabled", response.text)
+		self.assertIn("Sending is off.", response.text)
 
 
 if __name__ == "__main__":
@@ -347,7 +347,7 @@ if __name__ == "__main__":
 	connect()
 	try:
 		if os.environ.get("WHATSAPP_EXPECT_UPGRADE"):
-			legacy = frappe.get_doc("WhatsApp Phone Number ID", "WM Legacy Upgrade")
+			legacy = frappe.get_doc("WhatsApp Sender", "WM Legacy Upgrade")
 			assert legacy.meta.get_field("access_token").fieldtype == "Password"
 			assert legacy.get_password("access_token") == "integration-only-legacy-token"
 			assert legacy.access_token != "integration-only-legacy-token"

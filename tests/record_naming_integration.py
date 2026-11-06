@@ -22,7 +22,7 @@ class RecordNamingTests(unittest.TestCase):
         self.queue = patch('frappe.enqueue', side_effect=AssertionError('Queue forbidden'))
         self.network.start()
         self.queue.start()
-        self.sender = frappe.get_doc(dict(doctype='WhatsApp Phone Number ID', label='Naming QA sender',
+        self.sender = frappe.get_doc(dict(doctype='WhatsApp Sender', label='Naming QA sender',
             phone_number_id='99887766554433221100', access_token='fictional-test-token', enabled=0)).insert()
         self.peer = ensure_peer('919999000001', self.sender, 'Naming QA contact')
         self.conversation = ensure_conversation(self.sender, self.peer)
@@ -54,7 +54,7 @@ class RecordNamingTests(unittest.TestCase):
         writer=PdfWriter(); writer.add_blank_page(width=72,height=72); data=BytesIO();writer.write(data)
         file=frappe.get_doc(dict(doctype='File',file_name='Naming-visit.pdf',content=data.getvalue(),is_private=1)).insert()
         fixtures = [
-            ('WhatsApp Approved Template', 'WA-ATPL-', dict(template_name='appointment_confirmation', language='en')),
+            ('WhatsApp Meta Template', 'WA-ATPL-', dict(template_name='appointment_confirmation', language='en')),
             ('WhatsApp Attachment', 'WA-ATT-', dict(message=self.message().name, file_name='visit.pdf')),
             ('WhatsApp Automation Run', 'WA-RUN-', dict(rule=None, kind='Schedule')),
             ('WhatsApp Media', 'WA-MEDIA-', dict(media_attachment=file.file_url, phone_number_id=self.sender.name, label='Visit instructions')),
@@ -79,7 +79,7 @@ class RecordNamingTests(unittest.TestCase):
         self.assertEqual(self.conversation.record_title, 'Naming QA sender · Naming QA contact')
         doc = self.message()
         self.assertEqual(doc.record_title, 'Outbound · Naming QA contact · Queued')
-        for doctype in ('WhatsApp Message', 'WhatsApp Peer', 'WhatsApp Conversation'):
+        for doctype in ('WhatsApp Message', 'WhatsApp Contact', 'WhatsApp Conversation'):
             meta = frappe.get_meta(doctype)
             self.assertEqual(meta.title_field, 'record_title')
             self.assertTrue(meta.show_title_field_in_link)
@@ -98,7 +98,7 @@ class RecordNamingTests(unittest.TestCase):
         status = insert('WhatsApp Status Event', provider_message_id='fixture-provider', provider_status='delivered')
         set_record_values(status.doctype,status.name,'message',message.name)
         self.assertIn(message.name, frappe.db.get_value(status.doctype,status.name,'record_title'))
-        template = insert('WhatsApp Approved Template',template_name='appointment',language='en')
+        template = insert('WhatsApp Meta Template',template_name='appointment',language='en')
         set_record_values(template.doctype,template.name,{'language':'te'})
         self.assertEqual(frappe.db.get_value(template.doctype,template.name,'record_title'), 'appointment · te')
 

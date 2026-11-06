@@ -6,21 +6,21 @@ Send generated invoice PDFs or private report attachments when a record matches 
 
 ## What this workflow does
 
-WhatsApp Document Rule connects a business record, trigger, recipient, PDF and approved WhatsApp document template. Matching saved changes create a WhatsApp Document Delivery entry and use the normal outbox. Select and Data fields share a chip input; Text fields offer Equals or Contains. Comparison values belong only to the rule: they never change source records or field options.
+WhatsApp Document Delivery Rule connects a business record, trigger, recipient, PDF and approved WhatsApp document template. Matching saved changes create a WhatsApp Document Delivery entry and use the normal outbox. Select and Data fields share a chip input; Text fields offer Equals or Contains. Comparison values belong only to the rule: they never change source records or field options.
 
 [All workflows](README.md)
 
 ## 1. Prepare the sender and document template
 
-A System Manager configures the sender and integration switches. Create a Utility template with a Document header in WhatsApp Manager, obtain approval, then open WhatsApp Phone Number ID and choose Sync approved templates. The local message editor does not author Document headers. Record recipient consent in Inbox → Details → Messaging permissions.
+A System Manager configures the sender and integration switches. Create a Utility template with a Document header in WhatsApp Manager, obtain approval, then open WhatsApp Sender and choose Import templates from Meta. The local message editor does not author Document headers. Record recipient consent in Inbox → Details → Messaging permissions.
 
-## 2. Open the rule DocType
+## 2. Open document delivery rules
 
-Open Document delivery rules in the WhatsApp sidebar, or search for WhatsApp Document Rule. Create a rule or open HMS - Invoice PDF after issue. Keep Enabled unchecked while configuring. On rule and delivery forms, Help → User guide returns here.
+Open Document delivery rules in the WhatsApp sidebar, or search for WhatsApp Document Delivery Rule. Create a rule or open HMS - Invoice PDF after issue. Keep Enabled unchecked while configuring. On rule and delivery forms, Help → User guide returns here.
 
 ## 3. Choose the source and event
 
-Set Record type to the source business DocType, such as HMS Invoice. Choose Record created, Field changes to a value, or Document submitted. Submission is available only for submittable sources. For a field-change trigger, choose Trigger field from its dropdown.
+Set Record type to the source business record type, such as HMS Invoice. Choose Record created, Field changes to a value, or Document submitted. Submission is available only for submittable sources. For a field-change trigger, choose Trigger field from its dropdown.
 
 ## 4. Choose values for a dropdown or Check field
 
@@ -56,7 +56,7 @@ Save the disabled rule and choose Preview. Select a source record and check reci
 
 ## 12. Enable the configured workflow
 
-After checking approval, consent and mappings, enable the rule and save. The configuring user becomes Execution user. Enable Outbound Requests and Enable Automation in WhatsApp Settings, and run the worker and scheduler. Issue a new invoice or complete the configured source transition. Existing matching records are not backfilled automatically.
+After checking approval, consent and mappings, enable the rule and save. The configuring user becomes Execution user. Enable Allow Sending and File Uploads and Allow Automatic Messages in WhatsApp Settings, and run the worker and scheduler. Issue a new invoice or complete the configured source transition. Existing matching records are not backfilled automatically.
 
 ## 13. Release, monitor or resolve a held delivery
 
@@ -92,4 +92,4 @@ An unsaved rule edit demonstrates Contains and Comparison text for a Small Text 
 - [Configure a sender and integration](senders.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

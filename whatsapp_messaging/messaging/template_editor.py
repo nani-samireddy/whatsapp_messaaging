@@ -126,8 +126,8 @@ def compile_content(doc, *, check_permissions=True, examples=False):
 
 
 def linked_template(doc):
-    if doc.approved_template and frappe.db.exists('WhatsApp Approved Template', doc.approved_template):
-        return frappe.get_doc('WhatsApp Approved Template', doc.approved_template)
+    if doc.approved_template and frappe.db.exists('WhatsApp Meta Template', doc.approved_template):
+        return frappe.get_doc('WhatsApp Meta Template', doc.approved_template)
 
 
 def matches(doc, linked):
@@ -140,7 +140,7 @@ def matches(doc, linked):
     header, footer = framing.texts(parsed(linked.components_json, []))
     return (body == (linked.body or '') and (doc.meta_footer or '') == footer and (doc.get('meta_header') or '') == header
         and doc.meta_template_name == linked.template_name and doc.meta_language == linked.language
-        and frappe.db.get_value('WhatsApp Phone Number ID', doc.phone_number_id, 'waba_id') == linked.waba_id)
+        and frappe.db.get_value('WhatsApp Sender', doc.phone_number_id, 'waba_id') == linked.waba_id)
 
 
 def review_values(doc):
@@ -186,7 +186,7 @@ def prepare(doc):
 def ensure_sendable(doc):
     linked = linked_template(doc)
     if not linked or linked.approval_status != 'APPROVED' or not matches(doc, linked):
-        frappe.throw('This message is not approved for the current content and sender. Check Meta Approval on the template form.')
+        frappe.throw('This message is not approved for the current content and sender. Check Meta Review on the template form.')
     try:
         _, paths, _ = compile_content(doc)
     except ValueError as exc:
@@ -203,7 +203,7 @@ def get_editor(name, *, lock=False, supervisor=False):
 
 def api_url(sender, resource=None):
     if not re.fullmatch(r'[0-9]+', sender.waba_id or ''):
-        frappe.throw('Enter the Sender’s WABA ID before submitting or syncing templates.')
+        frappe.throw('Enter the sender’s WhatsApp Business Account ID before submitting or importing templates.')
     version = frappe.db.get_single_value('WhatsApp Settings', 'whatsapp_api_version')
     if not re.fullmatch(r'v[0-9]+\.[0-9]+', version or ''):
         frappe.throw('Configure a valid WhatsApp API version.')
@@ -314,7 +314,7 @@ def refresh_status(name):
         frappe.throw('The template identity changed during the status check. Save and check its status again.')
     doc = current
     sender = account(doc.phone_number_id)
-    found = frappe.db.get_value('WhatsApp Approved Template', dict(waba_id=sender.waba_id,
+    found = frappe.db.get_value('WhatsApp Meta Template', dict(waba_id=sender.waba_id,
         template_name=doc.meta_template_name, language=doc.meta_language), 'name')
     values = {'meta_checked_on':utcnow()}
     if found:
@@ -335,18 +335,18 @@ def refresh_status(name):
 @frappe.whitelist()
 def import_options(account_name):
     sender = account(account_name)
-    return frappe.get_list('WhatsApp Approved Template', filters={'waba_id':sender.waba_id},
+    return frappe.get_list('WhatsApp Meta Template', filters={'waba_id':sender.waba_id},
         fields=['name','template_name','language','approval_status'], order_by='template_name asc', limit_page_length=500)
 
 
 @frappe.whitelist()
 def import_content(name, catalogue_name):
     doc = get_editor(name)
-    linked = frappe.get_doc('WhatsApp Approved Template', catalogue_name)
+    linked = frappe.get_doc('WhatsApp Meta Template', catalogue_name)
     linked.check_permission('read')
     sender = account(doc.phone_number_id)
     if linked.waba_id != sender.waba_id:
-        frappe.throw('Choose a Meta template belonging to this Sender’s WABA.')
+        frappe.throw('Choose a template from this sender’s WhatsApp Business Account.')
     if not linked.supported:
         frappe.throw('This editor supports a text body with optional fixed text header and footer. Media headers, header variables and buttons are not supported.')
     header, footer = framing.texts(parsed(linked.components_json, []))

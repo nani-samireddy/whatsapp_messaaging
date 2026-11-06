@@ -12,7 +12,7 @@ This controls who receives a reusable message and when it should be prepared. A 
 
 ## 1. Choose a reusable template
 
-Open Templates & Automation → Campaigns or choose New campaign on Appointment confirmation. Give the campaign a recognizable name such as Tomorrow’s appointment reminders. Select Message Template and Sender. The source DocType is taken from the template; Open template lets you edit its content separately.
+Open Templates & Automation → Campaigns or choose New campaign on Appointment confirmation. Give the campaign a recognizable name such as Tomorrow’s appointment reminders. Select Message Template and Sender. The source record type is taken from the template; Open template lets you edit its content separately.
 
 ## 2. Select recipients and scope
 
@@ -20,7 +20,7 @@ Choose the patient phone field or reusable recipients. Use Set Query to select t
 
 ## 3. Choose the sending workflow
 
-Use Custom or None for an action on a business record; a document Event for automatic changes; or Scheduled/Cron for future runs. Enable Automation Active for events and schedules. For a bulk run, select Send to filtered records (bulk), save and clear Disabled when ready.
+Use Custom or None for an action on a business record; a document Event for automatic changes; or Scheduled/Cron for future runs. Allow Automatic Messages Active for events and schedules. For a bulk run, select Send to filtered records (bulk), save and clear Disabled when ready.
 
 ## 4. Remind patients before a date
 
@@ -58,4 +58,4 @@ A bulk preview lists personalized messages before the explicit Start campaign ac
 - [Check delivery and handle blocked sends](delivery.md)
 - [Record consent or stop sending](consent.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

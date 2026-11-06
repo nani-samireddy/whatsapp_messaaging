@@ -51,7 +51,7 @@ def service_write():
 def as_user(user):
     previous = frappe.session.user
     if not user or not frappe.db.get_value('User', user, 'enabled'):
-        frappe.throw('The execution user is disabled', frappe.PermissionError)
+        frappe.throw('The team member chosen to send these messages has a disabled account.', frappe.PermissionError)
     try:
         frappe.set_user(user)
         require_send_role()
@@ -70,7 +70,7 @@ def insert(doctype, **values):
 
 def lock(doctype, name):
     # Identifiers come only from the fixed application schemas, never RPC parameters.
-    if doctype not in {'WhatsApp Conversation', 'WhatsApp Peer', 'WhatsApp Outbox', 'WhatsApp Phone Number ID', 'WhatsApp Schedule', 'WhatsApp Automation Run', 'WhatsApp Webhook Event', 'WhatsApp Conversation Flow'}:
+    if doctype not in {'WhatsApp Conversation', 'WhatsApp Contact', 'WhatsApp Outbox', 'WhatsApp Sender', 'WhatsApp Schedule', 'WhatsApp Automation Run', 'WhatsApp Webhook Event', 'WhatsApp Conversation Flow'}:
         raise ValueError('Unsupported lock')
     rows = frappe.db.sql(f'SELECT name FROM `tab{doctype}` WHERE name=%s FOR UPDATE', name)
     if not rows:
@@ -80,7 +80,7 @@ def lock(doctype, name):
 
 def account(name, enabled=False):
     require_send_role()
-    doc = frappe.get_doc('WhatsApp Phone Number ID', name)
+    doc = frappe.get_doc('WhatsApp Sender', name)
     doc.check_permission('read')
     if enabled and not doc.enabled:
         frappe.throw('This sender account is disabled')

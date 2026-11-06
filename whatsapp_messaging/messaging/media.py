@@ -25,7 +25,7 @@ def inspect(content):
 def authorized_file(name):
     require_send_role()
     doc=frappe.get_doc('File',name);doc.check_permission('read')
-    if not doc.is_private:frappe.throw('WhatsApp attachments must be private files. Upload the file again with Private enabled; existing public links are not changed automatically.')
+    if not doc.is_private:frappe.throw('Choose a private file. Upload it with the Private option selected, then try again.. Upload the file again with Private enabled; existing public links are not changed automatically.')
     if doc.attached_to_doctype and doc.attached_to_name:
         frappe.get_doc(doc.attached_to_doctype,doc.attached_to_name).check_permission('read')
     elif doc.owner!=frappe.session.user and 'System Manager' not in frappe.get_roles():
@@ -52,6 +52,11 @@ def read_private_file(doc):
 
 def attach(message, file_id):
     file,content=authorized_file(file_id)
+    # Share a newly uploaded file through its conversation, while retaining the
+    # access boundary of files already attached to a business record.
+    if not file.attached_to_doctype and not file.attached_to_name:
+        frappe.db.set_value('File', file.name, {
+            'attached_to_doctype': 'WhatsApp Message', 'attached_to_name': message.name})
     return insert('WhatsApp Attachment',message=message.name,account=message.account,file=file.name,
         file_name=file.file_name,mime_type=inspect(content),size=len(content),content_hash=hashlib.sha256(content).hexdigest(),state='Ready')
 
@@ -64,8 +69,16 @@ def download(name):
     conversation(message.conversation)
     if attachment.state!='Ready' or not attachment.file:frappe.throw('Attachment is not available')
     file=frappe.get_doc('File',attachment.file)
-    if not file.is_private:frappe.throw('Attachment must be private')
-    content=read_private_file(file)
+    if (not file.attached_to_doctype and not file.attached_to_name
+            and message.direction=='Outbound' and message.agent and file.owner==message.agent):
+        # Older Inbox uploads remained unattached. Their canonical message is
+        # the sharing authority; never use this exception for a business file.
+        content=read_private_file(file)
+        inspect(content)
+    else:
+        file,content=authorized_file(attachment.file)
+    if attachment.content_hash and hashlib.sha256(content).hexdigest()!=attachment.content_hash:
+        frappe.throw('The attachment changed after it was added to this message.')
     frappe.local.response.filename=file.file_name
     frappe.local.response.filecontent=content
     frappe.local.response.type='download'
@@ -75,9 +88,7 @@ def download(name):
 
 def upload(attachment, sender):
     require_outbound_enabled()
-    file=frappe.get_doc('File',attachment.file)
-    if not file.is_private:frappe.throw('Attachment must be private')
-    content=read_private_file(file)
+    file,content=authorized_file(attachment.file)
     if isinstance(content,str):content=content.encode()
     mime=inspect(content)
     if hashlib.sha256(content).hexdigest()!=attachment.content_hash:frappe.throw('Attachment content changed after it was queued')
@@ -88,7 +99,9 @@ def upload(attachment, sender):
         return existing
     version=frappe.db.get_single_value('WhatsApp Settings','whatsapp_api_version')
     from whatsapp_messaging.utils.config import get_cloud_api_url
-    response=requests.post(get_cloud_api_url(sender.name,'media'),headers={'Authorization':get_headers(sender.name)['authorization']},data={'messaging_product':'whatsapp','type':mime},files={'file':(file.file_name,content,mime)},timeout=(5,30))
+    response=requests.post(get_cloud_api_url(sender.name,'media'),headers={'Authorization':get_headers(sender.name)['authorization']},data={'messaging_product':'whatsapp','type':mime},files={'file':(file.file_name,content,mime)},timeout=(5,30),allow_redirects=False)
+    if 300 <= response.status_code < 400:
+        frappe.throw('The provider redirected the media upload. Review the sender/API settings before retrying.')
     response.raise_for_status()
     media_id=response.json().get('id')
     if not str(media_id or '').isdigit():frappe.throw('Provider did not return a media identifier')
@@ -101,7 +114,7 @@ def download_inbound(name):
     if not frappe.db.get_single_value('WhatsApp Settings','enable_inbound',cache=False):return
     attachment=frappe.get_doc('WhatsApp Attachment',name)
     if attachment.state not in ('Pending','Failed') or not attachment.provider_media_id:return
-    sender=frappe.get_doc('WhatsApp Phone Number ID',attachment.account)
+    sender=frappe.get_doc('WhatsApp Sender',attachment.account)
     if not sender.enabled:return
     media_id=attachment.provider_media_id
     import re

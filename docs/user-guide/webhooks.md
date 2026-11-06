@@ -24,7 +24,7 @@ Correct a missing account mapping or configuration issue before replaying. Do no
 
 ## 4. Replay and verify
 
-For a Failed or Quarantined event, choose Replay event. Check its new state, then inspect the affected conversation or message receipt.
+For a Failed or Quarantined event, choose Process update again. Check its new state, then inspect the affected conversation or message receipt.
 
 ## What to check
 
@@ -36,13 +36,13 @@ Public HTTPS routing and Meta callback configuration must be set up separately b
 
 ## Screenshots
 
-![Quarantined webhook event with its safe reason and Replay event action.](../../whatsapp_messaging/public/docs/screenshots/webhook-event.jpg)
+![Quarantined webhook event with its safe reason and Process update again action.](../../whatsapp_messaging/public/docs/screenshots/webhook-event.jpg)
 
-Quarantined webhook event with its safe reason and Replay event action.
+Quarantined webhook event with its safe reason and Process update again action.
 
 ## Related workflows
 
 - [Configure a sender and integration](senders.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

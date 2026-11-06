@@ -12,7 +12,7 @@
  "modified": "2026-10-20 12:30:00.000000",
  "owner": "Administrator",
  "modified_by": "Administrator",
- "content": "[{\"id\": \"administration-summary\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"WhatsApp Administration Summary\", \"col\": 12}}, {\"id\": \"administration-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Phone Numbers\", \"col\": 3}}, {\"id\": \"administration-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Integration Settings\", \"col\": 3}}, {\"id\": \"shared-template-fields\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Template Field Policies\", \"col\": 3}}, {\"id\": \"administration-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Outbound Queue\", \"col\": 3}}, {\"id\": \"administration-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Webhook Events\", \"col\": 3}}, {\"id\": \"administration-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Delivery Events\", \"col\": 3}}, {\"id\": \"administration-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Send Attempts\", \"col\": 3}}, {\"id\": \"administration-6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Activity\", \"col\": 3}}, {\"id\": \"administration-7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Legacy History\", \"col\": 3}}, {\"id\": \"whatsapp-user-guide\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"User guide\", \"col\": 3}}]",
+ "content": "[{\"id\":\"administration-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Administration Summary\",\"col\":12}},{\"id\":\"administration-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Senders\",\"col\":3}},{\"id\":\"administration-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Integration Settings\",\"col\":3}},{\"id\":\"shared-template-fields\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Template fields\",\"col\":3}},{\"id\":\"administration-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sending queue\",\"col\":3}},{\"id\":\"administration-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Incoming updates\",\"col\":3}},{\"id\":\"administration-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Delivery updates\",\"col\":3}},{\"id\":\"administration-5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sending attempts\",\"col\":3}},{\"id\":\"administration-6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Activity\",\"col\":3}},{\"id\":\"administration-7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Legacy History\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
  "roles": [
   {
    "role": "System Manager"
@@ -23,9 +23,9 @@
  ],
  "shortcuts": [
   {
-   "label": "Phone Numbers",
+   "label": "Senders",
    "type": "DocType",
-   "link_to": "WhatsApp Phone Number ID",
+   "link_to": "WhatsApp Sender",
    "doc_view": "List",
    "color": "Grey"
   },
@@ -37,35 +37,35 @@
    "color": "Grey"
   },
   {
-   "label": "Template Field Policies",
+   "label": "Template fields",
    "type": "DocType",
-   "link_to": "WhatsApp Template Field Policy",
+   "link_to": "WhatsApp Template Fields",
    "doc_view": "List",
    "color": "Grey"
   },
   {
-   "label": "Outbound Queue",
+   "label": "Sending queue",
    "type": "DocType",
    "link_to": "WhatsApp Outbox",
    "doc_view": "List",
    "color": "Grey"
   },
   {
-   "label": "Webhook Events",
+   "label": "Incoming updates",
    "type": "DocType",
    "link_to": "WhatsApp Webhook Event",
    "doc_view": "List",
    "color": "Grey"
   },
   {
-   "label": "Delivery Events",
+   "label": "Delivery updates",
    "type": "DocType",
    "link_to": "WhatsApp Status Event",
    "doc_view": "List",
    "color": "Grey"
   },
   {
-   "label": "Send Attempts",
+   "label": "Sending attempts",
    "type": "DocType",
    "link_to": "WhatsApp Send Attempt",
    "doc_view": "List",

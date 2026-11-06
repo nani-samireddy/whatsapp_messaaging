@@ -1,4 +1,4 @@
-# Manage reusable recipients
+# Manage additional numbers
 
 Keep the reception coordinator’s contact available for local rules.
 
@@ -6,21 +6,21 @@ Keep the reception coordinator’s contact available for local rules.
 
 ## What this workflow does
 
-This saves a named phone contact that can be reused in message rules. An Admin enters the name and number once, and users can select that contact under Other Recipients when configuring a rule. Saving a contact alone does not send a message or record consent.
+This saves a named phone contact that can be reused in message rules. An Admin enters the name and number once, and users can select that contact under Additional Numbers when configuring a rule. Saving a contact alone does not send a message or record consent.
 
 [All workflows](README.md)
 
-## 1. Open Recipients
+## 1. Open Additional Numbers
 
-From Messaging choose Recipients and add a Static Recipient named Reception coordinator.
+From Messaging choose Additional Numbers and save a number named Reception coordinator.
 
-## 2. Enter a recognizable label and phone
+## 2. Enter a recognizable name and phone
 
-Enter Label. In Phone Number, select the country code and enter the national number. Save the recipient.
+Enter Name. In Phone Number, select the country code and enter the national number. Save the recipient.
 
-## 3. Select it on a template
+## 3. Select it on a campaign
 
-Open the intended local template and select the entry in Other Recipients when the workflow requires an additional recipient.
+Open the intended campaign and select the entry in Additional Numbers when the workflow requires an additional recipient.
 
 ## 4. Review before sending
 
@@ -36,9 +36,9 @@ For a campaign, the same recipient can receive different messages for different 
 
 ## Screenshots
 
-![Reception coordinator contact with the country code and phone number entered.](../../whatsapp_messaging/public/docs/screenshots/static-recipient.jpg)
+![Additional Numbers explains its purpose and asks for a recognizable name and phone number.](../../whatsapp_messaging/public/docs/screenshots/additional-numbers.png)
 
-Reception coordinator contact with the country code and phone number entered.
+Additional Numbers explains its purpose and asks for a recognizable name and phone number.
 
 ## Related workflows
 
@@ -46,4 +46,4 @@ Reception coordinator contact with the country code and phone number entered.
 - [Record consent or stop sending](consent.md)
 - [Configure and run a campaign](campaigns.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

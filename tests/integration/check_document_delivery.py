@@ -1,6 +1,12 @@
 """Local document rules integration checks. Network transport is always blocked."""
 import json
 import io
+import os
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from threading import Thread
+from urllib.parse import unquote, urlsplit
 from pypdf import PdfWriter
 import sys
 import unittest
@@ -11,12 +17,59 @@ from whatsapp_messaging.messaging import document_delivery as delivery, catalogu
 from whatsapp_messaging.messaging.common import service_write, utcnow
 from whatsapp_messaging.messaging.template_framing import supported
 
-SITE='whatsapp-documents-test.localhost'
+SITE=os.environ.get('WHATSAPP_DOCUMENT_TEST_SITE', 'whatsapp-documents-test.localhost')
+if SITE not in {'whatsapp-documents-test.localhost', 'whatsapp-test.localhost'}:
+    raise RuntimeError('Document tests require an explicitly isolated test site.')
+RECIPIENT='Document Recipient Example' if SITE=='whatsapp-test.localhost' else 'Patient'
 GENERIC='Document Delivery Example'
 _pdf=PdfWriter();_pdf.add_blank_page(width=595,height=842);_buffer=io.BytesIO();_pdf.write(_buffer);PDF=_buffer.getvalue()
 
 
+@contextmanager
+def print_assets():
+    """Serve only built public CSS/fonts to the real renderer, on container loopback."""
+    root = Path(frappe.get_app_path('frappe', 'public')).resolve()
+
+    class Assets(BaseHTTPRequestHandler):
+        def do_GET(self):
+            path = unquote(urlsplit(self.path).path)
+            if not path.startswith('/assets/frappe/'):
+                self.send_error(404)
+                return
+            file = (root / path.removeprefix('/assets/frappe/')).resolve()
+            if not file.is_relative_to(root) or not file.is_file():
+                self.send_error(404)
+                return
+            content = file.read_bytes()
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/css' if file.suffix == '.css' else 'application/octet-stream')
+            self.send_header('Content-Length', str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(('127.0.0.1', 0), Assets)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with patch.dict(frappe.conf, {'host_name': f'http://127.0.0.1:{server.server_port}'}):
+            yield
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+
+
 def init_schema():
+    if RECIPIENT != 'Patient' and not frappe.db.exists('DocType', RECIPIENT):
+        frappe.get_doc(dict(doctype='DocType', name=RECIPIENT, module='Whatsapp Messaging',
+            custom=1, autoname='EX-CONTACT-.######', fields=[
+                dict(fieldname='patient_name',label='Name',fieldtype='Data'),
+                dict(fieldname='patient_phone_number',label='Phone',fieldtype='Data',options='Phone')],
+            permissions=[dict(role='System Manager',read=1,write=1,create=1,delete=1)])).insert()
+        frappe.db.commit()
     text_fields=[dict(fieldname='notes',label='Notes',fieldtype='Text'),
         dict(fieldname='short_notes',label='Short notes',fieldtype='Small Text'),
         dict(fieldname='long_notes',label='Long notes',fieldtype='Long Text')]
@@ -25,8 +78,8 @@ def init_schema():
         for field in text_fields:
             if not any(f.fieldname==field['fieldname'] for f in meta.fields):meta.append('fields',field)
         meta.save();frappe.db.commit();return
-    frappe.get_doc(dict(doctype='DocType',name=GENERIC,module='HMS',custom=1,autoname='EX-DOC-.######',
-        fields=[dict(fieldname='title',label='Title',fieldtype='Data'),dict(fieldname='patient',label='Patient',fieldtype='Link',options='Patient'),
+    frappe.get_doc(dict(doctype='DocType',name=GENERIC,module='Whatsapp Messaging',custom=1,autoname='EX-DOC-.######',
+        fields=[dict(fieldname='title',label='Title',fieldtype='Data'),dict(fieldname='patient',label='Patient',fieldtype='Link',options=RECIPIENT),
             dict(fieldname='status',label='Status',fieldtype='Select',options='Draft\nReleased\nCancelled',default='Draft'),
             dict(fieldname='document',label='Document',fieldtype='Attach'),*text_fields],
         permissions=[dict(role='System Manager',read=1,write=1,create=1,delete=1,print=1)])).insert(ignore_permissions=True)
@@ -44,21 +97,21 @@ class TestDocumentDelivery(unittest.TestCase):
         frappe.db.set_single_value('WhatsApp Settings','enable_outbound_messages',1)
         frappe.db.set_single_value('WhatsApp Settings','enable_automation',1)
         suffix=frappe.generate_hash(length=8)
-        self.sender=frappe.get_doc(dict(doctype='WhatsApp Phone Number ID',label='Document checks '+suffix,
+        self.sender=frappe.get_doc(dict(doctype='WhatsApp Sender',label='Document checks '+suffix,
             phone_number_id='100'+str(int(suffix,16)),waba_id='123456',access_token='local-integration-token',enabled=1)).insert(ignore_permissions=True)
-        self.patient=frappe.get_doc(dict(doctype='Patient',patient_name='Arjun Reddy',patient_gender='Male',patient_location='Peddapuram',patient_phone_number='+91 90000 00001')).insert(ignore_permissions=True)
+        self.patient=frappe.get_doc(dict(doctype=RECIPIENT,patient_name='Arjun Reddy',patient_gender='Male',patient_location='Peddapuram',patient_phone_number='+91 90000 00001')).insert(ignore_permissions=True)
         self.source=frappe.get_doc(dict(doctype=GENERIC,title='Consultation document',patient=self.patient.name,status='Draft')).insert(ignore_permissions=True)
         self.fmt=frappe.get_doc(dict(doctype='Print Format',name='Document checks '+suffix,doc_type=GENERIC,standard='No',custom_format=1,
             print_format_type='Jinja',html='<html><body><h1>Consultation document</h1><p>{{ doc.title|e }}</p></body></html>')).insert(ignore_permissions=True)
         self.template=catalogue.upsert('123456',dict(id='100000000000',name='document_checks_'+suffix,language='en',category='UTILITY',status='APPROVED',
             components=[dict(type='HEADER',format='DOCUMENT'),dict(type='BODY',text='Hello {{1}}, your document is attached. Thank you.'),dict(type='FOOTER',text='Hospital reception')]))
-        self.rule=frappe.get_doc(dict(doctype='WhatsApp Document Rule',rule_name='Document checks '+suffix,enabled=1,source_doctype=GENERIC,
+        self.rule=frappe.get_doc(dict(doctype='WhatsApp Document Delivery Rule',rule_name='Document checks '+suffix,enabled=1,source_doctype=GENERIC,
             event_type='Field changes to a value',trigger_field='status',trigger_values='Released',recipient_mode='A linked record',recipient_link_field='patient',phone_field='patient_phone_number',
             document_mode='Generate PDF',print_format=self.fmt.name,sender=self.sender.name,approved_template=self.template,
             parameters=[dict(position=1,value_source='Recipient',fieldname_value='patient_name')])).insert(ignore_permissions=True)
         self.peer=inbox.ensure_peer('919000000001',self.sender)
         with service_write():
-            frappe.db.set_value('WhatsApp Peer',self.peer.name,dict(consent_recorded=1,consent_source='Recorded permission for service documents'))
+            frappe.db.set_value('WhatsApp Contact',self.peer.name,dict(consent_recorded=1,consent_source='Recorded permission for service documents'))
         self.addCleanup(frappe.db.rollback)
 
     def issue(self):
@@ -106,18 +159,19 @@ class TestDocumentDelivery(unittest.TestCase):
         self.assertEqual(frappe.db.count('WhatsApp Outbox',{'origin_key':'document:'+doc.delivery_key}),1)
 
     def test_actual_pdf_renderer(self):
-        doc=self.prepare(real_pdf=True)
+        with print_assets():
+            doc=self.prepare(real_pdf=True)
         self.assertEqual(doc.state,'Queued',doc.last_error)
         self.assertTrue(frappe.get_doc('File',doc.file).get_content().startswith(b'%PDF-'))
 
     def test_missing_phone_is_held(self):
-        frappe.db.set_value('Patient',self.patient.name,'patient_phone_number','')
+        frappe.db.set_value(RECIPIENT,self.patient.name,'patient_phone_number','')
         doc=self.prepare();self.assertEqual(doc.state,'Held');self.assertFalse(doc.outbox)
 
     def test_missing_consent_and_optout_are_held(self):
-        with service_write():frappe.db.set_value('WhatsApp Peer',self.peer.name,'consent_recorded',0)
+        with service_write():frappe.db.set_value('WhatsApp Contact',self.peer.name,'consent_recorded',0)
         doc=self.prepare();self.assertEqual(doc.state,'Held');self.assertFalse(doc.outbox)
-        with service_write():frappe.db.set_value('WhatsApp Peer',self.peer.name,dict(consent_recorded=1,suppressed=1))
+        with service_write():frappe.db.set_value('WhatsApp Contact',self.peer.name,dict(consent_recorded=1,suppressed=1))
         delivery.retry(doc.name);delivery.process(doc.name);doc.reload()
         self.assertEqual(doc.state,'Held');self.assertFalse(doc.outbox)
 
@@ -149,10 +203,10 @@ class TestDocumentDelivery(unittest.TestCase):
     def test_dispatch_rechecks_phone_consent_rule_and_source(self):
         doc=self.prepare();intent=frappe.get_doc('WhatsApp Outbox',doc.outbox)
         outbox.validate_dispatch(intent)
-        frappe.db.set_value('Patient',self.patient.name,'patient_phone_number','919000000002')
+        frappe.db.set_value(RECIPIENT,self.patient.name,'patient_phone_number','919000000002')
         with self.assertRaises(frappe.ValidationError):outbox.validate_dispatch(intent)
-        frappe.db.set_value('Patient',self.patient.name,'patient_phone_number','919000000001')
-        with service_write():frappe.db.set_value('WhatsApp Peer',self.peer.name,'suppressed',1)
+        frappe.db.set_value(RECIPIENT,self.patient.name,'patient_phone_number','919000000001')
+        with service_write():frappe.db.set_value('WhatsApp Contact',self.peer.name,'suppressed',1)
         with self.assertRaises(frappe.ValidationError):outbox.validate_dispatch(intent)
 
     def test_preview_is_read_only(self):
@@ -182,6 +236,8 @@ class TestDocumentDelivery(unittest.TestCase):
         self.assertEqual(doc.state,'Held');self.assertFalse(doc.outbox)
 
     def test_receipt_or_invoice_is_not_sent_as_draft(self):
+        if RECIPIENT != 'Patient' or not frappe.db.exists('DocType', 'HMS Invoice'):
+            self.skipTest('HMS invoice acceptance runs on the dedicated HMS document-test site.')
         self.rule.enabled=0;self.rule.save()
         fmt=frappe.get_doc(dict(doctype='Print Format',name=self.fmt.name+' invoice',doc_type='HMS Invoice',standard='No',custom_format=1,
             print_format_type='Jinja',html='<h1>Invoice</h1><p>{{ doc.total }}</p>')).insert(ignore_permissions=True)
@@ -327,6 +383,8 @@ class TestDocumentDelivery(unittest.TestCase):
 if __name__=='__main__':
     frappe.init(site=SITE);frappe.connect();frappe.set_user('Administrator')
     try:
+        if SITE == 'whatsapp-test.localhost' and frappe.conf.db_host != 'db':
+            raise RuntimeError('The fresh-install document suite requires the isolated Compose database.')
         init_schema()
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(TestDocumentDelivery))
     finally:

@@ -8,7 +8,7 @@ import frappe
 from frappe.utils.password import get_decrypted_password, set_encrypted_password
 
 
-DOCTYPE = "WhatsApp Phone Number ID"
+DOCTYPE = "WhatsApp Sender"
 FIELD = "access_token"
 MASK = "********"
 

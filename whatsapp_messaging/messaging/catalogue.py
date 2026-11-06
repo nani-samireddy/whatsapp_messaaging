@@ -22,7 +22,7 @@ def normalize(item):
 @frappe.whitelist()
 def list_templates(account_name):
     sender=account(account_name)
-    return frappe.get_list('WhatsApp Approved Template',filters={'waba_id':sender.waba_id or '', 'approval_status':'APPROVED','supported':1},fields=['name','template_name','language','body','components_json','parameters_json','schema_hash'],order_by='template_name asc',limit_page_length=200)
+    return frappe.get_list('WhatsApp Meta Template',filters={'waba_id':sender.waba_id or '', 'approval_status':'APPROVED','supported':1},fields=['name','template_name','language','body','components_json','parameters_json','schema_hash'],order_by='template_name asc',limit_page_length=200)
 
 
 @frappe.whitelist(methods=['POST'])
@@ -51,10 +51,10 @@ def sync(account_name):
         if not after:break
         if count>10000:frappe.throw('Template catalogue exceeds the supported sync size')
     # Templates missing from a complete snapshot become unavailable.
-    for row in frappe.get_all('WhatsApp Approved Template',filters={'waba_id':sender.waba_id},fields=['name','catalogue_key','reviewed_at']):
+    for row in frappe.get_all('WhatsApp Meta Template',filters={'waba_id':sender.waba_id},fields=['name','catalogue_key','reviewed_at']):
         if row.reviewed_at and frappe.utils.get_datetime(row.reviewed_at)>started:continue
         if row.catalogue_key not in seen:
-            set_record_values('WhatsApp Approved Template',row.name,'approval_status','UNAVAILABLE')
+            set_record_values('WhatsApp Meta Template',row.name,'approval_status','UNAVAILABLE')
             from .template_editor import refresh_related
             refresh_related(row.name)
     return {'synced':count}
@@ -64,8 +64,8 @@ def upsert(waba_id,item,sync_started=None):
     from frappe.utils import get_datetime
     from .template_editor import clean_detail,refresh_related
     key=digest(waba_id,item['name'],item['language'])
-    name=frappe.db.get_value('WhatsApp Approved Template',{'catalogue_key':key},'name')
-    previous=frappe.get_doc('WhatsApp Approved Template',name) if name else None
+    name=frappe.db.get_value('WhatsApp Meta Template',{'catalogue_key':key},'name')
+    previous=frappe.get_doc('WhatsApp Meta Template',name) if name else None
     if previous and sync_started and previous.reviewed_at and get_datetime(previous.reviewed_at)>sync_started:
         return previous.name
     values=dict(waba_id=waba_id,provider_template_id=str(item['id']),template_name=item['name'],language=item['language'],
@@ -74,8 +74,8 @@ def upsert(waba_id,item,sync_started=None):
     values['rejection_reason']=reason if item['status']=='REJECTED' else None
     if item['status']!='REJECTED' or not previous or previous.rejection_reason!=reason:
         values.update(rejection_detail=None,recommendation=None)
-    if name:set_record_values('WhatsApp Approved Template',name,values)
-    else:name=insert('WhatsApp Approved Template',catalogue_key=key,**values).name
+    if name:set_record_values('WhatsApp Meta Template',name,values)
+    else:name=insert('WhatsApp Meta Template',catalogue_key=key,**values).name
     refresh_related(name)
     return name
 
@@ -85,17 +85,17 @@ def review_update(waba_id,value,timestamp):
     from frappe.utils import get_datetime
     from .template_editor import clean_detail,refresh_related
     from .webhooks import provider_time
-    if not frappe.db.exists('WhatsApp Phone Number ID',{'waba_id':waba_id,'enabled':1}):
+    if not frappe.db.exists('WhatsApp Sender',{'waba_id':waba_id,'enabled':1}):
         return False
     occurred=provider_time(timestamp)
     provider_id=str(value.get('message_template_id') or '')
     if not re.fullmatch(r'[0-9]+',provider_id):raise ValueError('Invalid template ID')
-    name=frappe.db.get_value('WhatsApp Approved Template',{'waba_id':waba_id,'provider_template_id':provider_id},'name')
+    name=frappe.db.get_value('WhatsApp Meta Template',{'waba_id':waba_id,'provider_template_id':provider_id},'name')
     if not name:
         if not value.get('message_template_name') or not value.get('message_template_language'):raise ValueError('Incomplete template review')
         name=upsert(waba_id,dict(id=provider_id,name=value['message_template_name'],language=value['message_template_language'].replace('-','_'),
             status=value.get('event','UNAVAILABLE'),category=value.get('message_template_category'),components=[]))
-    doc=frappe.get_doc('WhatsApp Approved Template',name,for_update=True)
+    doc=frappe.get_doc('WhatsApp Meta Template',name,for_update=True)
     if doc.reviewed_at and get_datetime(doc.reviewed_at)>=occurred:return True
     event=value.get('event')
     if event=='UNARCHIVED':event='UNAVAILABLE' # Refresh status before claiming approval.
@@ -114,7 +114,7 @@ def review_update(waba_id,value,timestamp):
 
 
 def template_payload(name,sender,values):
-    doc=frappe.get_doc('WhatsApp Approved Template',name);doc.check_permission('read')
+    doc=frappe.get_doc('WhatsApp Meta Template',name);doc.check_permission('read')
     if doc.waba_id!=sender.waba_id or doc.approval_status!='APPROVED' or not doc.supported:frappe.throw('This template is unavailable or unsupported')
     values=parsed(values,[])
     if not isinstance(values,list) or len(values)!=len(parsed(doc.parameters_json,[])):frappe.throw('Provide every template parameter')

@@ -5,7 +5,7 @@ import frappe
 from whatsapp_messaging.send_security import require_send_role
 from whatsapp_messaging.template_security import SAFE_SOURCE_TYPES, SENSITIVE_FIELD, parse_allowed_fields
 
-POLICY = 'WhatsApp Template Field Policy'
+POLICY = 'WhatsApp Template Fields'
 
 
 def eligible(field):
@@ -23,7 +23,7 @@ def validate_fields(source_doctype, value):
 
 
 def get_allowed_source_fields(source_doctype):
-    value = frappe.db.get_value(POLICY, source_doctype, 'allowed_fields') if source_doctype else None
+    value = frappe.db.get_value(POLICY, {'source_doctype': source_doctype}, 'allowed_fields') if source_doctype else None
     return validate_fields(source_doctype, value) if value else frozenset()
 
 
@@ -57,8 +57,10 @@ def options(source_doctype):
     meta = frappe.get_meta(source_doctype)
     permitted = set(meta.get_permitted_fieldnames(permission_type='read'))
     selected = get_allowed_source_fields(source_doctype)
+    policy_name = frappe.db.exists(POLICY, {'source_doctype': source_doctype})
     return {
-        'exists': bool(frappe.db.exists(POLICY, source_doctype)),
+        'exists': bool(policy_name),
+        'policy_name': policy_name,
         'can_manage': 'System Manager' in frappe.get_roles(),
         'fields': [dict(value=field.fieldname, label=field.label or field.fieldname,
             fieldtype=field.fieldtype, selected=field.fieldname in selected)
@@ -81,7 +83,7 @@ def migrate_legacy_fields():
         meta = frappe.get_meta(row.template_doctype)
         names.update(field.fieldname for field in meta.fields if field.fieldname in previous and eligible(field))
     for source_doctype, names in grouped.items():
-        if frappe.db.exists(POLICY, source_doctype):
+        if frappe.db.exists(POLICY, {'source_doctype': source_doctype}):
             continue  # Never re-approve a field an administrator later removed.
         frappe.get_doc(dict(doctype=POLICY, source_doctype=source_doctype,
             allowed_fields=json.dumps(sorted(names)))).insert(ignore_permissions=True)

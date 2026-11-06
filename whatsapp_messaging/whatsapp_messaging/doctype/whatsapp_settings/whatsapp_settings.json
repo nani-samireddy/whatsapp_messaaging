@@ -19,63 +19,70 @@
   {
    "fieldname": "basic_details_section",
    "fieldtype": "Section Break",
-   "label": "Basic Details"
+   "label": "Connection and Automatic Messages"
   },
   {
    "default": "v26.0",
    "fieldname": "whatsapp_api_version",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "API Version",
-   "reqd": 1
+   "label": "Meta API Version",
+   "reqd": 1,
+   "description": "The Meta API version used by this app. Your administrator manages this setting."
   },
   {
    "default": "https://graph.facebook.com",
    "fieldname": "whatsapp_api_url",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "URL",
-   "reqd": 1
+   "label": "Meta API Address",
+   "reqd": 1,
+   "description": "The address used to connect to Meta. Keep the default unless your administrator tells you to change it."
   },
   {
    "fieldname": "enable_outbound_messages",
    "fieldtype": "Check",
-   "label": "Enable Outbound Requests",
+   "label": "Allow Sending and File Uploads",
    "default": "0",
    "permlevel": 1,
-   "description": "Allows message sends and media uploads. Keep disabled until the integration is configured and tested."
+   "description": "Allows the app to send messages and upload files to WhatsApp. Turn this on after setup and testing."
   },
   {
    "fieldname": "enable_inbound",
-   "label": "Enable Inbound",
+   "label": "Receive Incoming Messages and Updates",
    "fieldtype": "Check",
    "default": "0",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "Allows the app to process incoming messages and delivery updates from Meta. The webhook connection must also be configured."
   },
   {
    "fieldname": "meta_app_id",
-   "label": "Meta App Id",
+   "label": "Meta App ID",
    "fieldtype": "Data",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "The ID of the Meta developer app connected to this WhatsApp account."
   },
   {
    "fieldname": "app_secret",
-   "label": "App Secret",
+   "label": "Meta App Secret",
    "fieldtype": "Password",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "A private key from your Meta app settings. Used to check that incoming updates came from Meta. Do not share it."
   },
   {
    "fieldname": "verify_token",
-   "label": "Verify Token",
+   "label": "Webhook Verification Token",
    "fieldtype": "Password",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "Choose a private value and enter the same value in Meta\u2019s webhook setup. It is used when connecting Meta to this app."
   },
   {
    "fieldname": "enable_automation",
-   "label": "Enable Automation",
+   "label": "Allow Automatic Messages",
    "fieldtype": "Check",
    "default": "0",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "Allows active campaigns, conversation flows and schedules to run. Sending and receiving must also be enabled for the actions they use."
   }
  ],
  "index_web_pages_for_search": 1,

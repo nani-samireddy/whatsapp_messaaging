@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-01",
+  "scope": "Mac-local source review and isolated tests; no server changes or live messages",
+  "branch": "feature/production-readiness",
+  "base_revision": "04ad660",
+  "fresh_install": {
+    "total": 269,
+    "passed": 268,
+    "skipped": 1,
+    "log": ".integration/production-review-final.log"
+  },
+  "legacy_upgrade": {
+    "baseline": "d55395fe92f576287c3a1a1778e135bf3e21f9d5",
+    "total": 267,
+    "passed": 266,
+    "skipped": 1,
+    "log": ".integration/production-review-upgrade.log",
+    "plaintext_fixture_migrated_to_encrypted_password": true,
+    "outbound_remained_disabled_after_migration": true
+  },
+  "final_regression": {
+    "total": 269,
+    "passed": 268,
+    "skipped": 1,
+    "log": ".integration/production-review-final.log"
+  },
+  "hms_document_acceptance": {
+    "total": 30,
+    "passed": 30,
+    "skipped": 0,
+    "log": ".integration/hms-document-acceptance.log"
+  },
+  "local_python": {
+    "total": 77,
+    "passed": 77,
+    "skipped": 0,
+    "log": ".integration/production-unit-final.log"
+  },
+  "javascript": {
+    "passed": 18,
+    "log": ".integration/production-js-final.log"
+  },
+  "skip_reason": "The app-only generic harness does not install HMS; its invoice-specific case passes in the separate 30-case HMS document suite.",
+  "reproduced_before_fix": {
+    "regressions_failed": 5,
+    "log": ".integration/production-boundaries-before.log"
+  },
+  "fixed": [
+    "Business-record permission checks on attachment download and upload",
+    "Shared new Inbox uploads retain message ownership; business files retain their parent",
+    "Expired/superseded worker claim fencing and ownership-safe sender lease release",
+    "Signed delivery/read receipts survive HTTP timeouts",
+    "Queued rule sends revalidate source phone, content values, field permissions and attachment",
+    "Authenticated media/message POST requests do not follow redirects",
+    "Document tests and real PDF rendering included in install/upgrade harness"
+  ],
+  "readiness_check": {
+    "manager_only": true,
+    "read_only": true,
+    "provider_requests": 0,
+    "jobs_enqueued": 0,
+    "configuration_ready_is_not_provider_acceptance": true,
+    "browser": "Settings Menu > Check setup opened the diagnostics dialog on hms.localhost",
+    "local_blockers": [
+      "https",
+      "scheduler",
+      "default_worker",
+      "media_worker"
+    ]
+  },
+  "doctype_review": {
+    "ordinary_records": 27,
+    "child_tables": 8,
+    "singleton": 1,
+    "renamed": false,
+    "inventory": "docs/DOCTYPE-NAMING-REVIEW.md"
+  },
+  "operational_limits": [
+    "No Meta/live-recipient acceptance repeated in this review",
+    "Server configuration and permanent callback remain unverified by this review",
+    "Supervised default/media workers, recent scheduler execution, 9 AM acceptance and Socket.IO still need deployment verification",
+    "Backup restore, larger batches and inbound-media acceptance require deployment tests"
+  ],
+  "provider_transport": "Mocked. Fresh/upgrade Docker networks are internal-only; HMS suite blocks Requests transport.",
+  "sending_switches_changed_on_operational_sites": false,
+  "credentials_copied_or_published": false,
+  "production_ready": false,
+  "production_gate": "Complete deployment configuration and the explicit acceptance checklist in docs/PRODUCTION-READINESS.md",
+  "framework": {
+    "version": "16.52.0",
+    "revision": "4515014c87ece6cb20ee91d2cfb121c5cbd1ff4a",
+    "worktree_clean": true
+  },
+  "task_test_resources_removed": true
+}

@@ -97,7 +97,7 @@ async function render_shared_source_fields(frm) {
 				<div class="wm-field-menu">
 					<label class="small text-muted">${escape(__('Field source'))}</label>
 					<select class="form-control input-sm wm-field-source" aria-label="${escape(__('Field source'))}">
-					${groups.map((group, i) => `<option value="${i}">${escape(group.section.startsWith('static.') ? __('Static: {0}', [group.label]) : group.label)}</option>`).join('')}
+					${groups.map((group, i) => `<option value="${i}">${escape(group.section.startsWith('static.') ? __('Settings: {0}', [group.label]) : group.label)}</option>`).join('')}
 					</select>
 					<input type="search" class="form-control input-sm" aria-label="${escape(__('Search message fields'))}" placeholder="${escape(__('Search fields…'))}">
 					<div class="wm-field-options"></div>
@@ -107,8 +107,8 @@ async function render_shared_source_fields(frm) {
 			<span class="wm-shared-note">${escape(__('Shared across templates'))}</span>
 		</div>`);
 		const open_policy = group => {
-			if (group.exists) frappe.set_route('Form', 'WhatsApp Template Field Policy', group.source_doctype);
-			else frappe.new_doc('WhatsApp Template Field Policy', {source_doctype: group.source_doctype});
+			if (group.exists) frappe.set_route('Form', 'WhatsApp Template Fields', group.policy_name || group.source_doctype);
+			else frappe.new_doc('WhatsApp Template Fields', {source_doctype: group.source_doctype});
 		};
 		if (groups[0].can_manage) {
 			$('<button type="button" class="btn btn-xs btn-default"></button>').text(__('Manage fields')).on('click', () => open_policy(groups[0])).appendTo(wrapper.find('.wm-field-toolbar'));
@@ -139,7 +139,7 @@ async function render_shared_source_fields(frm) {
 		wrapper.find('details').on('toggle', event => { if (event.target.open) wrapper.find('input[type=search]').trigger('focus'); });
 	} catch (error) {
 		if (frm.__field_picker_request !== request) return;
-		wrapper.empty().append($('<p class="text-muted small"></p>').text(__('Shared fields could not be loaded. Check your access to the selected DocType.')));
+		wrapper.empty().append($('<p class="text-muted small"></p>').text(__('Shared fields could not be loaded. Check your access to the selected record type.')));
 	}
 	render_message_preview(frm);
 }
@@ -419,7 +419,7 @@ function setup_meta_editor(frm) {
         if (!saved()) return;
         const response = await frappe.call({method:'whatsapp_messaging.messaging.template_editor.import_options',args:{account_name:frm.doc.phone_number_id}});
         const options = response.message.map(row => ({value:row.name,label:`${row.template_name} · ${row.language} · ${row.approval_status}`}));
-        if (!options.length) { frappe.msgprint(__('No synced Meta templates are available for this account. An Admin can sync them from the Sender form.')); return; }
+        if (!options.length) { frappe.msgprint(__('No templates from Meta are available for this sender. An administrator can import them from the Sender form.')); return; }
         frappe.prompt({fieldname:'catalogue_name',fieldtype:'Select',label:__('Existing Meta template'),options,reqd:1}, async values => {
             const imported = await frappe.call({method:'whatsapp_messaging.messaging.template_editor.import_content',args:{name:frm.doc.name,catalogue_name:values.catalogue_name}});
             const {meta_examples, ...fields} = imported.message;
@@ -428,7 +428,7 @@ function setup_meta_editor(frm) {
             for (const row of meta_examples) frm.add_child('meta_examples',row);
             frm.refresh_field('meta_examples');
             setup_meta_editor(frm); render_message_preview(frm);
-            frappe.show_alert(__('Imported into this draft. Choose variable fields and Save.'));
+            frappe.show_alert(__('Imported into this draft. Choose the fields used to personalize this message, then Save.'));
         }, __('Import message content'), __('Import'));
     }, __('Meta'));
 }

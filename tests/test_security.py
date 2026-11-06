@@ -174,7 +174,7 @@ class TestSendBoundaries(unittest.TestCase):
 		entry = load_function("controller.py", "get_template_recipients", {
 			"frappe": self.frappe, "format_phone_number": lambda x: x})
 		self.assertEqual(entry(self.template, Mock()), ["919876543210"])
-		self.frappe.get_doc.assert_called_once_with("Static Recipient", "Asha")
+		self.frappe.get_doc.assert_called_once_with("Additional Numbers", "Asha")
 
 	def test_json_filter_envelope_is_decoded(self):
 		evaluate = Mock(return_value=True)

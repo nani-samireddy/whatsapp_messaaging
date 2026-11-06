@@ -45,4 +45,4 @@ Messaging permissions dialog shown to Admin and System Manager.
 - [Use an approved WhatsApp template](approved-templates.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

@@ -10,7 +10,6 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "run_key",
   "schedule",
   "rule_doctype",
   "rule",
@@ -18,18 +17,20 @@
   "state",
   "run_as",
   "due_at",
-  "cursor",
-  "snapshot_json",
   "records_selected",
   "records_processed",
   "messages_created",
   "records_excluded",
-  "last_error"
+  "last_error",
+  "technical_details_section",
+  "run_key",
+  "cursor",
+  "snapshot_json"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -57,13 +58,13 @@
   },
   {
    "fieldname": "kind",
-   "label": "Kind",
+   "label": "Automation Type",
    "fieldtype": "Select",
    "options": "Schedule\nCampaign\nEvent\nManual"
   },
   {
    "fieldname": "state",
-   "label": "State",
+   "label": "Status",
    "fieldtype": "Select",
    "default": "Ready",
    "in_list_view": 1,
@@ -71,13 +72,13 @@
   },
   {
    "fieldname": "run_as",
-   "label": "Run As",
+   "label": "Send on Behalf Of",
    "fieldtype": "Link",
    "options": "User"
   },
   {
    "fieldname": "due_at",
-   "label": "Due At",
+   "label": "Scheduled For",
    "fieldtype": "Datetime"
   },
   {
@@ -99,22 +100,22 @@
   },
   {
    "fieldname": "records_processed",
-   "label": "Records Processed",
+   "label": "Records Checked",
    "fieldtype": "Int"
   },
   {
    "fieldname": "messages_created",
-   "label": "Messages Created",
+   "label": "Messages Prepared",
    "fieldtype": "Int"
   },
   {
    "fieldname": "records_excluded",
-   "label": "Records Excluded",
+   "label": "Records Skipped",
    "fieldtype": "Int"
   },
   {
    "fieldname": "last_error",
-   "label": "Last Error",
+   "label": "What Needs Attention",
    "fieldtype": "Small Text"
   },
   {
@@ -124,6 +125,13 @@
    "hidden": 1,
    "read_only": 1,
    "default": "WhatsApp Campaign"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

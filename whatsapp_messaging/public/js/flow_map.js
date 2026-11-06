@@ -3,7 +3,7 @@ import Drawflow from '../vendor/drawflow/drawflow.js';
 import drawflowCss from '../vendor/drawflow/style.js';
 const WIDTH=240, BASE=88, PORT=28, PAD=56, GAP_X=140, GAP_Y=36;
 const labelFor=key=>String(key||'Unnamed step').replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
-const kinds={Menu:'Menu',Question:'Ask a question',Message:'Send a message',Template:'Send a template',Handoff:'Reception handoff',End:'Finish',Missing:'Missing step'};
+const kinds={Menu:'Menu',Question:'Ask a question',Message:'Send a message',Template:'Send a template',Handoff:'Pass to reception',End:'Finish',Missing:'Missing step'};
 const icons={Menu:'list',Question:'circle-question-mark',Message:'message-circle',Template:'layout-template',Handoff:'headset',End:'flag',Missing:'circle-alert'};
 const colors={Menu:'var(--blue-500,#3b82f6)',Question:'var(--purple-500,#8b5cf6)',Message:'var(--cyan-500,#06b6d4)',Template:'var(--pink-500,#ec4899)',Handoff:'var(--orange-500,#f97316)',End:'var(--green-500,#22c55e)',Missing:'var(--red-500,#ef4444)'};
 

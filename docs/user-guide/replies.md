@@ -12,7 +12,7 @@ This lets you write a text response in an existing conversation. The app saves t
 
 ## 1. Open the right thread
 
-Confirm the sender, recipient and You can reply now notice. For a reply to a specific incoming message, choose that message’s Reply action.
+Choose a conversation from All, Unread or Mine. Use Filters for the business number, status or assignment. Use a message’s reply arrow to quote it.
 
 ## 2. Write your reply
 
@@ -24,7 +24,7 @@ Choose the send arrow at the top right of the message box once, or press Ctrl+En
 
 ## 4. Check the timeline
 
-Look for the new message and its status. If the reply window has closed, choose Template in the bottom toolbar.
+Look for the new message and its delivery status. After the 24-hour reply window ends, the reply box becomes read-only and Template is highlighted. Choose an approved template to continue.
 
 ## What to check
 
@@ -50,4 +50,4 @@ Desktop inbox with conversation list, timeline and recipient details.
 - [Use an approved WhatsApp template](approved-templates.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

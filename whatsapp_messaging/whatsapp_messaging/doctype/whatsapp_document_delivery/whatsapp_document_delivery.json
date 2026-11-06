@@ -31,9 +31,9 @@
   },
   {
    "fieldname": "rule",
-   "label": "Document rule",
+   "label": "Document Delivery Rule",
    "fieldtype": "Link",
-   "options": "WhatsApp Document Rule",
+   "options": "WhatsApp Document Delivery Rule",
    "read_only": 1,
    "in_list_view": 1
   },

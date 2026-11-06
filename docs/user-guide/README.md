@@ -7,7 +7,7 @@ Screenshots show local development screens. Available fields, values, sender acc
 ## Getting started
 
 - [Find your way around](start.md) — Navigate hospital messaging, appointment reminders and follow-ups.
-- [Manage reusable recipients](recipients.md) — Keep the reception coordinator’s contact available for local rules.
+- [Manage additional numbers](recipients.md) — Keep the reception coordinator’s contact available for local rules.
 
 ## Inbox
 
@@ -41,4 +41,4 @@ Screenshots show local development screens. Available fields, values, sender acc
 - [Check delivery and handle blocked sends](delivery.md) — Check whether patient messages were queued, blocked or delivered.
 - [Read messages and preserved history](history.md) — Refer to patient conversations, individual messages and preserved history.
 
-Updated 30 October 2026.
+Updated 2026-11-01.

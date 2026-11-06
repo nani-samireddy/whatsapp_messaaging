@@ -8,7 +8,7 @@ frappe.ui.form.on('WhatsApp Media', {
         frm.set_df_property('media_attachment', 'reqd', frm.is_new() ? 1 : 0);
         frm.set_intro(__('Choose a Sender and private file, then Save. The app uploads it to WhatsApp Cloud in the background without sending a message.'));
         if (!frm.is_new() && frm.doc.validation_status === 'Ready') {
-            frm.add_custom_button(frm.doc.cloud_status === 'Uploaded' ? __('Refresh cloud upload') : __('Upload / Retry'), async () => {
+            frm.add_custom_button(frm.doc.cloud_status === 'Uploaded' ? __('Refresh cloud upload') : __('Upload to WhatsApp'), async () => {
                 if (frm.is_dirty()) { frappe.msgprint(__('Save your changes before requesting a cloud upload.')); return; }
                 await frappe.call({method:'whatsapp_messaging.messaging.media_cloud.retry',args:{name:frm.doc.name}});
                 await frm.reload_doc();

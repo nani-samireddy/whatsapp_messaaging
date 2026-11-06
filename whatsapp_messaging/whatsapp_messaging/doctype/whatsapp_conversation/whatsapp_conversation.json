@@ -9,24 +9,27 @@
   "record_title",
   "recipient",
   "messages_log_section",
+  "message_history",
   "conversations",
-  "identity_key",
+  "conversation_details_section",
   "account",
   "peer",
   "workflow_status",
   "assigned_to",
   "last_activity_at",
   "last_message",
-  "last_sequence",
   "last_inbound_at",
   "window_expires_at",
   "last_outbound_at",
+  "technical_details_section",
+  "identity_key",
+  "last_sequence",
   "version"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -36,12 +39,12 @@
   {
    "fieldname": "recipient",
    "fieldtype": "Data",
-   "label": "recipient"
+   "label": "WhatsApp Number"
   },
   {
    "fieldname": "messages_log_section",
    "fieldtype": "Section Break",
-   "label": "Messages log"
+   "label": "Messages"
   },
   {
    "fieldname": "conversations",
@@ -57,20 +60,20 @@
   },
   {
    "fieldname": "account",
-   "label": "Account",
+   "label": "Sender",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "options": "WhatsApp Phone Number ID"
+   "options": "WhatsApp Sender"
   },
   {
    "fieldname": "peer",
-   "label": "Peer",
+   "label": "Contact",
    "fieldtype": "Link",
-   "options": "WhatsApp Peer"
+   "options": "WhatsApp Contact"
   },
   {
    "fieldname": "workflow_status",
-   "label": "Workflow Status",
+   "label": "Conversation Status",
    "fieldtype": "Select",
    "default": "Open",
    "in_list_view": 1,
@@ -102,17 +105,17 @@
   },
   {
    "fieldname": "last_inbound_at",
-   "label": "Last Inbound At",
+   "label": "Last Message Received On",
    "fieldtype": "Datetime"
   },
   {
    "fieldname": "window_expires_at",
-   "label": "Window Expires At",
+   "label": "Direct Replies Available Until",
    "fieldtype": "Datetime"
   },
   {
    "fieldname": "last_outbound_at",
-   "label": "Last Outbound At",
+   "label": "Last Message Sent On",
    "fieldtype": "Datetime"
   },
   {
@@ -120,6 +123,25 @@
    "label": "Version",
    "fieldtype": "Int",
    "default": "0"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
+  },
+  {
+   "fieldname": "message_history",
+   "fieldtype": "HTML",
+   "label": "Conversation Messages",
+   "depends_on": "eval:!!doc.account"
+  },
+  {
+   "fieldname": "conversation_details_section",
+   "fieldtype": "Section Break",
+   "label": "Conversation Details",
+   "collapsible": 1
   }
  ],
  "index_web_pages_for_search": 1,

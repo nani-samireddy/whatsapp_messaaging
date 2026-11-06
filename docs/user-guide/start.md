@@ -20,7 +20,7 @@ Select WhatsApp Messaging in Desk’s app chooser. Riverbend Hospital’s recept
 
 ## 3. Expand a sidebar group
 
-Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Recipients. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible.
+Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Additional Numbers. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible.
 
 ## 4. Use the cards and guide
 
@@ -47,4 +47,4 @@ Messaging workspace: inbox shortcuts, summary cards and User guide.
 - [Configure a sender and integration](senders.md)
 - [Send documents automatically](document-delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

@@ -10,19 +10,20 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "event_key",
   "account",
   "provider_message_id",
   "provider_status",
   "provider_at",
   "message",
   "error_code",
+  "technical_details_section",
+  "event_key",
   "correlation_key"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -37,26 +38,26 @@
   },
   {
    "fieldname": "account",
-   "label": "Account",
+   "label": "Sender",
    "fieldtype": "Link",
-   "options": "WhatsApp Phone Number ID"
+   "options": "WhatsApp Sender"
   },
   {
    "fieldname": "provider_message_id",
-   "label": "Provider Message Id",
+   "label": "WhatsApp Message ID",
    "fieldtype": "Data",
    "in_list_view": 1,
    "length": 255
   },
   {
    "fieldname": "provider_status",
-   "label": "Provider Status",
+   "label": "WhatsApp Delivery Status",
    "fieldtype": "Data",
    "in_list_view": 1
   },
   {
    "fieldname": "provider_at",
-   "label": "Provider At",
+   "label": "WhatsApp Update Time",
    "fieldtype": "Datetime"
   },
   {
@@ -74,6 +75,13 @@
    "fieldname": "correlation_key",
    "label": "Correlation Key",
    "fieldtype": "Data"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

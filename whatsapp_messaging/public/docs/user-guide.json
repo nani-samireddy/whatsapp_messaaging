@@ -1,7 +1,7 @@
 {
   "title": "WhatsApp user guide",
-  "version": 12,
-  "updated": "30 October 2026",
+  "version": 13,
+  "updated": "2026-11-01",
   "screenshot_notice": "Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions.",
   "guides": [
     {
@@ -30,7 +30,7 @@
         },
         {
           "title": "Expand a sidebar group",
-          "detail": "Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Recipients. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible."
+          "detail": "Overview opens the messaging workspace. Expand Messaging for Inbox, Conversations, Messages, Media and Additional Numbers. Templates contains reusable content and shared fields; Automation contains campaigns, flows, schedules and its overview. Document delivery groups rules and deliveries. Delivery & logs contains sending history and diagnostics; Administration contains its overview, Senders and Integration settings. User guide stays at the bottom. Your permissions determine which links are visible."
         },
         {
           "title": "Use the cards and guide",
@@ -111,7 +111,7 @@
       "steps": [
         {
           "title": "Open the right thread",
-          "detail": "Confirm the sender, recipient and You can reply now notice. For a reply to a specific incoming message, choose that message’s Reply action."
+          "detail": "Choose a conversation from All, Unread or Mine. Use Filters for the business number, status or assignment. Use a message’s reply arrow to quote it."
         },
         {
           "title": "Write your reply",
@@ -123,7 +123,7 @@
         },
         {
           "title": "Check the timeline",
-          "detail": "Look for the new message and its status. If the reply window has closed, choose Template in the bottom toolbar."
+          "detail": "Look for the new message and its delivery status. After the 24-hour reply window ends, the reply box becomes read-only and Template is highlighted. Choose an approved template to continue."
         }
       ],
       "check": "The message appears in the timeline with a status. Delivered or Read requires a corresponding provider receipt.",
@@ -232,25 +232,25 @@
       "screenshots": [
         {
           "file": "assignment.jpg",
-          "caption": "Assign conversation dialog: a supervisor can choose a team member or Not assigned."
+          "caption": "Assign conversation dialog: a supervisor can choose a team member or Not assigned. In the current Inbox, open Contact details to find these controls."
         }
       ],
       "steps": [
         {
           "title": "Assign a conversation to yourself",
-          "detail": "Open a conversation and choose Assign to me. Choose Remove assignment when you no longer need to handle it."
+          "detail": "Open a conversation, choose Contact details, then Assign to me. Choose Remove assignment when you no longer need to handle it."
         },
         {
           "title": "Update your conversation’s status",
-          "detail": "Use the Status selector: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status."
+          "detail": "In Contact details, use Status: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status."
         },
         {
           "title": "Reassign when supervising",
-          "detail": "Admin and System Manager can choose Assign to someone, select a Team member or Not assigned, and choose Save assignment."
+          "detail": "In Contact details, Admin and System Manager can choose Assign to someone, select a team member or Not assigned, and choose Save assignment."
         },
         {
           "title": "Review activity",
-          "detail": "Conversation history records assignment and status changes. A new incoming message reopens a resolved conversation."
+          "detail": "Expand Activity history in Contact details to review assignments, status changes and other actions. A new incoming message reopens a resolved conversation."
         }
       ],
       "check": "The assigned team member and status update, with an entry in Conversation history. Use Assigned to me or Unassigned to find conversations.",
@@ -321,7 +321,7 @@
       "steps": [
         {
           "title": "Check the campaign",
-          "detail": "Configure an enabled campaign for the business DocType, reusable Message Template, sender and recipient field. Select None or Custom for a manual action. Bulk campaigns use preview and start instead."
+          "detail": "Configure an enabled campaign for the business record type, reusable Message Template, sender and recipient field. Select None or Custom for a manual action. Bulk campaigns use preview and start instead."
         },
         {
           "title": "Open the business record",
@@ -337,7 +337,7 @@
         }
       ],
       "check": "A single source-scoped request is queued and the conversation is explicitly linked to its readable source record.",
-      "note": "If the action is missing, ask an Admin to check the campaign’s DocType, event, recipient mapping and disabled flag. Source permission and sender eligibility are checked again before dispatch.",
+      "note": "If the action is missing, ask an Admin to check the campaign’s record type, sending trigger, phone field and pause setting. The app checks access to the record and permission to send before each message.",
       "related": [
         "templates",
         "record-links",
@@ -414,11 +414,11 @@
         },
         {
           "title": "Check and save",
-          "detail": "Review the private preview and detected size, then choose Save. The app fills in the file details and queues a background cloud upload after saving. Both Enable Outbound Requests in WhatsApp Settings and the selected Sender must be enabled. Uploading a file alone does not save the media entry, and saving media does not send a message."
+          "detail": "Review the private preview and detected size, then choose Save. The app fills in the file details and queues a background cloud upload after saving. Both Enable Allow Sending and File Uploads in WhatsApp Settings and the selected Sender must be enabled. Uploading a file alone does not save the media entry, and saving media does not send a message."
         },
         {
           "title": "Check the cloud result",
-          "detail": "Open the saved record. Pending or Uploading means the upload is waiting or running. Uploaded shows the WhatsApp Media ID and upload time. Blocked explains a setting or access problem; Failed explains an upload problem. Correct it and choose Upload / Retry. IDs are refreshed when needed; Refresh cloud upload lets you request a fresh ID."
+          "detail": "Open the saved record. Pending or Uploading means the upload is waiting or running. Uploaded shows the WhatsApp Media ID and upload time. Blocked explains a setting or access problem; Failed explains an upload problem. Correct it and choose Upload to WhatsApp. IDs are refreshed when needed; Refresh cloud upload lets you request a fresh ID."
         },
         {
           "title": "Use the file in a template",
@@ -430,10 +430,10 @@
         },
         {
           "title": "Review older records",
-          "detail": "Existing media is not uploaded automatically during the update. Choose its Sender and Save or Upload / Retry. Needs Attention means an old file could not be verified; choose a supported private replacement. Legacy URL records retain the URL for reference and require a private upload before use. The app does not fetch that URL or turn public files private."
+          "detail": "Existing media is not uploaded automatically during the update. Choose its Sender and Save or Upload to WhatsApp. Needs Attention means an old file could not be verified; choose a supported private replacement. Legacy URL records retain the URL for reference and require a private upload before use. The app does not fetch that URL or turn public files private."
         }
       ],
-      "check": "The saved file is Ready, shows the correct type and size, and appears in the template picker. With the Sender and Outbound Requests enabled and the media worker running, its Cloud Upload Status becomes Uploaded and a WhatsApp Media ID appears.",
+      "check": "The saved file is Ready, shows the correct type and size, and appears in the template picker. With the Sender and Allow Sending and File Uploads enabled and the media worker running, its Cloud Upload Status becomes Uploaded and a WhatsApp Media ID appears.",
       "note": "Notes are internal library notes, not outgoing captions. Removing a selection or deleting the library entry preserves stored files and existing message attachments; it does not delete an upload from Meta. File deletion is a separate action in File Manager. Changes affect future message preparation; queued messages retain their prepared file snapshots.",
       "related": [
         "templates",
@@ -463,7 +463,7 @@
         },
         {
           "title": "Reuse a template and find its record",
-          "detail": "Add or edit a step, choose Template and select a saved text template. Flow values lets you choose an earlier answer, contact name, contact phone number or fixed text for each variable. Record lookup finds records of the template’s Source DocType using the contact’s WhatsApp number and your filters. For appointment confirmation, first show the current number and ask whether it is registered with the hospital. Yes continues; No asks for the registered number using a Phone question. An entered number matching the WhatsApp contact continues; a different number is not looked up. The bot asks the person to message from their registered WhatsApp number or contact reception for registration help. Appointment details are only shown for the current WhatsApp number. In the template step, select Patient → Mobile, Status equals Scheduled, and Most recently created. This uses booking creation time, not appointment date or last edit; no date question is needed. Choose reception for no booking or ambiguous registered contacts. Other flows can keep Require a single matching record. Phone numbers must include the country code."
+          "detail": "Add or edit a step, choose Template and select a saved text template. Flow values lets you choose an earlier answer, contact name, contact phone number or fixed text for each variable. Record lookup finds records of the template’s Record type using the contact’s WhatsApp number and your filters. For appointment confirmation, first show the current number and ask whether it is registered with the hospital. Yes continues; No asks for the registered number using a Phone question. An entered number matching the WhatsApp contact continues; a different number is not looked up. The bot asks the person to message from their registered WhatsApp number or contact reception for registration help. Appointment details are only shown for the current WhatsApp number. In the template step, select Patient → Mobile, Status equals Scheduled, and Most recently created. This uses booking creation time, not appointment date or last edit; no date question is needed. Choose reception for no booking or ambiguous registered contacts. Other flows can keep Require a single matching record. Phone numbers must include the country code."
         },
         {
           "title": "Try the conversation",
@@ -471,7 +471,7 @@
         },
         {
           "title": "Publish when ready",
-          "detail": "Choose Publish and enable to run the saved draft. Only one flow can be active for a business number. Enable Inbound, Outbound and Automation in WhatsApp Settings, and keep the background worker running. Changes saved afterward remain a draft until you publish again."
+          "detail": "Choose Publish and enable to run the saved draft. Only one flow can be active for a business number. Receive Incoming Messages and Updates, Outbound and Automation in WhatsApp Settings, and keep the background worker running. Changes saved afterward remain a draft until you publish again."
         },
         {
           "title": "Handle a reception request",
@@ -538,11 +538,11 @@
         },
         {
           "file": "template-field-policy.jpg",
-          "caption": "A System Manager approves shared message fields once for all templates using that source DocType."
+          "caption": "A System Manager approves shared message fields once for all templates using that source record type."
         },
         {
           "file": "template-static-fields.png",
-          "caption": "Insert field includes readable Single DocTypes under Static sources."
+          "caption": "Insert field includes readable settings records under Settings sources."
         },
         {
           "file": "template-caption.png",
@@ -552,15 +552,15 @@
       "steps": [
         {
           "title": "Create reusable content",
-          "detail": "Open Templates & Automation → Templates. Add Appointment confirmation, choose Riverbend Patient Services in Sender, and select the source DocType used for personalization. Select Local message for free-form content or Meta-approved template for wording that must be reviewed by Meta."
+          "detail": "Open Templates & Automation → Templates. Add Appointment confirmation, choose Riverbend Patient Services in Sender, and select the source record type used for personalization. Select Local message for free-form content or Meta-approved template for wording that must be reviewed by Meta."
         },
         {
           "title": "Import existing Meta content when needed",
-          "detail": "Open the Sender and choose Sync approved templates. Review the list, choose a Source DocType and import selected entries. Imports preserve Header, Message Text and Footer. Map every numbered variable using Variables & Review Examples before using the content in a campaign. Existing drafts are preserved; unsupported entries show an explanation."
+          "detail": "Open the Sender and choose Import templates from Meta. Review the list, choose a Record type and import selected entries. Imports preserve Header, Message Text and Footer. Map every numbered variable using Variables & Review Examples before using the content in a campaign. Existing drafts are preserved; unsupported entries show an explanation."
         },
         {
           "title": "Approve shared fields once",
-          "detail": "A System Manager selects allowed business fields in Template Field Policies. Insert field offers approved fields from the source DocType and readable Single DocTypes such as Hospital Settings. These choices apply to all templates using that source."
+          "detail": "A System Manager selects allowed business fields in Template Fields. Insert field offers approved fields from the source record type and readable settings records such as Hospital Settings. These choices apply to all templates using that source."
         },
         {
           "title": "Write and preview the message",
@@ -600,9 +600,9 @@
       "audience": "Admin · System Manager, with source-record access",
       "route": [
         "List",
-        "WhatsApp Document Rule"
+        "WhatsApp Document Delivery Rule"
       ],
-      "description": "WhatsApp Document Rule connects a business record, trigger, recipient, PDF and approved WhatsApp document template. Matching saved changes create a WhatsApp Document Delivery entry and use the normal outbox. Select and Data fields share a chip input; Text fields offer Equals or Contains. Comparison values belong only to the rule: they never change source records or field options.",
+      "description": "WhatsApp Document Delivery Rule connects a business record, trigger, recipient, PDF and approved WhatsApp document template. Matching saved changes create a WhatsApp Document Delivery entry and use the normal outbox. Select and Data fields share a chip input; Text fields offer Equals or Contains. Comparison values belong only to the rule: they never change source records or field options.",
       "screenshots": [
         {
           "file": "document-value-chips.png",
@@ -620,15 +620,15 @@
       "steps": [
         {
           "title": "Prepare the sender and document template",
-          "detail": "A System Manager configures the sender and integration switches. Create a Utility template with a Document header in WhatsApp Manager, obtain approval, then open WhatsApp Phone Number ID and choose Sync approved templates. The local message editor does not author Document headers. Record recipient consent in Inbox → Details → Messaging permissions."
+          "detail": "A System Manager configures the sender and integration switches. Create a Utility template with a Document header in WhatsApp Manager, obtain approval, then open WhatsApp Sender and choose Import templates from Meta. The local message editor does not author Document headers. Record recipient consent in Inbox → Details → Messaging permissions."
         },
         {
-          "title": "Open the rule DocType",
-          "detail": "Open Document delivery rules in the WhatsApp sidebar, or search for WhatsApp Document Rule. Create a rule or open HMS - Invoice PDF after issue. Keep Enabled unchecked while configuring. On rule and delivery forms, Help → User guide returns here."
+          "title": "Open document delivery rules",
+          "detail": "Open Document delivery rules in the WhatsApp sidebar, or search for WhatsApp Document Delivery Rule. Create a rule or open HMS - Invoice PDF after issue. Keep Enabled unchecked while configuring. On rule and delivery forms, Help → User guide returns here."
         },
         {
           "title": "Choose the source and event",
-          "detail": "Set Record type to the source business DocType, such as HMS Invoice. Choose Record created, Field changes to a value, or Document submitted. Submission is available only for submittable sources. For a field-change trigger, choose Trigger field from its dropdown."
+          "detail": "Set Record type to the source business record type, such as HMS Invoice. Choose Record created, Field changes to a value, or Document submitted. Submission is available only for submittable sources. For a field-change trigger, choose Trigger field from its dropdown."
         },
         {
           "title": "Choose values for a dropdown or Check field",
@@ -664,7 +664,7 @@
         },
         {
           "title": "Enable the configured workflow",
-          "detail": "After checking approval, consent and mappings, enable the rule and save. The configuring user becomes Execution user. Enable Outbound Requests and Enable Automation in WhatsApp Settings, and run the worker and scheduler. Issue a new invoice or complete the configured source transition. Existing matching records are not backfilled automatically."
+          "detail": "After checking approval, consent and mappings, enable the rule and save. The configuring user becomes Execution user. Enable Allow Sending and File Uploads and Allow Automatic Messages in WhatsApp Settings, and run the worker and scheduler. Issue a new invoice or complete the configured source transition. Existing matching records are not backfilled automatically."
         },
         {
           "title": "Release, monitor or resolve a held delivery",
@@ -689,7 +689,7 @@
       "audience": "Clinical staff for review · Admin or System Manager for messaging release",
       "route": [
         "Form",
-        "WhatsApp Document Rule",
+        "WhatsApp Document Delivery Rule",
         "HMS - Released laboratory report"
       ],
       "description": "The HMS - Released laboratory report preset watches Lab Report → Status = Reviewed, resolves the linked patient’s Mobile number, and uses the private PDF in Report file. It requires an additional messaging release. A reviewed status alone does not send the report.",
@@ -706,11 +706,11 @@
       "steps": [
         {
           "title": "Prepare the hospital sender and consent",
-          "detail": "Configure the sender, obtain approval for a report-notification template with a Document header, and Sync approved templates on the sender. Check the patient’s country-code phone number and recorded messaging consent. Keep the preset disabled during setup."
+          "detail": "Configure the sender, obtain approval for a report-notification template with a Document header, and Import templates from Meta on the sender. Check the patient’s country-code phone number and recorded messaging consent. Keep the preset disabled during setup."
         },
         {
           "title": "Open the laboratory preset",
-          "detail": "Open WhatsApp Document Rule → HMS - Released laboratory report. Set Record type to Lab Report, Trigger to Field changes to a value, and Trigger field to Status."
+          "detail": "Open WhatsApp Document Delivery Rule → HMS - Released laboratory report. Set Record type to Lab Report, Trigger to Field changes to a value, and Trigger field to Status."
         },
         {
           "title": "Select Reviewed and keep the release step",
@@ -820,7 +820,7 @@
         },
         {
           "title": "Choose the campaign and time",
-          "detail": "Select the Appointment confirmation campaign. For a one-time follow-up enter First occurrence (local time) and leave Recurrence blank. For daily 09:00 reminders use 0 9 * * * in Recurrence."
+          "detail": "Select the Appointment confirmation campaign. For a one-time follow-up enter First send (local time) and leave Recurrence blank. For daily 09:00 reminders use 0 9 * * * in Recurrence."
         },
         {
           "title": "Confirm the timezone",
@@ -863,7 +863,7 @@
       "steps": [
         {
           "title": "Choose a reusable template",
-          "detail": "Open Templates & Automation → Campaigns or choose New campaign on Appointment confirmation. Give the campaign a recognizable name such as Tomorrow’s appointment reminders. Select Message Template and Sender. The source DocType is taken from the template; Open template lets you edit its content separately."
+          "detail": "Open Templates & Automation → Campaigns or choose New campaign on Appointment confirmation. Give the campaign a recognizable name such as Tomorrow’s appointment reminders. Select Message Template and Sender. The source record type is taken from the template; Open template lets you edit its content separately."
         },
         {
           "title": "Select recipients and scope",
@@ -871,7 +871,7 @@
         },
         {
           "title": "Choose the sending workflow",
-          "detail": "Use Custom or None for an action on a business record; a document Event for automatic changes; or Scheduled/Cron for future runs. Enable Automation Active for events and schedules. For a bulk run, select Send to filtered records (bulk), save and clear Disabled when ready."
+          "detail": "Use Custom or None for an action on a business record; a document Event for automatic changes; or Scheduled/Cron for future runs. Allow Automatic Messages Active for events and schedules. For a bulk run, select Send to filtered records (bulk), save and clear Disabled when ready."
         },
         {
           "title": "Remind patients before a date",
@@ -913,7 +913,7 @@
       "steps": [
         {
           "title": "Find the request",
-          "detail": "Use the conversation timeline or Campaign Runs → View details. Admin and System Manager can also open Administration → Outbound Queue and Send Attempts."
+          "detail": "Use the conversation timeline or Campaign Runs → View details. Admin and System Manager can also open Administration → Sending queue and Send Attempts."
         },
         {
           "title": "Read the status",
@@ -921,7 +921,7 @@
         },
         {
           "title": "Handle confirmed failures",
-          "detail": "Review the reason and fix the issue first. Retry confirmed failure is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts."
+          "detail": "Review the reason and fix the issue first. Try sending again is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts."
         },
         {
           "title": "Check an unconfirmed send before sending again",
@@ -946,7 +946,7 @@
       "audience": "System Manager",
       "route": [
         "List",
-        "WhatsApp Phone Number ID"
+        "WhatsApp Sender"
       ],
       "screenshots": [
         {
@@ -965,23 +965,23 @@
       "steps": [
         {
           "title": "Open sender accounts",
-          "detail": "Open Administration → Phone Numbers and add a WhatsApp Phone Number ID. Quick Entry shows Label, Phone Number ID, Access Token and Enabled. Set Label to Riverbend Patient Services and enter the hospital’s correct external Phone Number ID. Leave Enabled off while preparing the account."
+          "detail": "Open Administration → Phone Numbers and add a WhatsApp Sender. Quick Entry shows Label, Phone Number ID, Access Token and Enabled. Set Label to Riverbend Patient Services and enter the hospital’s correct external Phone Number ID. Leave Enabled off while preparing the account."
         },
         {
           "title": "Enter account credentials",
-          "detail": "A System Manager enters Access Token. Choose Edit Full Form to add WABA ID and optional account details. Portfolio Id is the optional Meta business portfolio identifier used to group contacts across sender accounts; when blank, contact grouping falls back to WABA ID or the individual sender. Credentials remain restricted to System Manager."
+          "detail": "A System Manager enters Access Token. Choose Edit Full Form to add WABA ID and optional account details. Business Portfolio ID is the optional Meta business portfolio identifier used to group contacts across sender accounts; when blank, contact grouping falls back to WABA ID or the individual sender. Credentials remain restricted to System Manager."
         },
         {
           "title": "Review integration settings",
-          "detail": "Open WhatsApp Settings. Review API configuration and, for inbound delivery, the application secret and verification token. Enable Outbound Requests, Enable Inbound and Enable Automation are separate switches and default off."
+          "detail": "Open WhatsApp Settings. Review API configuration and, for inbound delivery, the application secret and verification token. Enable Allow Sending and File Uploads, Receive Incoming Messages and Updates and Allow Automatic Messages are separate switches and default off."
         },
         {
           "title": "Enable only when ready",
-          "detail": "Confirm the account and integration configuration before enabling the required switches and sender. A worker and scheduler must be running for queued and scheduled work. An Admin can then use Sync approved templates on the sender form."
+          "detail": "Confirm the account and integration configuration before enabling the required switches and sender. A worker and scheduler must be running for queued and scheduled work. An Admin can then use Import templates from Meta on the sender form."
         },
         {
           "title": "Select templates to import",
-          "detail": "On the saved Riverbend Patient Services sender, choose Sync approved templates. The dialog lists all Meta templates with language, review status and a message preview. Choose a Source DocType, select the supported entries you need and choose Import selected. Already-imported records are linked and preserved. Unsupported formats show why they cannot be imported."
+          "detail": "On the saved Riverbend Patient Services sender, choose Import templates from Meta. The dialog lists all Meta templates with language, review status and a message preview. Choose a Record type, select the supported entries you need and choose Import selected. Already-imported records are linked and preserved. Unsupported formats show why they cannot be imported."
         }
       ],
       "check": "Sync refreshes the Meta catalogue for the WABA. Import selected adds only your chosen supported templates to the local library, without creating campaigns or sending messages.",
@@ -1006,7 +1006,7 @@
       "screenshots": [
         {
           "file": "webhook-event.jpg",
-          "caption": "Quarantined webhook event with its safe reason and Replay event action."
+          "caption": "Quarantined webhook event with its safe reason and Process update again action."
         }
       ],
       "steps": [
@@ -1024,7 +1024,7 @@
         },
         {
           "title": "Replay and verify",
-          "detail": "For a Failed or Quarantined event, choose Replay event. Check its new state, then inspect the affected conversation or message receipt."
+          "detail": "For a Failed or Quarantined event, choose Process update again. Check its new state, then inspect the affected conversation or message receipt."
         }
       ],
       "check": "Valid events create or update the appropriate message history. Duplicate provider events are handled once; late status receipts do not regress delivery.",
@@ -1037,32 +1037,32 @@
     },
     {
       "id": "recipients",
-      "title": "Manage reusable recipients",
+      "title": "Manage additional numbers",
       "summary": "Keep the reception coordinator’s contact available for local rules.",
       "category": "Getting started",
       "audience": "Admin · System Manager (Editors can select existing recipients)",
       "route": [
         "List",
-        "Static Recipient"
+        "Additional Numbers"
       ],
       "screenshots": [
         {
-          "file": "static-recipient.jpg",
-          "caption": "Reception coordinator contact with the country code and phone number entered."
+          "file": "additional-numbers.png",
+          "caption": "Additional Numbers explains its purpose and asks for a recognizable name and phone number."
         }
       ],
       "steps": [
         {
-          "title": "Open Recipients",
-          "detail": "From Messaging choose Recipients and add a Static Recipient named Reception coordinator."
+          "title": "Open Additional Numbers",
+          "detail": "From Messaging choose Additional Numbers and save a number named Reception coordinator."
         },
         {
-          "title": "Enter a recognizable label and phone",
-          "detail": "Enter Label. In Phone Number, select the country code and enter the national number. Save the recipient."
+          "title": "Enter a recognizable name and phone",
+          "detail": "Enter Name. In Phone Number, select the country code and enter the national number. Save the recipient."
         },
         {
-          "title": "Select it on a template",
-          "detail": "Open the intended local template and select the entry in Other Recipients when the workflow requires an additional recipient."
+          "title": "Select it on a campaign",
+          "detail": "Open the intended campaign and select the entry in Additional Numbers when the workflow requires an additional recipient."
         },
         {
           "title": "Review before sending",
@@ -1076,7 +1076,7 @@
         "consent",
         "campaigns"
       ],
-      "description": "This saves a named phone contact that can be reused in message rules. An Admin enters the name and number once, and users can select that contact under Other Recipients when configuring a rule. Saving a contact alone does not send a message or record consent."
+      "description": "This saves a named phone contact that can be reused in message rules. An Admin enters the name and number once, and users can select that contact under Additional Numbers when configuring a rule. Saving a contact alone does not send a message or record consent."
     },
     {
       "id": "history",
@@ -1104,6 +1104,10 @@
           "detail": "Messaging → Messages opens message records; Conversations opens conversation records. Use list filters to locate the relevant entry."
         },
         {
+          "title": "Read messages on the conversation form",
+          "detail": "Open Conversations and choose a record. Messages shows the latest 40 messages in order. Use Load older messages until all are shown, Refresh messages to check again, and attachment links to download files you can access. This form is read-only for live conversations. Use Open in Inbox to reply."
+        },
+        {
           "title": "Recognize preserved legacy data",
           "detail": "Older records remain available as history. They are not automatically assigned a guessed account or relabeled as delivered."
         },
@@ -1118,7 +1122,7 @@
         "conversations",
         "delivery"
       ],
-      "description": "This lets users review stored messages and conversations to understand what was sent or received and check recorded statuses. The inbox provides the conversation timeline, while message records provide individual details. Preserved older records remain available for reference without automatically sending them again."
+      "description": "Review incoming and outgoing messages, attachments and delivery statuses in the Inbox or directly on a conversation form. Message records provide individual details. Older records remain available for reference without sending them again."
     }
   ]
 }

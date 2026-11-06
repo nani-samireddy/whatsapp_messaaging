@@ -10,16 +10,17 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "read_key",
   "conversation",
   "user",
-  "last_read_sequence",
-  "read_at"
+  "read_at",
+  "technical_details_section",
+  "read_key",
+  "last_read_sequence"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -51,8 +52,15 @@
   },
   {
    "fieldname": "read_at",
-   "label": "Read At",
+   "label": "Read On",
    "fieldtype": "Datetime"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

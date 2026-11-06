@@ -1,9 +1,12 @@
 [pre_model_sync]
+whatsapp_messaging.patches.v1_0.plain_language_names
 whatsapp_messaging.patches.v1_0.encrypt_access_tokens
 # Patches added in this section will be executed before doctypes are migrated
 # Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
 
 [post_model_sync]
+whatsapp_messaging.patches.v1_0.plain_language_navigation
+whatsapp_messaging.patches.v1_0.repair_workspace_shortcuts
 # Patches added in this section will be executed after doctypes are migrated
 
 whatsapp_messaging.patches.v1_0.readable_record_titles

@@ -18,7 +18,7 @@ from whatsapp_messaging.messaging.common import insert, digest, utcnow
 def seed():
     assert frappe.local.site == 'whatsapp-test.localhost' and frappe.conf.db_host == 'db'
     frappe.set_user('Administrator')
-    for dt in ['WhatsApp Send Attempt','WhatsApp Status Event','WhatsApp Webhook Event','WhatsApp Attachment','WhatsApp Record Link','WhatsApp Conversation Activity','WhatsApp Conversation Read','WhatsApp Outbox','WhatsApp Automation Run','WhatsApp Schedule','WhatsApp Message','WhatsApp Conversation','WhatsApp Identity Alias','WhatsApp Peer','WhatsApp Approved Template','WhatsApp Campaign','WhatsApp Template Variable','WhatsApp Message Template','WhatsApp Phone Number ID','Static Recipient']:
+    for dt in ['WhatsApp Send Attempt','WhatsApp Status Event','WhatsApp Webhook Event','WhatsApp Attachment','WhatsApp Record Link','WhatsApp Conversation Activity','WhatsApp Conversation Read','WhatsApp Outbox','WhatsApp Automation Run','WhatsApp Schedule','WhatsApp Message','WhatsApp Conversation','WhatsApp Identity Alias','WhatsApp Contact','WhatsApp Meta Template','WhatsApp Campaign','WhatsApp Template Variable','WhatsApp Message Template','WhatsApp Sender','Additional Numbers']:
         frappe.db.delete(dt)
     from frappe.custom.doctype.custom_field.custom_field import create_custom_field
     if not frappe.db.exists('Custom Field','ToDo-wm_test_phone'):
@@ -36,9 +36,9 @@ def seed():
     settings=frappe.get_doc('WhatsApp Settings')
     settings.update(dict(enable_outbound_messages=1,enable_inbound=1,enable_automation=0,meta_app_id='riverbend-training-application',app_secret='training-only-secret',verify_token='training-only-token'))
     settings.save()
-    sender=frappe.get_doc(dict(doctype='WhatsApp Phone Number ID',label='Riverbend Patient Services',phone_number_id='100000000000001',access_token='training-only-token',waba_id='100000000000002',portfolio_id='riverbend-hospital',display_phone='+1 202-555-0100',enabled=1)).insert()
+    sender=frappe.get_doc(dict(doctype='WhatsApp Sender',label='Riverbend Patient Services',phone_number_id='100000000000001',access_token='training-only-token',waba_id='100000000000002',portfolio_id='riverbend-hospital',display_phone='+1 202-555-0100',enabled=1)).insert()
     peer=inbox.ensure_peer('12025550123',sender,'Meera Rao')
-    frappe.db.set_value('WhatsApp Peer',peer.name,dict(consent_recorded=1,consent_source='Appointment booking form'))
+    frappe.db.set_value('WhatsApp Contact',peer.name,dict(consent_recorded=1,consent_source='Appointment booking form'))
     conv=inbox.ensure_conversation(sender,peer)
     now=utcnow()
     for ident, body, minutes in [('hospital-inbound-1','Hello, could you confirm my appointment with Dr. Sen tomorrow?',12),('hospital-inbound-2','Thank you. Could you share the visit instructions as well?',2)]:
@@ -49,14 +49,14 @@ def seed():
         frappe.db.set_value('WhatsApp Conversation',c.name,'workflow_status',status)
     from whatsapp_messaging.messaging import catalogue, campaigns, template_editor
     approved_name=catalogue.upsert(sender.waba_id,dict(id='100000000000003',name='appointment_confirmation',language='en_US',category='UTILITY',status='APPROVED',components=[{'type':'BODY','text':'Hello {{1}}, your appointment {{2}} is confirmed. Reply if you need help.'}]))
-    approved=frappe.get_doc('WhatsApp Approved Template',approved_name)
+    approved=frappe.get_doc('WhatsApp Meta Template',approved_name)
     source=frappe.get_doc(dict(doctype='ToDo',description='Cardiology appointment — OPD-1042',status='Open',allocated_to='priya@riverbend.example',wm_test_phone='+1-'+peer.provider_identity[1:],wm_patient_name='Meera Rao',wm_appointment_reference='OPD-1042',wm_appointment_time='tomorrow at 9:30 AM')).insert()
     second=frappe.get_doc(dict(doctype='ToDo',description='General medicine appointment — OPD-1043',status='Open',wm_test_phone='+1-2025550124',wm_patient_name='Anita Shah',wm_appointment_reference='OPD-1043',wm_appointment_time='tomorrow at 10:15 AM')).insert()
     inbox.link_record(conv.name,'ToDo',source.name)
-    policy=frappe.get_doc('WhatsApp Template Field Policy','ToDo')
+    policy=frappe.get_doc('WhatsApp Template Fields','ToDo')
     policy.allowed_fields='["wm_patient_name","wm_appointment_reference","wm_appointment_time"]'
     policy.save()
-    static_policy = frappe.get_doc('WhatsApp Template Field Policy', 'Website Settings') if frappe.db.exists('WhatsApp Template Field Policy', 'Website Settings') else frappe.new_doc('WhatsApp Template Field Policy')
+    static_policy = frappe.get_doc('WhatsApp Template Fields', 'Website Settings') if frappe.db.exists('WhatsApp Template Fields', 'Website Settings') else frappe.new_doc('WhatsApp Template Fields')
     static_policy.update(dict(source_doctype='Website Settings', allowed_fields='["app_name"]'))
     static_policy.save()
     frappe.db.set_single_value('Website Settings', 'app_name', 'Riverbend Hospital')
@@ -91,7 +91,7 @@ def seed():
     frappe.db.set_value('WhatsApp Message',result['message'],'status','Delivered')
     frappe.db.set_value('WhatsApp Outbox',result['outbox'],'state','Delivered')
     receipt=insert('WhatsApp Webhook Event',event_key='hospital-quarantined-event',state='Quarantined',received_at=now,attempt_count=1,error_reason='Unknown sender account. Check the external Phone Number ID mapping before replaying.',payload_json='{}')
-    recipient=frappe.get_doc(dict(doctype='Static Recipient',label='Reception coordinator',phone_number='+1-2025550126')).insert()
+    recipient=frappe.get_doc(dict(doctype='Additional Numbers',label='Reception coordinator',phone_number='+1-2025550126')).insert()
     preview=automation.preview_campaign(bulk.name)
     frappe.db.commit()
     from frappe.utils.background_jobs import get_queue

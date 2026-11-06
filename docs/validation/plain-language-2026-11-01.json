@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-01",
+  "scope": "Mac-local WhatsApp app wording and DocType migration",
+  "server_changed": false,
+  "record_ids_preserved": true,
+  "local_credentials_and_sending_state_preserved": true,
+  "business_doctypes_renamed": 8,
+  "workflow_guides_updated": 22,
+  "workspace_source_files": 3,
+  "python_unit_passed": 77,
+  "javascript_passed": 18,
+  "app_build": "passed",
+  "ui_checks": [
+    "Additional Numbers route, Add number action, Quick Entry and full form",
+    "Settings labels and form introduction",
+    "Campaign event labels keep stored values",
+    "Navigation and three workspace source files"
+  ],
+  "production_ready": false,
+  "fresh": {
+    "total": 273,
+    "passed": 271,
+    "skipped": 2,
+    "failures": 0,
+    "log": ".integration/plain-language-clean-final.log"
+  },
+  "upgrade_from_04ad660": {
+    "total": 273,
+    "passed": 272,
+    "skipped": 1,
+    "failures": 0,
+    "log": ".integration/plain-language-upgrade-final.log"
+  },
+  "provider_requests_sent": false,
+  "temporary_test_resources_removed": true
+}

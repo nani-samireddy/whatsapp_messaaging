@@ -63,16 +63,17 @@
    "fieldname": "phone_number_id",
    "fieldtype": "Link",
    "label": "Sender",
-   "options": "WhatsApp Phone Number ID",
+   "options": "WhatsApp Sender",
    "reqd": 1
   },
   {
    "fieldname": "template_doctype",
    "fieldtype": "Link",
-   "label": "Source DocType",
+   "label": "Record Type",
    "options": "DocType",
    "read_only": 1,
-   "fetch_from": "message_template.template_doctype"
+   "fetch_from": "message_template.template_doctype",
+   "description": "Choose the records this campaign uses, such as Patient or Appointment."
   },
   {
    "fieldname": "message_summary",
@@ -97,8 +98,9 @@
   {
    "fieldname": "other_recipients",
    "fieldtype": "Table MultiSelect",
-   "label": "Other Recipients",
-   "options": "Static Recipient Link"
+   "label": "Additional Numbers",
+   "options": "Additional Number Entry",
+   "description": "Select saved numbers to receive this message in addition to the number from each record."
   },
   {
    "default": "0",
@@ -111,7 +113,8 @@
    "default": "1",
    "fieldname": "disable",
    "fieldtype": "Check",
-   "label": "Disabled"
+   "label": "Pause This Campaign",
+   "description": "Stops this campaign from starting new sends. Review the audience and message before resuming."
   },
   {
    "fieldname": "column_break_ldrj",
@@ -122,9 +125,10 @@
    "depends_on": "eval:doc.is_single!==1;",
    "fieldname": "template_event",
    "fieldtype": "Select",
-   "label": "Event",
+   "label": "When to Send",
    "options": "None\nCreate\nDate Reminder\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
-   "sort_options": 1
+   "sort_options": 1,
+   "description": "Choose whether staff send this message, a record change starts it, or a date reminder sends it."
   },
   {
    "depends_on": "eval:doc.template_event==='Scheduled'",
@@ -176,7 +180,7 @@
   {
    "fieldname": "update_query_button",
    "fieldtype": "Button",
-   "label": "Set Query"
+   "label": "Choose Records"
   },
   {
    "fieldname": "query_filters",
@@ -193,26 +197,27 @@
    "depends_on": "eval:doc.template_event==='Update Field'",
    "fieldname": "template_target_field",
    "fieldtype": "Select",
-   "label": "Target Field"
+   "label": "Field to Check"
   },
   {
    "fieldname": "automation_section",
    "fieldtype": "Section Break",
-   "label": "Automation & Execution"
+   "label": "Automatic Sending"
   },
   {
    "fieldname": "automation_active",
-   "label": "Automation Active",
+   "label": "Allow Automatic Sending",
    "fieldtype": "Check",
    "default": "0",
    "description": "Allows event rules and schedules. Global automation and outbound switches must also be enabled."
   },
   {
    "fieldname": "run_as",
-   "label": "Run As",
+   "label": "Send on Behalf Of",
    "fieldtype": "Link",
    "read_only": 1,
-   "options": "User"
+   "options": "User",
+   "description": "Messages use this team member\u2019s access to records. Choose a user who is allowed to send messages and read the required records."
   },
   {
    "fieldname": "schedule_record",
@@ -239,16 +244,16 @@
   },
   {
    "fieldname": "reminder_days_before",
-   "label": "Start Reminders (Days Before)",
+   "label": "Days Before the Due Date",
    "fieldtype": "Int",
    "default": "2",
-   "description": "2 sends once each day: two days before, one day before and on the due date. Past dates are excluded.",
+   "description": "Reminders are sent daily from this many days before the date through the due date. Enter 2 for reminders two days before, one day before and on the due date.",
    "depends_on": "eval:doc.template_event==='Date Reminder'",
    "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
   },
   {
    "fieldname": "reminder_time",
-   "label": "Daily Reminder Time",
+   "label": "Reminder Time Each Day",
    "fieldtype": "Time",
    "default": "09:00:00",
    "depends_on": "eval:doc.template_event==='Date Reminder'",
@@ -256,9 +261,9 @@
   },
   {
    "fieldname": "reminder_timezone",
-   "label": "Reminder Timezone",
+   "label": "Reminder Time Zone",
    "fieldtype": "Data",
-   "description": "Defaults to the site timezone. The daily time and date window both use this timezone.",
+   "description": "The time zone used for the daily reminder time.",
    "depends_on": "eval:doc.template_event==='Date Reminder'",
    "mandatory_depends_on": "eval:doc.template_event==='Date Reminder'"
   }

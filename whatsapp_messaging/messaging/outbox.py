@@ -16,6 +16,32 @@ from .template_framing import document_header
 ELIGIBLE_STATES=('Ready','Retry wait')
 
 
+class SupersededClaim(Exception):
+    """This worker must not send or change another worker's outcome."""
+
+
+def refresh_claim(name, account_name, owner, expires_at):
+    """Fence slow uploads before the irreversible message request.
+
+    A sweeper may have released an expired claim while media I/O was running.
+    Check current, locked rows rather than the worker's pre-upload snapshot.
+    The sender deadline also fences a newer claim for another intent/account.
+    """
+    sender = lock('WhatsApp Sender', account_name)
+    intent = lock('WhatsApp Outbox', name)
+    if intent.state != 'Claimed' or intent.lease_owner != owner:
+        raise SupersededClaim()
+    if (not intent.lease_until or get_datetime(intent.lease_until) <= utcnow()
+            or not sender.dispatch_lease_until
+            or get_datetime(sender.dispatch_lease_until) != expires_at):
+        set_outcome(intent, 'Ready', 'Worker claim expired before sending')
+        raise SupersededClaim()
+    expires_at = utcnow() + timedelta(seconds=120)
+    set_record_values(intent.doctype, name, 'lease_until', expires_at)
+    set_record_values(sender.doctype, sender.name, 'dispatch_lease_until', expires_at)
+    return sender, intent, expires_at
+
+
 def create_intent(conversation_name,request_id,body='',template=None,parameters=None,file_id=None,reply_to=None,source_doctype=None,source_name=None,rule=None,run=None,origin_key=None,deleted_source=False,interactive=None,conversation_flow=None,flow_version=None,flow_session=None,flow_generation=None):
     require_send_role()
     if not request_id or len(str(request_id))>200:frappe.throw('A stable request identifier is required')
@@ -32,7 +58,7 @@ def create_intent(conversation_name,request_id,body='',template=None,parameters=
         return {'outbox':existing.name,'message':existing.message,'state':existing.state}
     require_outbound_enabled()
     sender=account(doc.account,enabled=True)
-    peer=frappe.get_doc('WhatsApp Peer',doc.peer)
+    peer=frappe.get_doc('WhatsApp Contact',doc.peer)
     if peer.suppressed:frappe.throw('This recipient is suppressed')
     if source_doctype and source_name:
         frappe.get_doc(source_doctype,source_name).check_permission('read')
@@ -124,9 +150,12 @@ def set_outcome(intent,state,reason=None,code=None):
 def validate_dispatch(intent):
     require_outbound_enabled()
     require_send_role()
+    if not frappe.db.get_value('User', intent.requester, 'enabled'):
+        frappe.throw('The team member chosen to send these messages has a disabled account.', frappe.PermissionError)
     sender=account(intent.account,enabled=True)
     doc=conversation(intent.conversation)
-    peer=frappe.get_doc('WhatsApp Peer',doc.peer)
+    peer=frappe.get_doc('WhatsApp Contact',doc.peer)
+    payload=parsed(intent.payload_json,{})
     if peer.suppressed:frappe.throw('Recipient is suppressed')
     if intent.get('conversation_flow'):
         from .flows import validate_dispatch as validate_flow_dispatch
@@ -155,16 +184,32 @@ def validate_dispatch(intent):
             from whatsapp_messaging.utils import doc_matches_filters
             source=frappe.get_doc(intent.source_doctype,intent.source_name)
             if not doc_matches_filters(source,rule.query_filters):frappe.throw('The source no longer matches this rule')
+            # A changed phone number or newly restricted field must not leave a
+            # previously prepared patient message eligible for the old recipient.
+            from .automation import render
+            recipients,body,values,file_id=render(rule,source)
+            if peer.provider_identity not in recipients:
+                frappe.throw('The source recipient changed after this message was prepared')
+            if payload.get('type')=='template':
+                components=payload.get('template',{}).get('components',[])
+                body_component=next((part for part in components if part.get('type')=='body'),{})
+                prepared=[str(part.get('text','')) for part in body_component.get('parameters',[])]
+                if prepared!=[str(value) for value in values]:
+                    frappe.throw('The source message values changed; prepare the current version')
+            elif body!=payload.get('text',{}).get('body',payload.get(payload.get('type'),{}).get('caption','')):
+                frappe.throw('The source message changed; prepare the current version')
+            files=set(frappe.get_all('WhatsApp Attachment',filters={'message':intent.message},pluck='file'))
+            if files!=({file_id} if file_id else set()):
+                frappe.throw('The configured attachment changed after this message was prepared')
             if rule.template_event=='Date Reminder':
                 from .automation import validate_date_reminder,reminder_matches,origin_key
                 validate_date_reminder(rule)
                 if not intent.run or not reminder_matches(rule,source) or origin_key(rule,source,frappe.get_doc('WhatsApp Automation Run',intent.run),peer.provider_identity)!=intent.origin_key:
                     frappe.throw('The reminder date changed or is no longer due')
-    payload=parsed(intent.payload_json,{})
     if payload.get('to')!=peer.provider_identity:frappe.throw('Recipient identity changed')
     if payload.get('type')=='template':
         message=frappe.get_doc('WhatsApp Message',intent.message)
-        template=frappe.get_doc('WhatsApp Approved Template',message.approved_template)
+        template=frappe.get_doc('WhatsApp Meta Template',message.approved_template)
         template.check_permission('read')
         if not peer.consent_recorded or template.waba_id!=sender.waba_id or template.approval_status!='APPROVED' or not template.supported or template.schema_hash!=intent.template_hash:
             frappe.throw('The approved template or recipient eligibility changed')
@@ -184,7 +229,7 @@ def dispatch(name):
         if intent.state in ELIGIBLE_STATES:set_outcome(intent,'Held','Execution user no longer has messaging access')
         frappe.db.commit();return
     with as_user(base.requester):
-        sender=lock('WhatsApp Phone Number ID',base.account)
+        sender=lock('WhatsApp Sender',base.account)
         origin_run=lock('WhatsApp Automation Run',base.run) if base.run else None
         if origin_run and origin_run.schedule:lock('WhatsApp Schedule',origin_run.schedule)
         if origin_run and origin_run.kind in ('Schedule','Event') and not frappe.db.get_single_value('WhatsApp Settings','enable_automation',cache=False):return
@@ -206,8 +251,9 @@ def dispatch(name):
             frappe.db.commit();return
         count=int(intent.attempt_count or 0)+1
         lease=frappe.generate_hash(length=20)
-        set_record_values('WhatsApp Outbox',name,{'state':'Claimed','lease_owner':lease,'lease_until':now+timedelta(seconds=120),'attempt_count':count,'network_started':0})
-        set_record_values(sender.doctype,sender.name,{'dispatch_lease_until':now+timedelta(seconds=120),'last_dispatch_at':now})
+        lease_until=now+timedelta(seconds=120)
+        set_record_values('WhatsApp Outbox',name,{'state':'Claimed','lease_owner':lease,'lease_until':lease_until,'attempt_count':count,'network_started':0})
+        set_record_values(sender.doctype,sender.name,{'dispatch_lease_until':lease_until,'last_dispatch_at':now})
         attempt=insert('WhatsApp Send Attempt',attempt_key=digest(name,count),outbox=name,attempt_number=count,started_at=now,payload_hash=intent.payload_hash,outcome='Claimed')
         frappe.db.commit()
         network_started=False
@@ -223,7 +269,12 @@ def dispatch(name):
                 else:
                     payload[payload['type']]['id']=provider_media_id
                     if payload['type']=='document':payload['document']['filename']=attachment.file_name
-            # Recheck the gate and window after media upload, immediately before sending.
+            # End any upload/read transaction so eligibility reads use current data.
+            # Uploaded IDs are safe to retain even if this worker lost its claim.
+            frappe.db.commit()
+            sender,intent,lease_until=refresh_claim(name,sender.name,lease,lease_until)
+            doc=conversation(intent.conversation,locked=True)
+            # Recheck the actor, gate and window immediately before sending.
             validate_dispatch(intent)
             url=get_cloud_api_url(sender.name)
             headers=get_headers(sender.name)
@@ -231,14 +282,19 @@ def dispatch(name):
             set_record_values('WhatsApp Outbox',name,'network_started',1)
             set_record_values('WhatsApp Conversation',doc.name,'last_outbound_at',utcnow())
             frappe.db.commit();network_started=True
-            response=requests.post(url,json=payload,headers=headers,timeout=(5,30))
+            response=requests.post(url,json=payload,headers=headers,timeout=(5,30),allow_redirects=False)
             data=response.json()
+            # Use the same lock order as claiming; receipts may have arrived
+            # during the request and must be reconciled before committing.
+            sender=lock('WhatsApp Sender',sender.name)
+            intent=lock('WhatsApp Outbox',name)
+            conversation(intent.conversation,locked=True)
             if response.status_code>=500:
                 state='Unknown';code=str(response.status_code)
             elif response.status_code==429 and count<3:
                 state='Retry wait';code=str(data.get('error',{}).get('code','429'))
                 set_record_values('WhatsApp Outbox',name,'next_attempt_at',utcnow()+timedelta(seconds=60*(2**(count-1))))
-            elif not response.ok:
+            elif response.status_code>=300:
                 state='Failed';code=str(data.get('error',{}).get('code',response.status_code))
             elif data.get('messages') and data['messages'][0].get('id'):
                 provider_id=str(data['messages'][0]['id'])[:200]
@@ -249,16 +305,28 @@ def dispatch(name):
             else:state='Unknown';code='unrecognized_response'
             set_outcome(intent,state,'Provider request requires review' if state in ('Failed','Unknown','Held') else None,code)
             set_record_values(attempt.doctype,attempt.name,{'outcome':state,'finished_at':utcnow(),'http_status':response.status_code,'error_code':code})
-            from .webhooks import reconcile_statuses
-            reconcile_statuses(intent.message)
+        except SupersededClaim:
+            set_record_values(attempt.doctype,attempt.name,{'outcome':'Superseded','finished_at':utcnow()})
         except Exception:
             # Never copy exception strings, HTTP bodies or credentials into operator logs.
             frappe.db.rollback()
             state='Unknown' if network_started else 'Held'
-            set_outcome(intent,state,'Provider response uncertain; do not retry automatically' if network_started else 'Attachment or send eligibility requires review')
+            sender=lock('WhatsApp Sender',sender.name)
+            current=lock('WhatsApp Outbox',name)
+            conversation(intent.conversation,locked=True)
+            if network_started or (current.state=='Claimed' and current.lease_owner==lease):
+                set_outcome(intent,state,'Provider response uncertain; do not retry automatically' if network_started else 'Attachment or send eligibility requires review')
+            else:
+                state='Superseded'
             set_record_values(attempt.doctype,attempt.name,{'outcome':state,'finished_at':utcnow()})
         finally:
-            set_record_values(sender.doctype,sender.name,'dispatch_lease_until',None)
+            # A signed receipt can arrive before an HTTP success or timeout.
+            # Preserve that authoritative delivery state in either outcome.
+            sender=lock('WhatsApp Sender',sender.name)
+            from .webhooks import reconcile_statuses
+            reconcile_statuses(intent.message)
+            if sender.dispatch_lease_until and get_datetime(sender.dispatch_lease_until)==lease_until:
+                set_record_values(sender.doctype,sender.name,'dispatch_lease_until',None)
             frappe.db.commit()
 
 

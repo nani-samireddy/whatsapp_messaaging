@@ -6,7 +6,7 @@ Refer to patient conversations, individual messages and preserved history.
 
 ## What this workflow does
 
-This lets users review stored messages and conversations to understand what was sent or received and check recorded statuses. The inbox provides the conversation timeline, while message records provide individual details. Preserved older records remain available for reference without automatically sending them again.
+Review incoming and outgoing messages, attachments and delivery statuses in the Inbox or directly on a conversation form. Message records provide individual details. Older records remain available for reference without sending them again.
 
 [All workflows](README.md)
 
@@ -18,11 +18,15 @@ The inbox combines canonical incoming and outgoing messages for a specific sende
 
 Messaging → Messages opens message records; Conversations opens conversation records. Use list filters to locate the relevant entry.
 
-## 3. Recognize preserved legacy data
+## 3. Read messages on the conversation form
+
+Open Conversations and choose a record. Messages shows the latest 40 messages in order. Use Load older messages until all are shown, Refresh messages to check again, and attachment links to download files you can access. This form is read-only for live conversations. Use Open in Inbox to reply.
+
+## 4. Recognize preserved legacy data
 
 Older records remain available as history. They are not automatically assigned a guessed account or relabeled as delivered.
 
-## 4. Use workflow actions for changes
+## 5. Use workflow actions for changes
 
 Queue new messages from the inbox or configured record actions. Use assignment and status controls in the inbox instead of editing history records.
 
@@ -45,4 +49,4 @@ Canonical message record showing its status, content and account.
 - [Find or start a conversation](conversations.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

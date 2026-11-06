@@ -1,6 +1,6 @@
 # Isolated Frappe integration tests
 
-Requires Docker, the `frappe/bench` development image, a Frappe **16.52.0** source checkout, and a Linux Python 3.14 environment with its dependencies installed. The Python environment is mounted read-only; no existing sites, configuration or credentials are mounted.
+Requires Docker, the `frappe/bench` development image, a Frappe **16.52.0** source checkout with its print CSS assets built, and a Linux Python 3.14 environment with its dependencies installed. The Python environment is mounted read-only; no existing sites, configuration or credentials are mounted.
 
 ```sh
 export FRAPPE_FRAMEWORK_PATH=/path/to/frappe
@@ -17,6 +17,8 @@ docker compose -p whatsapp-security-tests -f tests/integration/compose.yaml down
 Run from a fresh test volume to verify installation. Subsequent runs migrate and reuse only this isolated test site's schema. Tests use transactions or explicitly named fixtures and are not intended to run on a real site.
 
 The harness runs the security and role checks, then inbox, outbox, webhook, media, schedule and campaign workflows. It also checks Desk app registration, HTTP authentication/permissions and a real RQ worker using mocked provider transport. Operational fixtures stay in the disposable site. The final naming checks cover readable series, title search and updates, unchanged historical IDs/keys/timestamps, and idempotent title backfill. Their fixture records and series counters roll back.
+
+Production-boundary checks cover source/file access revocation, stale send claims, late delivery receipts, source recipient/content changes and read-only setup diagnostics. Generic document-delivery checks also run on a fresh installation and upgrade. The real PDF renderer reads built public CSS/fonts from an ephemeral container-loopback server; that server exposes no site configuration or private files. The one HMS-specific invoice check is skipped in this app-only environment and runs separately on `whatsapp-documents-test.localhost` with provider transport blocked.
 
 To verify a real upgrade, supply a clean checkout of the reviewed revision and use a different disposable project name:
 

@@ -7,8 +7,8 @@ export function syncTemplatesDialog(accountName) {
     const dialog = new frappe.ui.Dialog({
         title: __('Import templates from Meta'), size: 'extra-large',
         fields: [
-            {fieldname: 'intro', fieldtype: 'HTML', options: `<p class="text-muted">${__('Choose templates to add to your local library. Existing templates are preserved. Numbered variables need source fields after import.')}</p>`},
-            {fieldname: 'source_doctype', fieldtype: 'Link', options: 'DocType', label: __('Source DocType'), reqd: 1,
+            {fieldname: 'intro', fieldtype: 'HTML', options: `<p class="text-muted">${__('Choose templates to add to your local library. Existing templates are preserved. After import, choose which record fields fill in the personalized parts of each message.')}</p>`},
+            {fieldname: 'source_doctype', fieldtype: 'Link', options: 'DocType', label: __('Record type'), reqd: 1,
                 description: __('The record type used to personalize the imported messages. You can change it on each template.'), onchange: () => updateAction()},
             {fieldtype: 'Column Break'},
             {fieldname: 'search', fieldtype: 'Data', label: __('Search templates'), onchange: () => render()},
@@ -28,7 +28,7 @@ export function syncTemplatesDialog(accountName) {
                     catalogue_names: [...selected]
                 }, freeze: true, freeze_message: __('Importing selected templates…')});
                 const result = response.message;
-                const links = result.imported.map(item => `<li><a href="#" data-template="${escape(item.name)}">${escape(item.name)}</a>${item.variables ? ` — ${__('Choose source fields for {0} variable(s)', [item.variables])}` : ''}</li>`).join('');
+                const links = result.imported.map(item => `<li><a href="#" data-template="${escape(item.name)}">${escape(item.name)}</a>${item.variables ? ` — ${__('Choose record fields for {0} personalized value(s)', [item.variables])}` : ''}</li>`).join('');
                 dialog.fields_dict.summary.$wrapper.html(`<div class="alert alert-success">${__('Imported {0} template(s). Already imported: {1}.', [result.imported.length, result.existing.length])}${links ? `<ul class="mb-0 mt-2">${links}</ul>` : ''}</div>`);
                 selected.clear();
                 const refreshed = await frappe.call({method: api + 'options', args: {account_name: accountName}});
@@ -57,7 +57,7 @@ export function syncTemplatesDialog(accountName) {
                 return `<tr><td><input type="checkbox" data-choice="${index}" aria-label="${escape(__('Import {0} ({1})', [row.template_name, row.language]))}" ${selected.has(row.name) ? 'checked' : ''} ${row.can_import ? '' : 'disabled'}></td>
                     <td style="min-width:240px"><strong>${escape(row.template_name)}</strong><div class="text-muted small">${escape(row.category)}</div><details><summary class="small text-muted">${__('Preview message')}</summary><div class="mt-2" style="white-space:pre-wrap;overflow-wrap:anywhere">${escape(preview)}</div></details></td>
                     <td>${escape(row.language)}</td><td><span class="indicator-pill ${statusColor}">${escape(row.status)}</span></td>
-                    <td style="max-width:260px">${row.reason ? `<span class="small text-muted">${escape(row.reason)}</span>` : `<span>${__('Available')}</span>${row.variable_count ? `<div class="small text-muted">${__('{0} variable(s) to configure', [row.variable_count])}</div>` : ''}`}${row.existing ? `<div><a href="#" data-template="${escape(row.existing)}">${__('Open template')}</a></div>` : ''}</td></tr>`;
+                    <td style="max-width:260px">${row.reason ? `<span class="small text-muted">${escape(row.reason)}</span>` : `<span>${__('Available')}</span>${row.variable_count ? `<div class="small text-muted">${__('{0} personalized value(s) to set up', [row.variable_count])}</div>` : ''}`}${row.existing ? `<div><a href="#" data-template="${escape(row.existing)}">${__('Open template')}</a></div>` : ''}</td></tr>`;
             }).join('') || `<tr><td colspan="5" class="text-muted">${rows.length ? __('No matching templates.') : __('No templates were returned by Meta for this Sender.')}</td></tr>`}</tbody></table></div>`);
         updateAction();
     }

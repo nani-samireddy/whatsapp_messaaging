@@ -28,7 +28,7 @@ class TestMediaCloud(unittest.TestCase):
         self.queue = queue.start()
         self.addCleanup(queue.stop)
         self.gate(1)
-        frappe.db.set_value('WhatsApp Phone Number ID', fixtures.ACCOUNT, 'enabled', 1)
+        frappe.db.set_value('WhatsApp Sender', fixtures.ACCOUNT, 'enabled', 1)
         frappe.db.commit()
 
     def cleanup_records(self):
@@ -41,7 +41,7 @@ class TestMediaCloud(unittest.TestCase):
             if frappe.db.exists('File', name):
                 frappe.delete_doc('File', name, ignore_permissions=True)
         self.gate(0)
-        frappe.db.set_value('WhatsApp Phone Number ID', fixtures.ACCOUNT, 'enabled', 1)
+        frappe.db.set_value('WhatsApp Sender', fixtures.ACCOUNT, 'enabled', 1)
         frappe.db.set_value('User', fixtures.EDITOR, 'enabled', 1)
         frappe.db.commit()
         frappe.clear_cache(user=fixtures.EDITOR)
@@ -93,7 +93,7 @@ class TestMediaCloud(unittest.TestCase):
         self.assertIn('Outbound Requests', doc.cloud_error)
         self.queue.assert_not_called()
         self.gate(1)
-        frappe.db.set_value('WhatsApp Phone Number ID', fixtures.ACCOUNT, 'enabled', 0)
+        frappe.db.set_value('WhatsApp Sender', fixtures.ACCOUNT, 'enabled', 0)
         doc.save()
         self.assertEqual(doc.cloud_status, 'Blocked')
         self.assertIn('disabled', doc.cloud_error)
@@ -182,7 +182,7 @@ class TestMediaCloud(unittest.TestCase):
         self.run_upload(doc).assert_not_called()
         self.assertEqual(doc.cloud_status, 'Blocked')
         frappe.db.set_value(doc.doctype, doc.name, dict(cloud_status='Pending', cloud_requested_by='Administrator'))
-        frappe.db.set_value('WhatsApp Phone Number ID', fixtures.ACCOUNT, 'enabled', 0)
+        frappe.db.set_value('WhatsApp Sender', fixtures.ACCOUNT, 'enabled', 0)
         frappe.db.commit()
         self.run_upload(doc).assert_not_called()
         self.assertEqual(doc.cloud_status, 'Blocked')
@@ -234,7 +234,7 @@ class TestMediaCloud(unittest.TestCase):
     def test_id_cache_requires_same_sender_hash_freshness_and_permission(self):
         doc = self.asset()
         self.run_upload(doc)
-        sender = frappe.get_doc('WhatsApp Phone Number ID', fixtures.ACCOUNT)
+        sender = frappe.get_doc('WhatsApp Sender', fixtures.ACCOUNT)
         self.assertEqual(media_cloud.cached_id(doc.content_hash, sender), doc.media_id)
         self.assertIsNone(media_cloud.cached_id('wrong-hash', sender))
         self.assertIsNone(media_cloud.cached_id(doc.content_hash, frappe._dict(name='other-sender')))

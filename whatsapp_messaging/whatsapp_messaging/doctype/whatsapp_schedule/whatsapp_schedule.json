@@ -24,7 +24,7 @@
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -46,7 +46,7 @@
   },
   {
    "fieldname": "state",
-   "label": "State",
+   "label": "Status",
    "fieldtype": "Select",
    "default": "Paused",
    "in_list_view": 1,
@@ -54,7 +54,7 @@
   },
   {
    "fieldname": "run_as",
-   "label": "Run As",
+   "label": "Send on Behalf Of",
    "fieldtype": "Link",
    "options": "User"
   },
@@ -65,23 +65,25 @@
   },
   {
    "fieldname": "cron_expression",
-   "label": "Cron Expression",
-   "fieldtype": "Data"
+   "label": "Repeat Schedule (Advanced)",
+   "fieldtype": "Data",
+   "description": "An administrator can enter a cron expression for repeating sends. Leave blank for a one-time schedule."
   },
   {
    "fieldname": "next_due_at",
-   "label": "Next Due At",
+   "label": "Next Send Time",
    "fieldtype": "Datetime",
    "in_list_view": 1
   },
   {
    "fieldname": "one_shot",
-   "label": "One Shot",
-   "fieldtype": "Check"
+   "label": "Send Once",
+   "fieldtype": "Check",
+   "description": "Selected for a one-time message. Repeating schedules use the repeat schedule below."
   },
   {
    "fieldname": "last_error",
-   "label": "Last Error",
+   "label": "What Needs Attention",
    "fieldtype": "Small Text"
   },
   {

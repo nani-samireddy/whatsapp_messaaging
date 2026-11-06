@@ -46,4 +46,4 @@ New conversation asks for a sender and an international recipient number.
 - [Use an approved WhatsApp template](approved-templates.md)
 - [Assign conversations and track progress](assignment.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

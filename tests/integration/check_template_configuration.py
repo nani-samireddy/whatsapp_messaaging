@@ -36,7 +36,7 @@ class TestTemplateConfiguration(unittest.TestCase):
             message_preview='Hello {{template_doctype.status}}', allowed_source_fields='["status"]'))
         self.rule.save()
         self.source=frappe.get_doc('ToDo', fixtures.SOURCE)
-        self.sender=frappe.get_doc('WhatsApp Phone Number ID', fixtures.ACCOUNT)
+        self.sender=frappe.get_doc('WhatsApp Sender', fixtures.ACCOUNT)
 
     def asset(self, name, content, private=1):
         file=frappe.get_doc(dict(doctype='File',file_name=name,content=content,is_private=private)).insert(ignore_permissions=True)
@@ -90,7 +90,7 @@ class TestTemplateConfiguration(unittest.TestCase):
         with self.assertRaises(frappe.ValidationError): template_content.detect(legacy.name)
 
     def test_detection_requires_role_and_approved_body_templates_exclude_media(self):
-        approved=insert('WhatsApp Approved Template',template_name='fixture-approved',language='en',supported=1)
+        approved=insert('WhatsApp Meta Template',template_name='fixture-approved',language='en',supported=1)
         self.assertEqual(template_content.detect(approved_template_name=approved.name),'text')
         _,asset=self.asset('configuration-approved.png',self.png())
         with self.assertRaises(frappe.ValidationError): template_content.detect(asset.name,approved.name)
@@ -127,10 +127,13 @@ class TestTemplateConfiguration(unittest.TestCase):
         frappe.db.set_single_value('WhatsApp Settings','enable_outbound_messages',1)
         frappe.db.set_value(self.sender.doctype,self.sender.name,'enabled',1)
         self.sender.reload()
+        self.rule.phone_number_field_name='wm_test_phone';self.rule.save()
+        frappe.db.set_value('ToDo',self.source.name,'wm_test_phone','12025550100')
+        self.source.reload()
         peer=inbox.ensure_peer('12025550100',self.sender)
         conversation=inbox.ensure_conversation(self.sender,peer)
         frappe.db.set_value(conversation.doctype,conversation.name,'window_expires_at',utcnow()+timedelta(hours=1))
-        result=outbox.create_intent(conversation.name,'shared-policy-revocation',body='Hello',
+        result=outbox.create_intent(conversation.name,'shared-policy-revocation',body=parse_message(self.rule,self.source),
             source_doctype='ToDo',source_name=self.source.name,rule=self.rule.name)
         intent=frappe.get_doc('WhatsApp Outbox',result['outbox'])
         outbox.validate_dispatch(intent)
@@ -178,7 +181,9 @@ class TestTemplateConfiguration(unittest.TestCase):
         frappe.db.set_single_value('WhatsApp Settings','enable_outbound_messages',1)
         frappe.db.set_value(self.sender.doctype,self.sender.name,'enabled',1)
         self.sender.reload()
-        self.rule.message_preview='Welcome to {{static.website_settings.app_name}}';self.rule.save()
+        self.rule.message_preview='Welcome to {{static.website_settings.app_name}}'
+        self.rule.phone_number_field_name='wm_test_phone';self.rule.save()
+        frappe.db.set_value('ToDo',self.source.name,'wm_test_phone','12025550100')
         peer=inbox.ensure_peer('12025550100',self.sender)
         conversation=inbox.ensure_conversation(self.sender,peer)
         frappe.db.set_value(conversation.doctype,conversation.name,'window_expires_at',utcnow()+timedelta(hours=1))

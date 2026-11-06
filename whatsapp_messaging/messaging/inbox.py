@@ -15,13 +15,13 @@ def ensure_peer(identity, sender, display_name=None):
         frappe.throw('Unsupported recipient identity')
     scope = sender.portfolio_id or sender.waba_id or sender.name
     key = digest(scope, identity)
-    name = frappe.db.get_value('WhatsApp Peer', {'identity_key': key}, 'name')
+    name = frappe.db.get_value('WhatsApp Contact', {'identity_key': key}, 'name')
     if name:
-        return frappe.get_doc('WhatsApp Peer', name)
+        return frappe.get_doc('WhatsApp Contact', name)
     # Serialize first-time identities across accounts in the same portfolio.
     frappe.db.savepoint('peer_insert')
     try:
-        peer = insert('WhatsApp Peer', identity_key=key, provider_identity=identity,
+        peer = insert('WhatsApp Contact', identity_key=key, provider_identity=identity,
             portfolio_id=scope, phone_number=identity if identity.isdigit() else None,
             display_name=(display_name or identity)[:140])
         insert('WhatsApp Identity Alias', identity_key=digest(scope, 'provider', identity),
@@ -29,7 +29,7 @@ def ensure_peer(identity, sender, display_name=None):
         return peer
     except (frappe.DuplicateEntryError, frappe.UniqueValidationError):
         frappe.db.rollback(save_point='peer_insert')
-        return frappe.get_doc('WhatsApp Peer', frappe.db.sql('SELECT name FROM `tabWhatsApp Peer` WHERE identity_key=%s FOR UPDATE',key)[0][0])
+        return frappe.get_doc('WhatsApp Contact', frappe.db.sql('SELECT name FROM `tabWhatsApp Contact` WHERE identity_key=%s FOR UPDATE',key)[0][0])
 
 
 def ensure_conversation(sender, peer):
@@ -76,7 +76,7 @@ def list_conversations(account_name=None, status=None, assignment=None, search=N
     # First use permission-filtered names, then join the bounded personal projections.
     if search:
         text = '%' + str(search)[:100] + '%'
-        peers = frappe.get_list('WhatsApp Peer', or_filters={'display_name':['like',text], 'provider_identity':['like',text]}, pluck='name', limit_page_length=200)
+        peers = frappe.get_list('WhatsApp Contact', or_filters={'display_name':['like',text], 'provider_identity':['like',text]}, pluck='name', limit_page_length=200)
         if not peers: return {'items':[], 'next_cursor':None}
         filters['peer'] = ['in', peers]
     if cursor:
@@ -93,7 +93,7 @@ def list_conversations(account_name=None, status=None, assignment=None, search=N
         p.display_name,
         (SELECT COUNT(*) FROM `tabWhatsApp Message` m WHERE m.conversation=c.name AND m.direction='Inbound'
          AND m.sequence>COALESCE(r.last_read_sequence,0)) AS unread
-        FROM `tabWhatsApp Conversation` c LEFT JOIN `tabWhatsApp Peer` p ON p.name=c.peer
+        FROM `tabWhatsApp Conversation` c LEFT JOIN `tabWhatsApp Contact` p ON p.name=c.peer
         LEFT JOIN `tabWhatsApp Conversation Read` r ON r.conversation=c.name AND r.user=%(user)s
         WHERE c.name IN (SELECT permitted.name FROM ({query}) permitted){where}
         ORDER BY COALESCE(c.last_activity_at,c.creation) DESC,c.name DESC LIMIT %(limit)s""", params, as_dict=True)
@@ -106,7 +106,7 @@ def list_conversations(account_name=None, status=None, assignment=None, search=N
 @frappe.whitelist()
 def get_conversation(name, before=None, after=None, limit=40):
     doc=conversation(name)
-    peer=frappe.get_doc('WhatsApp Peer',doc.peer)
+    peer=frappe.get_doc('WhatsApp Contact',doc.peer)
     filters={'conversation':name}
     if before: filters['sequence']=['<',int(before)]
     if after: filters['sequence']=['>',int(after)]
@@ -179,7 +179,7 @@ def link_record(name, doctype, docname):
 @frappe.whitelist(methods=['POST'])
 def set_eligibility(peer, suppressed=0, consent_recorded=0, consent_source=None):
     require_supervisor()
-    doc=lock('WhatsApp Peer',peer)
+    doc=lock('WhatsApp Contact',peer)
     if int(consent_recorded) and not str(consent_source or '').strip():frappe.throw('Record the source of consent')
     set_record_values(doc.doctype,doc.name,{'suppressed':int(bool(int(suppressed))),'consent_recorded':int(bool(int(consent_recorded))),'consent_source':str(consent_source or '')[:140],'consent_at':utcnow() if int(consent_recorded) else None})
     for name in frappe.get_all('WhatsApp Conversation',filters={'peer':peer},pluck='name'):

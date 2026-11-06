@@ -178,7 +178,7 @@ class FlowIntegration(unittest.TestCase):
         self.assertEqual(payload['text']['body'],'Booking information\n\nYour booking status is Confirmed.\n\nTraining hospital')
         self.assertEqual(intent.conversation_flow,self.flow.name);self.post.assert_not_called()
     def test_meta_template_uses_approved_payload_and_consent(self):
-        self.template_step(meta=True);frappe.db.set_value('WhatsApp Peer',self.peer.name,'consent_recorded',1)
+        self.template_step(meta=True);frappe.db.set_value('WhatsApp Contact',self.peer.name,'consent_recorded',1)
         self.assertEqual(self.reach_template().state,'Processed')
         payload=json.loads(self.template_intent().payload_json)
         self.assertEqual(payload['type'],'template');self.assertEqual(payload['template']['components'][0]['parameters'][0]['text'],'Confirmed')
@@ -224,8 +224,8 @@ class FlowIntegration(unittest.TestCase):
         self.assertEqual(result['state']['status'],'Waiting for staff');self.assertEqual(frappe.db.count('WhatsApp Outbox'),0)
     def test_changed_template_source_holds_queued_message(self):
         self.template_step();self.reach_template();intent=self.template_intent()
-        if not frappe.db.exists('WhatsApp Template Field Policy','Communication'):
-            frappe.get_doc(dict(doctype='WhatsApp Template Field Policy',source_doctype='Communication',allowed_fields='["status"]')).insert()
+        if not frappe.db.exists('WhatsApp Template Fields','Communication'):
+            frappe.get_doc(dict(doctype='WhatsApp Template Fields',source_doctype='Communication',allowed_fields='["status"]')).insert()
         self.rule.template_doctype='Communication';self.rule.save();frappe.db.commit()
         outbox.dispatch(intent.name);intent.reload();self.assertEqual(intent.state,'Held');self.post.assert_not_called()
     def test_record_filter_uses_collected_answer(self):
@@ -240,11 +240,11 @@ class FlowIntegration(unittest.TestCase):
         self.assertEqual(frappe.db.get_value('WhatsApp Outbox',name,'source_name'),fixtures.SOURCE)
     def test_unapproved_meta_template_cannot_be_published(self):
         self.template_step(meta=True)
-        frappe.db.set_value('WhatsApp Approved Template',self.rule.approved_template,'approval_status','PENDING')
+        frappe.db.set_value('WhatsApp Meta Template',self.rule.approved_template,'approval_status','PENDING')
         with self.assertRaises(frappe.ValidationError):flows.publish(self.flow.name)
     def test_revoked_shared_field_holds_queued_lookup(self):
         self.template_step(lookup=True);self.reach_template();intent=self.template_intent()
-        policy=frappe.get_doc('WhatsApp Template Field Policy','ToDo');policy.allowed_fields='[]';policy.save();frappe.db.commit()
+        policy=frappe.get_doc('WhatsApp Template Fields','ToDo');policy.allowed_fields='[]';policy.save();frappe.db.commit()
         try:
             outbox.dispatch(intent.name);intent.reload();self.assertEqual(intent.state,'Held');self.post.assert_not_called()
         finally:

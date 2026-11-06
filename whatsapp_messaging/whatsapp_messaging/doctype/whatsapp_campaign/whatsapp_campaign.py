@@ -16,10 +16,10 @@ class WhatsAppCampaign(Document):
             from whatsapp_messaging.messaging.automation import validate_date_reminder
             self.reminder_timezone=self.reminder_timezone or get_system_timezone()
             validate_date_reminder(self)
-        sender=frappe.get_doc('WhatsApp Phone Number ID',self.phone_number_id)
+        sender=frappe.get_doc('WhatsApp Sender',self.phone_number_id)
         sender.check_permission('read')
         if template.get('delivery_mode')=='Meta-approved template':
-            template_waba=frappe.db.get_value('WhatsApp Phone Number ID',template.phone_number_id,'waba_id')
+            template_waba=frappe.db.get_value('WhatsApp Sender',template.phone_number_id,'waba_id')
             if not sender.waba_id or sender.waba_id!=template_waba:
                 frappe.throw('Choose a Sender from the same WABA as this Meta template.')
         migrating=bool(self.flags.from_template_migration or frappe.flags.in_migrate or frappe.flags.in_install)

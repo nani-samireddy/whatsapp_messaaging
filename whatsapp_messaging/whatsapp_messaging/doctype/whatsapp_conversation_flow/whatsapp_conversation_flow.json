@@ -13,9 +13,9 @@
   },
   {
    "fieldname": "account",
-   "label": "Business WhatsApp number",
+   "label": "Sender",
    "fieldtype": "Link",
-   "options": "WhatsApp Phone Number ID",
+   "options": "WhatsApp Sender",
    "reqd": 1,
    "in_list_view": 1
   },
@@ -89,9 +89,9 @@
   },
   {
    "fieldname": "published_account",
-   "label": "Published business number",
+   "label": "Published Sender",
    "fieldtype": "Link",
-   "options": "WhatsApp Phone Number ID",
+   "options": "WhatsApp Sender",
    "read_only": 1
   },
   {

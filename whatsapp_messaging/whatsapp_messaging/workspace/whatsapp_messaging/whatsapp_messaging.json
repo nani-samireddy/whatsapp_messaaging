@@ -12,7 +12,7 @@
  "modified": "2026-10-18 17:05:00.000000",
  "owner": "Administrator",
  "modified_by": "Administrator",
- "content": "[{\"id\":\"messaging-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Messaging Summary\",\"col\":12}},{\"id\":\"messaging-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inbox\",\"col\":3}},{\"id\":\"messaging-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Conversations\",\"col\":3}},{\"id\":\"messaging-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Messages\",\"col\":3}},{\"id\":\"messaging-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Media\",\"col\":3}},{\"id\":\"messaging-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Recipients\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
+ "content": "[{\"id\":\"messaging-summary\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"WhatsApp Messaging Summary\",\"col\":12}},{\"id\":\"messaging-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inbox\",\"col\":3}},{\"id\":\"messaging-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Conversations\",\"col\":3}},{\"id\":\"messaging-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Messages\",\"col\":3}},{\"id\":\"messaging-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Media\",\"col\":3}},{\"id\":\"messaging-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Additional Numbers\",\"col\":3}},{\"id\":\"whatsapp-user-guide\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User guide\",\"col\":3}}]",
  "roles": [
   {
    "role": "System Manager"
@@ -54,9 +54,9 @@
    "color": "Grey"
   },
   {
-   "label": "Recipients",
+   "label": "Additional Numbers",
    "type": "DocType",
-   "link_to": "Static Recipient",
+   "link_to": "Additional Numbers",
    "doc_view": "List",
    "color": "Grey"
   },

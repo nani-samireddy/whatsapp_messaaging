@@ -9,7 +9,7 @@ from .common import account, as_user, digest, parsed, require_supervisor, utcnow
 from .field_policy import eligible
 from .template_framing import document_header
 
-RULE = 'WhatsApp Document Rule'
+RULE = 'WhatsApp Document Delivery Rule'
 DELIVERY = 'WhatsApp Document Delivery'
 EVENTS = {'Record created':'after_insert', 'Field changes to a value':'on_update', 'Document submitted':'on_submit'}
 TEXT_TRIGGER_TYPES = {'Text', 'Small Text', 'Long Text'}
@@ -119,7 +119,7 @@ def validate_rule(rule):
 
 def validate_template(rule):
     sender = account(rule.sender, enabled=True)
-    template = frappe.get_doc('WhatsApp Approved Template', rule.approved_template)
+    template = frappe.get_doc('WhatsApp Meta Template', rule.approved_template)
     template.check_permission('read')
     if template.waba_id != sender.waba_id or template.approval_status != 'APPROVED' or not template.supported:
         frappe.throw('Choose a WhatsApp-approved template for this sender.')
@@ -417,7 +417,7 @@ def preview(rule_name, source_name):
     source.check_permission('read')
     recipient, number = resolve_recipient(rule, source)
     values = parameter_values(rule, source, recipient)
-    template = frappe.get_doc('WhatsApp Approved Template', rule.approved_template) if rule.approved_template else None
+    template = frappe.get_doc('WhatsApp Meta Template', rule.approved_template) if rule.approved_template else None
     from .catalogue import rendered_text
     return dict(recipient=number,source_name=source.name,trigger_matches=trigger_matches(rule,source),
         message=rendered_text(template,values) if template else 'Choose an approved document template to preview the message.',

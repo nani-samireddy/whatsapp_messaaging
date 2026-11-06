@@ -47,7 +47,7 @@ frappe.provide('whatsapp_messaging.media_form');
         info.append($('<div class="small text-muted" style="margin-top:8px"></div>').text(uploaded
             ? __('Uploaded to WhatsApp Cloud. The private local copy is kept for future use.')
             : compact ? __('Save queues the cloud upload when enabled. No message is sent.')
-                : __('Private file checked. Save to queue its WhatsApp cloud upload when Outbound Requests and the Sender are enabled. No message is sent.')));
+                : __('Private file checked. Save to queue its WhatsApp cloud upload when Allow Sending and File Uploads and the Sender are enabled. No message is sent.')));
         wrapper.append(card);
     };
     api.inspect = async (target, file_url, wrapper, set_values, get_current_file) => {

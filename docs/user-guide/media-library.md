@@ -16,11 +16,11 @@ Open WhatsApp Messaging → Media and choose Add WhatsApp Media. Enter a recogni
 
 ## 2. Check and save
 
-Review the private preview and detected size, then choose Save. The app fills in the file details and queues a background cloud upload after saving. Both Enable Outbound Requests in WhatsApp Settings and the selected Sender must be enabled. Uploading a file alone does not save the media entry, and saving media does not send a message.
+Review the private preview and detected size, then choose Save. The app fills in the file details and queues a background cloud upload after saving. Both Enable Allow Sending and File Uploads in WhatsApp Settings and the selected Sender must be enabled. Uploading a file alone does not save the media entry, and saving media does not send a message.
 
 ## 3. Check the cloud result
 
-Open the saved record. Pending or Uploading means the upload is waiting or running. Uploaded shows the WhatsApp Media ID and upload time. Blocked explains a setting or access problem; Failed explains an upload problem. Correct it and choose Upload / Retry. IDs are refreshed when needed; Refresh cloud upload lets you request a fresh ID.
+Open the saved record. Pending or Uploading means the upload is waiting or running. Uploaded shows the WhatsApp Media ID and upload time. Blocked explains a setting or access problem; Failed explains an upload problem. Correct it and choose Upload to WhatsApp. IDs are refreshed when needed; Refresh cloud upload lets you request a fresh ID.
 
 ## 4. Use the file in a template
 
@@ -32,11 +32,11 @@ Open the media entry in the full form. Remove selection clears the choice withou
 
 ## 6. Review older records
 
-Existing media is not uploaded automatically during the update. Choose its Sender and Save or Upload / Retry. Needs Attention means an old file could not be verified; choose a supported private replacement. Legacy URL records retain the URL for reference and require a private upload before use. The app does not fetch that URL or turn public files private.
+Existing media is not uploaded automatically during the update. Choose its Sender and Save or Upload to WhatsApp. Needs Attention means an old file could not be verified; choose a supported private replacement. Legacy URL records retain the URL for reference and require a private upload before use. The app does not fetch that URL or turn public files private.
 
 ## What to check
 
-The saved file is Ready, shows the correct type and size, and appears in the template picker. With the Sender and Outbound Requests enabled and the media worker running, its Cloud Upload Status becomes Uploaded and a WhatsApp Media ID appears.
+The saved file is Ready, shows the correct type and size, and appears in the template picker. With the Sender and Allow Sending and File Uploads enabled and the media worker running, its Cloud Upload Status becomes Uploaded and a WhatsApp Media ID appears.
 
 ## If you need help
 
@@ -58,4 +58,4 @@ The saved form shows file details and the separate WhatsApp Cloud upload result.
 - [Send an image or PDF](attachments.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

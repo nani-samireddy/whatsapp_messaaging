@@ -145,7 +145,7 @@ doc_events = {
 }
 
 # A contact display-name correction refreshes existing linked titles.
-doc_events["WhatsApp Peer"] = {"on_update": "whatsapp_messaging.messaging.naming.refresh_peer_titles"}
+doc_events["WhatsApp Contact"] = {"on_update": "whatsapp_messaging.messaging.naming.refresh_peer_titles"}
 
 # Scheduled Tasks
 # ---------------

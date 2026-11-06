@@ -36,7 +36,7 @@
   },
   {
    "fieldname": "current_step",
-   "label": "Current step",
+   "label": "Current Step",
    "fieldtype": "Data",
    "in_list_view": 1
   },
@@ -81,7 +81,7 @@
   },
   {
    "fieldname": "expires_at",
-   "label": "Session expires at (UTC)",
+   "label": "Conversation Progress Expires On (UTC)",
    "fieldtype": "Datetime"
   },
   {

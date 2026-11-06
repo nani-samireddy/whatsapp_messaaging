@@ -12,19 +12,19 @@ This records who will handle a conversation and whether it needs attention, is w
 
 ## 1. Assign a conversation to yourself
 
-Open a conversation and choose Assign to me. Choose Remove assignment when you no longer need to handle it.
+Open a conversation, choose Contact details, then Assign to me. Choose Remove assignment when you no longer need to handle it.
 
 ## 2. Update your conversation’s status
 
-Use the Status selector: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status.
+In Contact details, use Status: Open for work that needs attention, Waiting when awaiting a response, and Resolved when finished. Editors must be assigned to the conversation to change its status.
 
 ## 3. Reassign when supervising
 
-Admin and System Manager can choose Assign to someone, select a Team member or Not assigned, and choose Save assignment.
+In Contact details, Admin and System Manager can choose Assign to someone, select a team member or Not assigned, and choose Save assignment.
 
 ## 4. Review activity
 
-Conversation history records assignment and status changes. A new incoming message reopens a resolved conversation.
+Expand Activity history in Contact details to review assignments, status changes and other actions. A new incoming message reopens a resolved conversation.
 
 ## What to check
 
@@ -36,13 +36,13 @@ Assignment coordinates work; app users still share permitted history and sending
 
 ## Screenshots
 
-![Assign conversation dialog: a supervisor can choose a team member or Not assigned.](../../whatsapp_messaging/public/docs/screenshots/assignment.jpg)
+![Assign conversation dialog: a supervisor can choose a team member or Not assigned. In the current Inbox, open Contact details to find these controls.](../../whatsapp_messaging/public/docs/screenshots/assignment.jpg)
 
-Assign conversation dialog: a supervisor can choose a team member or Not assigned.
+Assign conversation dialog: a supervisor can choose a team member or Not assigned. In the current Inbox, open Contact details to find these controls.
 
 ## Related workflows
 
 - [Find or start a conversation](conversations.md)
 - [Link a business record](record-links.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

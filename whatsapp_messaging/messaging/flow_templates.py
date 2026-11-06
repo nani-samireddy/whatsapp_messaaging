@@ -92,7 +92,7 @@ def dispatch_spec(intent, flow):
         if not step or not step.get('template'):frappe.throw('The queued template step is no longer available.')
         if step.get('lookup'):
             session=frappe.get_doc('WhatsApp Flow Session',intent.flow_session)
-            peer=frappe.get_doc('WhatsApp Peer',frappe.db.get_value('WhatsApp Conversation',intent.conversation,'peer'))
+            peer=frappe.get_doc('WhatsApp Contact',frappe.db.get_value('WhatsApp Conversation',intent.conversation,'peer'))
             result=resolve_lookup(step,parsed(session.answers_json,{}),peer.display_name or 'Contact',peer.provider_identity)
             if result['outcome']!='matched' or (result.get('source_doctype'),result.get('source_name'))!=(intent.source_doctype,intent.source_name):frappe.throw('The matching record changed. Review this conversation before sending.')
             values=result['values'];spec=step['template']

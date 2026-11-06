@@ -12,15 +12,15 @@ This defines the message itself: its text, optional media, reusable fields and M
 
 ## 1. Create reusable content
 
-Open Templates & Automation → Templates. Add Appointment confirmation, choose Riverbend Patient Services in Sender, and select the source DocType used for personalization. Select Local message for free-form content or Meta-approved template for wording that must be reviewed by Meta.
+Open Templates & Automation → Templates. Add Appointment confirmation, choose Riverbend Patient Services in Sender, and select the source record type used for personalization. Select Local message for free-form content or Meta-approved template for wording that must be reviewed by Meta.
 
 ## 2. Import existing Meta content when needed
 
-Open the Sender and choose Sync approved templates. Review the list, choose a Source DocType and import selected entries. Imports preserve Header, Message Text and Footer. Map every numbered variable using Variables & Review Examples before using the content in a campaign. Existing drafts are preserved; unsupported entries show an explanation.
+Open the Sender and choose Import templates from Meta. Review the list, choose a Record type and import selected entries. Imports preserve Header, Message Text and Footer. Map every numbered variable using Variables & Review Examples before using the content in a campaign. Existing drafts are preserved; unsupported entries show an explanation.
 
 ## 3. Approve shared fields once
 
-A System Manager selects allowed business fields in Template Field Policies. Insert field offers approved fields from the source DocType and readable Single DocTypes such as Hospital Settings. These choices apply to all templates using that source.
+A System Manager selects allowed business fields in Template Fields. Insert field offers approved fields from the source record type and readable settings records such as Hospital Settings. These choices apply to all templates using that source.
 
 ## 4. Write and preview the message
 
@@ -64,13 +64,13 @@ Hospital welcome draft with separate Header, Message Text and Footer fields besi
 
 Review screen with rejection reason, Meta recommendation and a suggested fix.
 
-![A System Manager approves shared message fields once for all templates using that source DocType.](../../whatsapp_messaging/public/docs/screenshots/template-field-policy.jpg)
+![A System Manager approves shared message fields once for all templates using that source record type.](../../whatsapp_messaging/public/docs/screenshots/template-field-policy.jpg)
 
-A System Manager approves shared message fields once for all templates using that source DocType.
+A System Manager approves shared message fields once for all templates using that source record type.
 
-![Insert field includes readable Single DocTypes under Static sources.](../../whatsapp_messaging/public/docs/screenshots/template-static-fields.png)
+![Insert field includes readable settings records under Settings sources.](../../whatsapp_messaging/public/docs/screenshots/template-static-fields.png)
 
-Insert field includes readable Single DocTypes under Static sources.
+Insert field includes readable settings records under Settings sources.
 
 ![Local media changes Message Text to Caption and shows the attachment in Live Preview.](../../whatsapp_messaging/public/docs/screenshots/template-caption.png)
 
@@ -86,4 +86,4 @@ Local media changes Message Text to Caption and shows the attachment in Live Pre
 - [Use an approved WhatsApp template](approved-templates.md)
 - [Send documents automatically](document-delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

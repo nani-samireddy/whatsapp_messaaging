@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-01",
+  "scope": "Mac-local Inbox UX, conversation-form message history and workspace shortcut repair",
+  "production_server_changed": false,
+  "integration": {
+    "total": 275,
+    "passed": 273,
+    "skipped": 2,
+    "failures": 0
+  },
+  "python_tests_passed": 78,
+  "javascript_tests_passed": 25,
+  "build": "passed",
+  "conversation_form": {
+    "all_messages_verified": 41,
+    "attachment_links": 3,
+    "read_only": true,
+    "mark_read_called": false,
+    "pagination_error_and_race_tests": "passed"
+  },
+  "inbox": {
+    "quick_views": "All, Unread, Mine",
+    "secondary_filters": "collapsed",
+    "details_panel": "closed by default; Escape restores focus",
+    "reply_window_guard": "read-only outside 24-hour window; template remains available when permitted",
+    "mobile_width": 390,
+    "mobile_composer_bottom": 835,
+    "mobile_viewport_height": 844,
+    "horizontal_overflow": false,
+    "back_navigation_and_latest_message": "passed"
+  },
+  "navigation": {
+    "workspace_target_check": "all valid",
+    "administration_template_fields_shortcut": "opened successfully",
+    "stale_link_repair_idempotent": "passed",
+    "workspace_layout_and_row_ids_preserved": "passed"
+  },
+  "sending_requests_before_and_after": {
+    "Accepted": 25,
+    "Failed": 1
+  },
+  "send_requests_created": 0,
+  "temporary_test_resources_removed": true,
+  "production_ready": false
+}

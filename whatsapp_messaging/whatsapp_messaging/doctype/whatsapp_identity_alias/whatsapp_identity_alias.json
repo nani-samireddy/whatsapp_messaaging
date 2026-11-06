@@ -10,9 +10,10 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "identity_key",
   "peer",
   "portfolio_id",
+  "technical_details_section",
+  "identity_key",
   "identity_kind",
   "identity_value",
   "provenance"
@@ -20,7 +21,7 @@
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -35,13 +36,13 @@
   },
   {
    "fieldname": "peer",
-   "label": "Peer",
+   "label": "Contact",
    "fieldtype": "Link",
-   "options": "WhatsApp Peer"
+   "options": "WhatsApp Contact"
   },
   {
    "fieldname": "portfolio_id",
-   "label": "Portfolio Id",
+   "label": "Business Portfolio ID",
    "fieldtype": "Data"
   },
   {
@@ -59,6 +60,13 @@
    "fieldname": "provenance",
    "label": "Provenance",
    "fieldtype": "Data"
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

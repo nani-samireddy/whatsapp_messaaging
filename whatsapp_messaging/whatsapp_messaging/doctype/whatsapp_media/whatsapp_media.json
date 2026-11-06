@@ -45,7 +45,7 @@
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -120,11 +120,11 @@
    "fieldname": "phone_number_id",
    "fieldtype": "Link",
    "label": "Sender",
-   "options": "WhatsApp Phone Number ID",
+   "options": "WhatsApp Sender",
    "hidden": 0,
    "read_only": 0,
    "allow_in_quick_entry": 1,
-   "description": "The WhatsApp account used to upload this file to Meta. No message is sent when you save."
+   "description": "The business WhatsApp number that will upload and use this file."
   },
   {
    "fieldname": "column_break_vtkz",
@@ -138,10 +138,10 @@
   {
    "fieldname": "label",
    "fieldtype": "Data",
-   "label": "Label",
+   "label": "File Name for Your Team",
    "allow_in_quick_entry": 1,
    "in_standard_filter": 0,
-   "description": "A name to recognize this file, such as Visit instructions. Defaults to the filename."
+   "description": "Use a recognizable name, such as Hospital Welcome Leaflet."
   },
   {
    "fieldname": "file_preview",
@@ -232,13 +232,14 @@
   {
    "fieldname": "cloud_status",
    "fieldtype": "Select",
-   "label": "Cloud Upload Status",
+   "label": "WhatsApp Upload Status",
    "options": "Not Uploaded\nNeeds Sender\nPending\nUploading\nUploaded\nFailed\nBlocked",
    "default": "Not Uploaded",
    "read_only": 1,
    "no_copy": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "description": "Shows whether the file has been uploaded to WhatsApp. Uploading a file does not send it to a contact."
   },
   {
    "fieldname": "cloud_error",
@@ -276,7 +277,7 @@
    "hidden": 1,
    "read_only": 1,
    "no_copy": 1,
-   "options": "WhatsApp Phone Number ID"
+   "options": "WhatsApp Sender"
   },
   {
    "fieldname": "cloud_upload_key",

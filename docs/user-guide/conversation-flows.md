@@ -20,7 +20,7 @@ The Workflow map shows connected cards and a dot for each branch. Drag a dot ont
 
 ## 3. Reuse a template and find its record
 
-Add or edit a step, choose Template and select a saved text template. Flow values lets you choose an earlier answer, contact name, contact phone number or fixed text for each variable. Record lookup finds records of the template’s Source DocType using the contact’s WhatsApp number and your filters. For appointment confirmation, first show the current number and ask whether it is registered with the hospital. Yes continues; No asks for the registered number using a Phone question. An entered number matching the WhatsApp contact continues; a different number is not looked up. The bot asks the person to message from their registered WhatsApp number or contact reception for registration help. Appointment details are only shown for the current WhatsApp number. In the template step, select Patient → Mobile, Status equals Scheduled, and Most recently created. This uses booking creation time, not appointment date or last edit; no date question is needed. Choose reception for no booking or ambiguous registered contacts. Other flows can keep Require a single matching record. Phone numbers must include the country code.
+Add or edit a step, choose Template and select a saved text template. Flow values lets you choose an earlier answer, contact name, contact phone number or fixed text for each variable. Record lookup finds records of the template’s Record type using the contact’s WhatsApp number and your filters. For appointment confirmation, first show the current number and ask whether it is registered with the hospital. Yes continues; No asks for the registered number using a Phone question. An entered number matching the WhatsApp contact continues; a different number is not looked up. The bot asks the person to message from their registered WhatsApp number or contact reception for registration help. Appointment details are only shown for the current WhatsApp number. In the template step, select Patient → Mobile, Status equals Scheduled, and Most recently created. This uses booking creation time, not appointment date or last edit; no date question is needed. Choose reception for no booking or ambiguous registered contacts. Other flows can keep Require a single matching record. Phone numbers must include the country code.
 
 ## 4. Try the conversation
 
@@ -28,7 +28,7 @@ Choose Try flow. Select menu options or type in Preview reply. Test the booking,
 
 ## 5. Publish when ready
 
-Choose Publish and enable to run the saved draft. Only one flow can be active for a business number. Enable Inbound, Outbound and Automation in WhatsApp Settings, and keep the background worker running. Changes saved afterward remain a draft until you publish again.
+Choose Publish and enable to run the saved draft. Only one flow can be active for a business number. Receive Incoming Messages and Updates, Outbound and Automation in WhatsApp Settings, and keep the background worker running. Changes saved afterward remain a draft until you publish again.
 
 ## 6. Handle a reception request
 
@@ -71,4 +71,4 @@ A different entered number shows registration help; its appointments are not loo
 - [Record consent or stop sending](consent.md)
 - [Activate a campaign for document events](events.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

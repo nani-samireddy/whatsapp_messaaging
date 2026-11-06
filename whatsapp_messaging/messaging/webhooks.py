@@ -151,9 +151,9 @@ def process_event(name):
                     continue
                 if change.get('field')!='messages':continue
                 external=str(value.get('metadata',{}).get('phone_number_id',''))
-                names=frappe.get_all('WhatsApp Phone Number ID',filters={'phone_number_id':external,'waba_id':str(entry.get('id','')),'enabled':1},pluck='name')
+                names=frappe.get_all('WhatsApp Sender',filters={'phone_number_id':external,'waba_id':str(entry.get('id','')),'enabled':1},pluck='name')
                 if len(names)!=1:quarantined=True;continue
-                sender=frappe.get_doc('WhatsApp Phone Number ID',names[0])
+                sender=frappe.get_doc('WhatsApp Sender',names[0])
                 contacts={c.get('wa_id'):c.get('profile',{}).get('name') for c in value.get('contacts',[])}
                 for item in value.get('messages',[]):inbound(sender,item,contacts.get(item.get('from')))
                 for item in value.get('statuses',[]):status_event(sender,item)

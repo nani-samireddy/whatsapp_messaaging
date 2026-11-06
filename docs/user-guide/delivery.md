@@ -12,7 +12,7 @@ This shows what happened to messages after they were queued, helping you find de
 
 ## 1. Find the request
 
-Use the conversation timeline or Campaign Runs → View details. Admin and System Manager can also open Administration → Outbound Queue and Send Attempts.
+Use the conversation timeline or Campaign Runs → View details. Admin and System Manager can also open Administration → Sending queue and Send Attempts.
 
 ## 2. Read the status
 
@@ -20,7 +20,7 @@ In the Inbox, Waiting to send means the message is queued. Accepted by WhatsApp 
 
 ## 3. Handle confirmed failures
 
-Review the reason and fix the issue first. Retry confirmed failure is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts.
+Review the reason and fix the issue first. Try sending again is available only for a known unaccepted failure. Cancel send applies only to eligible requests before a network attempt starts.
 
 ## 4. Check an unconfirmed send before sending again
 
@@ -47,4 +47,4 @@ Automation run results show each request’s state and a link to its conversatio
 - [Review inbound and webhook issues](webhooks.md)
 - [Send documents automatically](document-delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

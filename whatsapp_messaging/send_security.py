@@ -9,7 +9,7 @@ BULK_ROLES = frozenset({"System Manager", "Whatsapp Admin"})
 
 def require_outbound_enabled():
 	if not frappe.db.get_single_value("WhatsApp Settings", "enable_outbound_messages", cache=False):
-		frappe.throw("Outbound WhatsApp requests are disabled in WhatsApp Settings")
+		frappe.throw("Sending is off. Ask an administrator to turn on Allow Sending and File Uploads in WhatsApp Settings.")
 
 
 def require_send_role(bulk=False):
@@ -38,7 +38,7 @@ def check_template_policy(template, doctype, bulk=False):
 	if template.disable:
 		frappe.throw("This WhatsApp template is disabled")
 	if template.template_doctype != doctype:
-		frappe.throw("The source DocType does not match the WhatsApp template")
+		frappe.throw("The selected record type does not match this message template.")
 	if template.template_event not in (None, "", "None", "Custom"):
 		frappe.throw("This template is not configured for manual sending")
 	if bool(template.is_single) != bool(bulk):
@@ -51,6 +51,6 @@ def check_manual_template(template, doctype, bulk=False):
 	check_template_policy(template, doctype, bulk=bulk)
 	# Existing app roles can read sender metadata. Passwords remain at the
 	# System Manager-only permission level; no per-account login is introduced.
-	frappe.get_doc("WhatsApp Phone Number ID", template.phone_number_id).check_permission("read")
+	frappe.get_doc("WhatsApp Sender", template.phone_number_id).check_permission("read")
 	if not frappe.has_permission(doctype, "read"):
-		frappe.throw("You cannot read the selected source DocType", frappe.PermissionError)
+		frappe.throw("You do not have access to the selected record type.", frappe.PermissionError)

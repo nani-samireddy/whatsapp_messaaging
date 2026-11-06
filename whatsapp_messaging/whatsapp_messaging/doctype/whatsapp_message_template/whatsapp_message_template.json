@@ -101,17 +101,17 @@
   {
    "fieldname": "template_doctype",
    "fieldtype": "Link",
-   "label": "Source DocType",
+   "label": "Record Type",
    "options": "DocType",
    "reqd": 1,
-   "description": "Record type whose fields personalize this message."
+   "description": "Choose the kind of record used to personalize the message, such as Patient or Appointment."
   },
   {
    "default": "None",
    "depends_on": "eval:doc.is_single!==1;",
    "fieldname": "template_event",
    "fieldtype": "Select",
-   "label": "Event",
+   "label": "When to Send",
    "options": "None\nCreate\nCron\nUpdate\nUpdate Field\nDelete\nCustom\nSubmit\nScheduled\nCancel",
    "sort_options": 1,
    "hidden": 1
@@ -133,7 +133,7 @@
    "depends_on": "eval:doc.template_event==='Update Field'",
    "fieldname": "template_target_field",
    "fieldtype": "Select",
-   "label": "Target Field",
+   "label": "Field to Check",
    "hidden": 1
   },
   {
@@ -159,7 +159,7 @@
   {
    "fieldname": "update_query_button",
    "fieldtype": "Button",
-   "label": "Set Query",
+   "label": "Choose Records",
    "hidden": 1
   },
   {
@@ -234,9 +234,10 @@
   {
    "fieldname": "other_recipients",
    "fieldtype": "Table MultiSelect",
-   "label": "Other Recipients",
-   "options": "Static Recipient Link",
-   "hidden": 1
+   "label": "Additional Numbers",
+   "options": "Additional Number Entry",
+   "hidden": 1,
+   "description": "Select saved numbers to receive this message in addition to the number from each record."
   },
   {
    "fieldname": "message_preview",
@@ -254,7 +255,7 @@
    "fieldname": "phone_number_id",
    "fieldtype": "Link",
    "label": "Sender",
-   "options": "WhatsApp Phone Number ID",
+   "options": "WhatsApp Sender",
    "reqd": 1,
    "description": "Account used to register Meta content. Campaigns choose their sending account within the same WABA."
   },
@@ -270,7 +271,7 @@
   },
   {
    "fieldname": "automation_active",
-   "label": "Automation Active",
+   "label": "Allow Automatic Sending",
    "fieldtype": "Check",
    "default": "0",
    "description": "Allows event rules and schedules. Global automation and outbound switches must also be enabled.",
@@ -278,7 +279,7 @@
   },
   {
    "fieldname": "run_as",
-   "label": "Run As",
+   "label": "Send on Behalf Of",
    "fieldtype": "Link",
    "read_only": 1,
    "options": "User",
@@ -286,12 +287,12 @@
   },
   {
    "fieldname": "approved_template",
-   "label": "Approved Template",
+   "label": "Template in Meta",
    "fieldtype": "Link",
-   "options": "WhatsApp Approved Template",
+   "options": "WhatsApp Meta Template",
    "hidden": 1,
    "read_only": 1,
-   "description": "Internal Meta catalogue reference; managed from this form."
+   "description": "The matching template stored by Meta. Its review status is shown below."
   },
   {
    "fieldname": "parameter_fields",
@@ -312,7 +313,7 @@
   },
   {
    "fieldname": "shared_source_fields",
-   "label": "Shared Message Fields",
+   "label": "Fields Shared Across Templates",
    "fieldtype": "HTML"
   },
   {
@@ -322,13 +323,13 @@
   {
    "fieldname": "automation_section",
    "fieldtype": "Section Break",
-   "label": "Automation & Execution",
+   "label": "Automatic Sending",
    "hidden": 1
   },
   {
    "fieldname": "delivery_mode",
    "fieldtype": "Select",
-   "label": "Message Mode",
+   "label": "How to Send",
    "options": "Local message\nMeta-approved template",
    "default": "Local message",
    "description": "Local messages use the open reply window. Meta templates are submitted and reviewed before use."
@@ -336,7 +337,7 @@
   {
    "fieldname": "meta_section",
    "fieldtype": "Section Break",
-   "label": "Meta Approval",
+   "label": "Meta Review",
    "depends_on": "eval:doc.delivery_mode === \"Meta-approved template\""
   },
   {
@@ -370,9 +371,9 @@
   {
    "fieldname": "meta_examples",
    "fieldtype": "Table",
-   "label": "Variables & Review Examples",
+   "label": "Examples for Meta Review",
    "options": "WhatsApp Template Variable",
-   "description": "Insert fields in Message Text. For an imported numbered variable, choose its source field here. Enter fictional examples for Meta review; the app never fetches patient values for submission."
+   "description": "Provide fictional examples of the values that will replace each personalized field. Do not include real patient information."
   },
   {
    "fieldname": "meta_status_column",
@@ -397,7 +398,7 @@
   {
    "fieldname": "meta_rejection_reason",
    "fieldtype": "Data",
-   "label": "Meta Rejection Code",
+   "label": "Meta Error Code",
    "read_only": 1,
    "no_copy": 1
   },
@@ -411,7 +412,7 @@
   {
    "fieldname": "meta_recommendation",
    "fieldtype": "Small Text",
-   "label": "Meta Recommendation",
+   "label": "Meta\u2019s Suggested Fix",
    "read_only": 1,
    "no_copy": 1
   },

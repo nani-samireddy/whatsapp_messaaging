@@ -10,43 +10,44 @@
  "owner": "Administrator",
  "field_order": [
   "record_title",
-  "request_key",
-  "payload_hash",
   "message",
   "conversation",
   "account",
   "state",
-  "payload_json",
   "requester",
-  "origin_key",
   "source_doctype",
   "source_name",
   "rule_doctype",
   "rule",
   "run",
   "next_attempt_at",
-  "lease_until",
-  "lease_owner",
-  "network_started",
   "attempt_count",
   "error_code",
   "error_reason",
   "cancel_reason",
-  "template_hash",
   "accepted_at",
   "deleted_source",
-  "input_hash",
-  "rule_version",
   "conversation_flow",
   "flow_version",
   "flow_session",
   "flow_generation",
-  "flow_step"
+  "flow_step",
+  "technical_details_section",
+  "request_key",
+  "payload_hash",
+  "payload_json",
+  "origin_key",
+  "lease_until",
+  "lease_owner",
+  "network_started",
+  "template_hash",
+  "input_hash",
+  "rule_version"
  ],
  "fields": [
   {
    "fieldname": "record_title",
-   "label": "Record Title",
+   "label": "Title",
    "fieldtype": "Data",
    "read_only": 1,
    "no_copy": 1,
@@ -78,13 +79,13 @@
   },
   {
    "fieldname": "account",
-   "label": "Account",
+   "label": "Sender",
    "fieldtype": "Link",
-   "options": "WhatsApp Phone Number ID"
+   "options": "WhatsApp Sender"
   },
   {
    "fieldname": "state",
-   "label": "State",
+   "label": "Status",
    "fieldtype": "Select",
    "default": "Ready",
    "in_list_view": 1,
@@ -92,13 +93,13 @@
   },
   {
    "fieldname": "payload_json",
-   "label": "Payload Json",
+   "label": "Message Data (JSON)",
    "fieldtype": "Code",
    "options": "JSON"
   },
   {
    "fieldname": "requester",
-   "label": "Requester",
+   "label": "Requested By",
    "fieldtype": "Link",
    "options": "User"
   },
@@ -109,12 +110,12 @@
   },
   {
    "fieldname": "source_doctype",
-   "label": "Source Doctype",
+   "label": "Record Type",
    "fieldtype": "Data"
   },
   {
    "fieldname": "source_name",
-   "label": "Source Name",
+   "label": "Source Record",
    "fieldtype": "Data"
   },
   {
@@ -125,13 +126,13 @@
   },
   {
    "fieldname": "run",
-   "label": "Run",
+   "label": "Automation Run",
    "fieldtype": "Link",
    "options": "WhatsApp Automation Run"
   },
   {
    "fieldname": "next_attempt_at",
-   "label": "Next Attempt At",
+   "label": "Next Retry Time",
    "fieldtype": "Datetime"
   },
   {
@@ -151,7 +152,7 @@
   },
   {
    "fieldname": "attempt_count",
-   "label": "Attempt Count",
+   "label": "Attempts",
    "fieldtype": "Int"
   },
   {
@@ -161,7 +162,7 @@
   },
   {
    "fieldname": "error_reason",
-   "label": "Error Reason",
+   "label": "What Went Wrong",
    "fieldtype": "Small Text"
   },
   {
@@ -176,7 +177,7 @@
   },
   {
    "fieldname": "accepted_at",
-   "label": "Accepted At",
+   "label": "Accepted by WhatsApp On",
    "fieldtype": "Datetime"
   },
   {
@@ -231,6 +232,13 @@
    "fieldtype": "Data",
    "label": "Flow template step",
    "read_only": 1
+  },
+  {
+   "fieldname": "technical_details_section",
+   "fieldtype": "Section Break",
+   "label": "Technical Details",
+   "collapsible": 1,
+   "description": "Connection IDs and data used by administrators to investigate problems."
   }
  ],
  "permissions": [

@@ -78,10 +78,10 @@ function update_parent_doc_field_options(
 function render_filter_group(frm) {
 	let filter_wrapper = frm.fields_dict.filtered_records_html.$wrapper;
 
-	// Check if a Source DocType is selected
+	// Check if a Record type is selected
 	if (!frm.doc.template_doctype) {
 		filter_wrapper.empty();
-		filter_wrapper.append(`<p style="color: red;">Please select a Source DocType first.</p>`);
+		filter_wrapper.append(`<p style="color: red;">Please select a Record type first.</p>`);
 		return;
 	}
 
@@ -129,7 +129,7 @@ async function refresh_filtered_records(frm) {
 	wrapper.empty();
 
 	if (!frm.doc.template_doctype) {
-		wrapper.append(`<p style="margin-top: 10px; color: red;">Please select a Source DocType to fetch records.</p>`);
+		wrapper.append(`<p style="margin-top: 10px; color: red;">Please select a Record type to fetch records.</p>`);
 		return;
 	}
 

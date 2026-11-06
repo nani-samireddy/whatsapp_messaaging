@@ -12,7 +12,7 @@ This sends a message from a business record using a configured campaign. The app
 
 ## 1. Check the campaign
 
-Configure an enabled campaign for the business DocType, reusable Message Template, sender and recipient field. Select None or Custom for a manual action. Bulk campaigns use preview and start instead.
+Configure an enabled campaign for the business record type, reusable Message Template, sender and recipient field. Select None or Custom for a manual action. Bulk campaigns use preview and start instead.
 
 ## 2. Open the business record
 
@@ -32,7 +32,7 @@ A single source-scoped request is queued and the conversation is explicitly link
 
 ## If you need help
 
-If the action is missing, ask an Admin to check the campaign’s DocType, event, recipient mapping and disabled flag. Source permission and sender eligibility are checked again before dispatch.
+If the action is missing, ask an Admin to check the campaign’s record type, sending trigger, phone field and pause setting. The app checks access to the record and permission to send before each message.
 
 ## Screenshots
 
@@ -46,4 +46,4 @@ A fictional ToDo record with its configured WhatsApp message action.
 - [Link a business record](record-links.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

@@ -16,7 +16,7 @@ Open Templates & Automation → Campaign Runs and choose New schedule, or choose
 
 ## 2. Choose the campaign and time
 
-Select the Appointment confirmation campaign. For a one-time follow-up enter First occurrence (local time) and leave Recurrence blank. For daily 09:00 reminders use 0 9 * * * in Recurrence.
+Select the Appointment confirmation campaign. For a one-time follow-up enter First send (local time) and leave Recurrence blank. For daily 09:00 reminders use 0 9 * * * in Recurrence.
 
 ## 3. Confirm the timezone
 
@@ -46,4 +46,4 @@ Create or update schedule: campaign, local occurrence, recurrence and timezone.
 - [Activate a campaign for document events](events.md)
 - [Check delivery and handle blocked sends](delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

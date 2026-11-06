@@ -45,4 +45,4 @@ Link a record dialog with Record type and Record fields.
 - [Send from a business record](record-send.md)
 - [Assign conversations and track progress](assignment.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

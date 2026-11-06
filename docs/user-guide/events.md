@@ -51,4 +51,4 @@ Automation Active and Run As belong to the campaign.
 - [Create or pause a schedule](schedules.md)
 - [Send documents automatically](document-delivery.md)
 
-Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 30 October 2026.
+Screenshots show local development screens. Available fields, values, sender accounts and actions depend on your site configuration and permissions. Updated 2026-11-01.

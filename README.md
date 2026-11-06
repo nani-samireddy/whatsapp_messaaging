@@ -32,6 +32,8 @@ A System Manager configures the sender, WABA and encrypted access token. Outboun
 ## Documentation
 
 - [App completion status](docs/APP-COMPLETION.md)
+- [Production readiness and launch checks](docs/PRODUCTION-READINESS.md)
+- [All DocTypes and naming recommendations](docs/DOCTYPE-NAMING-REVIEW.md)
 - [User guide](docs/user-guide/README.md)
 - [Roles and permissions](docs/ROLE-PERMISSIONS.md)
 - [Templates, campaigns and Meta review](docs/TEMPLATES-AND-CAMPAIGNS.md)

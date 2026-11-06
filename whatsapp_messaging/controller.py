@@ -25,7 +25,7 @@ def wm_handle_on_single_template_trigger(template_name, doctype):
 	"""
 	require_send_role(bulk=True)
 	if not template_name or not doctype:
-		frappe.throw("Template and Doctype are required")
+		frappe.throw("Choose a message template and record type.")
 	from whatsapp_messaging.messaging.campaigns import load
 	template_doc = load(template_name)
 	check_manual_template(template_doc, doctype, bulk=True)
@@ -42,7 +42,7 @@ def wm_handle_on_custom_trigger(template_name, doctype, docname, request_id=None
 	"""
 	require_send_role()
 	if not template_name or not doctype or not docname:
-		frappe.throw("Template, Doctype, and Docname are required")
+		frappe.throw("Choose a message template, record type and record.")
 	from whatsapp_messaging.messaging.campaigns import load
 	template_doc = load(template_name)
 	check_manual_template(template_doc, doctype)
@@ -117,7 +117,7 @@ def get_template_recipients(template, doc):
         if value:
             recipients.append(value)
     for row in template.get("other_recipients") or []:
-        recipient = frappe.get_doc("Static Recipient", row.static_recipient)
+        recipient = frappe.get_doc("Additional Numbers", row.static_recipient)
         recipient.check_permission("read")
         if recipient.phone_number:
             recipients.append(recipient.phone_number)
